@@ -1,0 +1,66 @@
+{
+  "lessonCodeExamples": {
+    "bootstrap": [
+      "<!-- Bootstrap: estrutura de uma barra de navegação -->\n<nav class=\"navbar navbar-expand-lg bg-primary\" data-bs-theme=\"dark\">\n  <div class=\"container\">\n    <!-- navbar-brand: identidade do site -->\n    <a class=\"navbar-brand\" href=\"#\">Minha Escola</a>\n    <!-- navbar-nav: organiza os links -->\n    <ul class=\"navbar-nav ms-auto\">\n      <li class=\"nav-item\"><a class=\"nav-link\" href=\"#inicio\">Início</a></li>\n    </ul>\n  </div>\n</nav>",
+      "<!-- bg-primary: cor de fundo; text-white: texto branco -->\n<section class=\"container bg-primary text-white p-4\">\n  <h2>Minha seção</h2>\n</section>",
+      "<!-- row: linha do grid; col-md-6: 2 colunas em telas médias -->\n<div class=\"container\"><div class=\"row g-3\">\n  <div class=\"col-12 col-md-6\"><div class=\"card card-body\">Bloco A</div></div>\n  <div class=\"col-12 col-md-6\"><div class=\"card card-body\">Bloco B</div></div>\n</div></div>",
+      "<!-- btn: base do componente; btn-success: variante verde -->\n<button type=\"button\" class=\"btn btn-success\">Confirmar</button>",
+      "<!-- card: recipiente; card-body: espaço interno -->\n<article class=\"card\"><div class=\"card-body\">\n  <h3 class=\"card-title\">Notícia</h3>\n  <p class=\"card-text\">Descrição da notícia.</p>\n</div></article>",
+      "<!-- form-control: estiliza o campo; form-label: rótulo -->\n<label for=\"usuario\" class=\"form-label\">Usuário</label>\n<input id=\"usuario\" type=\"text\" class=\"form-control\">",
+      "<!-- fs-2: título maior; fw-bold: texto em negrito -->\n<h2 class=\"fs-2 fw-bold text-primary\">Tipografia</h2>\n<p class=\"text-secondary\">Texto de apoio.</p>",
+      "<!-- p-4: espaço interno; my-4: margem vertical -->\n<section class=\"container p-4 my-4\"><h2>Espaçamento</h2></section>",
+      "<!-- img-fluid: imagem que se ajusta à largura disponível -->\n<img src=\"https://placehold.co/600x300\" alt=\"Paisagem ilustrativa\" class=\"img-fluid\">",
+      "<!-- list-group e list-group-item: lista visual Bootstrap -->\n<ul class=\"list-group\"><li class=\"list-group-item\">HTML</li><li class=\"list-group-item\">CSS</li><li class=\"list-group-item\">JS</li></ul>",
+      "<!-- alert e alert-success: mensagem de sucesso -->\n<div class=\"alert alert-success\" role=\"alert\"><p>Operação concluída!</p></div>",
+      "<!-- table e table-striped: tabela com linhas alternadas -->\n<table class=\"table table-striped\"><thead><tr><th>Curso</th></tr></thead>\n<tbody><tr><td>HTML</td></tr><tr><td>CSS</td></tr></tbody></table>",
+      "<!-- text-center: centraliza texto; d-flex: alinha elementos -->\n<section class=\"text-center\"><h2>Equipe</h2><div class=\"d-flex gap-3\"><span>Ana</span><span>João</span></div></section>",
+      "<!-- bg-dark e text-white: cores nativas Bootstrap -->\n<footer class=\"bg-dark text-white p-4\">© 2026 Escola <a href=\"#contato\">Contato</a></footer>"
+    ],
+    "materialize": [
+      "<!-- nav: barra de navegação com a cor nativa deep-purple -->\n<nav class=\"deep-purple\">\n  <!-- nav-wrapper: estrutura interna do Materialize -->\n  <div class=\"nav-wrapper container\">\n    <a href=\"#\" class=\"brand-logo\">Minha Escola</a>\n    <!-- right: posiciona links à direita -->\n    <ul class=\"right hide-on-med-and-down\">\n      <li><a href=\"#inicio\">Início</a></li>\n    </ul>\n  </div>\n</nav>",
+      "<!-- blue: cor de fundo nativa; white-text: texto branco -->\n<section class=\"container section blue white-text\">\n  <h4>Minha seção</h4>\n</section>",
+      "<!-- row: linha de 12 colunas; s12: celular; m6: tablet -->\n<div class=\"row\">\n  <div class=\"col s12 m6\"><div class=\"card-panel\">Bloco A</div></div>\n  <div class=\"col s12 m6\"><div class=\"card-panel\">Bloco B</div></div>\n</div>",
+      "<!-- btn: botão do Materialize; waves-effect: efeito ao clicar -->\n<button class=\"btn waves-effect waves-light green\">Confirmar</button>",
+      "<!-- card-content: conteúdo; card-title: título do card -->\n<article class=\"card\"><div class=\"card-content\">\n  <span class=\"card-title\">Notícia</span>\n  <p>Descrição da notícia.</p>\n</div></article>",
+      "<!-- input-field: campo com label flutuante -->\n<div class=\"input-field\">\n  <input id=\"usuario\" type=\"text\">\n  <label for=\"usuario\">Usuário</label>\n</div>",
+      "<!-- flow-text: texto fluido; purple-text: cor do texto -->\n<h4 class=\"purple-text\">Tipografia</h4><p class=\"flow-text\">Texto fluido.</p>",
+      "<!-- section: espaçamento vertical; container: largura central -->\n<section class=\"container section\"><h4>Espaçamento</h4></section>",
+      "<!-- responsive-img: imagem que respeita a largura disponível -->\n<img class=\"responsive-img\" src=\"https://placehold.co/600x300\" alt=\"Paisagem ilustrativa\">",
+      "<!-- collection e collection-item: lista visual nativa -->\n<ul class=\"collection\"><li class=\"collection-item\">HTML</li><li class=\"collection-item\">CSS</li><li class=\"collection-item\">JS</li></ul>",
+      "<!-- card-panel e green lighten-4: mensagem com cor -->\n<div class=\"card-panel green lighten-4\"><p>Operação concluída!</p></div>",
+      "<!-- striped: tabela com linhas alternadas -->\n<table class=\"striped\"><thead><tr><th>Curso</th></tr></thead>\n<tbody><tr><td>HTML</td></tr><tr><td>CSS</td></tr></tbody></table>",
+      "<!-- center-align: centraliza; row: organiza elementos -->\n<section class=\"center-align\"><h4>Equipe</h4><div class=\"row\"><div class=\"col s6\">Ana</div><div class=\"col s6\">João</div></div></section>",
+      "<!-- page-footer: componente próprio de rodapé -->\n<footer class=\"page-footer deep-purple\"><div class=\"container\">© 2026 Escola <a href=\"#contato\" class=\"white-text\">Contato</a></div></footer>"
+    ],
+    "tailwind": [
+      "<!-- bg-purple-700: fundo; flex: linha; justify-between: separação -->\n<nav class=\"bg-purple-700 text-white p-4\">\n  <div class=\"max-w-5xl mx-auto flex justify-between items-center\">\n    <a href=\"#\" class=\"font-bold text-xl\">Minha Escola</a>\n    <a href=\"#inicio\" class=\"hover:underline\">Início</a>\n  </div>\n</nav>",
+      "<!-- bg-blue-600: cor; p-6: espaço interno; text-white: texto -->\n<section class=\"bg-blue-600 text-white p-6\">\n  <h2 class=\"text-2xl font-bold\">Minha seção</h2>\n</section>",
+      "<!-- grid-cols-1: celular; md:grid-cols-2: telas médias -->\n<div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\n  <div class=\"rounded shadow p-4\">Bloco A</div>\n  <div class=\"rounded shadow p-4\">Bloco B</div>\n</div>",
+      "<!-- bg-green-600: cor; px-4 py-2: espaçamento; rounded: cantos -->\n<button class=\"bg-green-600 text-white px-4 py-2 rounded\">Confirmar</button>",
+      "<!-- shadow: sombra; rounded-lg: cantos; p-6: espaço -->\n<article class=\"shadow rounded-lg p-6\">\n  <h3 class=\"text-xl font-bold\">Notícia</h3>\n  <p>Descrição da notícia.</p>\n</article>",
+      "<!-- block: label em linha própria; border: borda -->\n<label for=\"usuario\" class=\"block mb-1\">Usuário</label>\n<input id=\"usuario\" type=\"text\" class=\"border rounded p-2\">",
+      "<!-- text-2xl: tamanho; font-bold: negrito -->\n<h2 class=\"text-2xl font-bold text-blue-600\">Tipografia</h2><p class=\"text-gray-600\">Texto de apoio.</p>",
+      "<!-- p-6: padding; my-4: margem vertical -->\n<section class=\"p-6 my-4\"><h2>Espaçamento</h2></section>",
+      "<!-- max-w-full h-auto: imagem responsiva -->\n<img class=\"max-w-full h-auto\" src=\"https://placehold.co/600x300\" alt=\"Paisagem ilustrativa\">",
+      "<!-- divide-y: divisão visual; border: contorno -->\n<ul class=\"border divide-y\"><li class=\"p-2\">HTML</li><li class=\"p-2\">CSS</li><li class=\"p-2\">JS</li></ul>",
+      "<!-- bg-green-100: cor de fundo; p-4: espaçamento -->\n<div class=\"bg-green-100 p-4\"><p>Operação concluída!</p></div>",
+      "<!-- border: borda; p-2: espaçamento das células -->\n<table class=\"border\"><thead><tr><th class=\"p-2\">Curso</th></tr></thead>\n<tbody><tr><td>HTML</td></tr><tr><td>CSS</td></tr></tbody></table>",
+      "<!-- text-center: centralização; flex: itens em linha -->\n<section class=\"text-center\"><h2>Equipe</h2><div class=\"flex gap-4\"><span>Ana</span><span>João</span></div></section>",
+      "<!-- bg-gray-900: fundo; p-4: espaço interno -->\n<footer class=\"bg-gray-900 text-white p-4\">© 2026 Escola <a href=\"#contato\">Contato</a></footer>"
+    ]
+  },
+  "navSamples": {
+    "materialize": {
+      "top": "<!-- Materialize: nav é a barra; deep-purple define a cor -->\n<nav class=\"deep-purple\">\n  <div class=\"nav-wrapper container\">\n    <a href=\"#inicio\" class=\"brand-logo\">Minha Escola</a>\n    <!-- sidenav-trigger: aparece em telas menores -->\n    <a href=\"#\" data-target=\"menu-mobile\" class=\"sidenav-trigger\" aria-label=\"Abrir menu\">\n      <i class=\"material-icons\">menu</i>\n    </a>\n    <!-- Os links desktop ficam ocultos em tablets e celulares -->\n    <ul class=\"right hide-on-med-and-down\">\n      <li><a href=\"#inicio\">Início</a></li>\n      <li><a href=\"#contato\">Contato</a></li>\n    </ul>\n  </div>\n</nav>\n<!-- Menu lateral móvel, ligado ao data-target do gatilho -->\n<ul id=\"menu-mobile\" class=\"sidenav\">\n  <li><a href=\"#inicio\">Início</a></li>\n  <li><a href=\"#contato\">Contato</a></li>\n</ul>",
+      "side": "<!-- Materialize: barra superior com botão para abrir menu lateral -->\n<nav class=\"deep-purple\">\n  <div class=\"nav-wrapper container\">\n    <a href=\"#\" data-target=\"menu-lateral\" class=\"sidenav-trigger show-on-large\" aria-label=\"Abrir menu lateral\">\n      <i class=\"material-icons\">menu</i>\n    </a>\n    <a class=\"brand-logo\" href=\"#inicio\">Minha Escola</a>\n  </div>\n</nav>\n<!-- sidenav: lista de navegação lateral -->\n<ul id=\"menu-lateral\" class=\"sidenav\">\n  <li><a class=\"sidenav-close\" href=\"#inicio\">Início</a></li>\n  <li><a class=\"sidenav-close\" href=\"#contato\">Contato</a></li>\n</ul>"
+    },
+    "bootstrap": {
+      "top": "<!-- Bootstrap: navbar-expand-lg exibe links em telas largas -->\n<nav class=\"navbar navbar-expand-lg bg-primary\" data-bs-theme=\"dark\">\n  <div class=\"container-fluid\">\n    <a class=\"navbar-brand\" href=\"#inicio\">Minha Escola</a>\n    <!-- navbar-toggler alterna o menu móvel -->\n    <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#menu-b\">\n      <span class=\"navbar-toggler-icon\"></span>\n    </button>\n    <div class=\"collapse navbar-collapse\" id=\"menu-b\">\n      <ul class=\"navbar-nav ms-auto\">\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"#inicio\">Início</a></li>\n</li>\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"#contato\">Contato</a></li>\n      </ul>\n    </div>\n  </div>\n</nav>",
+      "side": "<!-- Bootstrap: offcanvas é o menu lateral interativo -->\n<nav class=\"navbar bg-primary\" data-bs-theme=\"dark\">\n  <div class=\"container-fluid\">\n    <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"offcanvas\" data-bs-target=\"#menu-lateral-b\" aria-label=\"Abrir menu lateral\">\n      <span class=\"navbar-toggler-icon\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#inicio\">Minha Escola</a>\n  </div>\n</nav>\n<div class=\"offcanvas offcanvas-start\" tabindex=\"-1\" id=\"menu-lateral-b\">\n  <div class=\"offcanvas-header\">\n    <h5 class=\"offcanvas-title\">Menu</h5>\n    <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"offcanvas\" aria-label=\"Fechar\"></button>\n  </div>\n  <div class=\"offcanvas-body\">\n    <a class=\"nav-link mb-3\" href=\"#inicio\">Início</a>\n    <a class=\"nav-link\" href=\"#contato\">Contato</a>\n  </div>\n</div>"
+    },
+    "tailwind": {
+      "top": "<!-- Tailwind: utilitários cuidam da aparência; JS abre o menu -->\n<nav class=\"bg-purple-700 text-white p-4\">\n  <div class=\"mx-auto max-w-6xl flex items-center justify-between\">\n    <a href=\"#inicio\" class=\"font-bold text-xl\">Minha Escola</a>\n    <button type=\"button\" data-menu-toggle aria-expanded=\"false\" aria-controls=\"menu-tw\" class=\"md:hidden px-3 py-2 border rounded\">☰ Menu</button>\n    <div id=\"menu-tw\" class=\"hidden md:flex gap-6\">\n      <a href=\"#inicio\">Início</a>\n      <a href=\"#contato\">Contato</a>\n    </div>\n  </div>\n</nav>",
+      "side": "<!-- Tailwind: a navegação lateral recebe utilitários de posição -->\n<header class=\"bg-purple-700 text-white p-4 flex gap-4 items-center\">\n  <button type=\"button\" data-menu-toggle aria-expanded=\"false\" aria-controls=\"menu-tw\" class=\"border rounded px-3 py-2\">☰ Menu</button>\n  <a href=\"#inicio\" class=\"font-bold text-xl\">Minha Escola</a>\n</header>\n<!-- fixed posiciona; -translate-x-full oculta o painel -->\n<aside id=\"menu-tw\" class=\"fixed z-40 top-0 left-0 h-full w-64 bg-white shadow-xl p-6 -translate-x-full transition-transform duration-200\">\n  <button type=\"button\" data-menu-toggle class=\"block mb-6 text-purple-700\">✕ Fechar</button>\n  <nav class=\"flex flex-col gap-4 text-gray-800\">\n    <a href=\"#inicio\">Início</a>\n    <a href=\"#contato\">Contato</a>\n  </nav>\n</aside>"
+    }
+  }
+}

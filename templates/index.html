@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Framework Academy | Ana Arrais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#6634c4;--deep:#32165e;--navy:#192242;--border:#e4e4f0;--muted:#66708c;--panel:#fff;--bg:#f8f9fe;--shadow:0 4px 20px #2320450c}*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,Arial,sans-serif;color:var(--navy);background:var(--bg)}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}a{color:var(--purple)}.top{height:70px;background:linear-gradient(90deg,#35165e,#753bd0);display:flex;align-items:center;justify-content:space-between;padding:0 30px;color:white;gap:22px}.brand{display:flex;align-items:center;gap:13px;min-width:220px}.brand-mark{font-size:26px;font-weight:800}.brand b{font-size:19px;display:block}.brand small{font-size:10px;opacity:.85}.topnav{display:flex;gap:9px}.topnav button{border:0;color:#fff;background:transparent;padding:12px 21px;border-radius:10px;font-weight:700}.topnav button.active{background:#9254e9}.topnav button:hover{background:#ffffff27}.headright{font-size:13px}.app{max-width:1740px;margin:auto;min-height:calc(100vh - 109px)}.view{display:none}.view.active{display:block}.pagehead{padding:24px 28px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px}.pagehead h1{margin:0 0 5px;font-size:24px}.pagehead p{color:var(--muted);margin:0;font-size:13px}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.btn{border:1px solid #d7d7e6;border-radius:9px;background:white;padding:10px 14px;color:var(--navy);font-size:12px;font-weight:700}.btn:hover{border-color:var(--purple);color:var(--purple)}.btn.primary{background:var(--purple);color:white;border-color:var(--purple)}.btn.primary:hover{background:#5526aa;color:white}.btn.ghost{border:0;background:transparent}.pill{font-size:11px;font-weight:800;background:#efe7ff;color:#6734c6;padding:5px 9px;border-radius:6px}.workspace{padding:0 20px 28px;display:grid;grid-template-columns:238px minmax(380px,1fr) 310px;grid-template-rows:auto auto;gap:13px;align-items:start}.panel{background:var(--panel);border:1px solid var(--border);border-radius:15px;box-shadow:var(--shadow);min-width:0}.library{grid-row:1/3;padding:15px;max-height:calc(100vh - 160px);overflow:auto;position:sticky;top:8px}.panelhead{font-weight:800;margin-bottom:15px;font-size:15px}.search{border:1px solid var(--border);border-radius:8px;padding:10px;width:100%;margin-bottom:14px;font-size:12px}.sectionlabel{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:15px 0 9px;font-weight:800}.componentgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.comp{border:1px solid var(--border);background:#fff;border-radius:10px;padding:13px 6px;text-align:center;min-height:75px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}.comp:hover{background:#f7f2ff;border-color:var(--purple)}.comp strong{font-size:11px}.comp span{font-size:20px;color:var(--purple)}.comp[draggable=true]{cursor:grab}.libhint{background:#f8f2e5;border-radius:10px;padding:12px;font-size:11px;line-height:1.6;color:#745119;margin-top:15px}.center{min-width:0}.canvaspanel{padding:13px}.canvasbar{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--border);padding-bottom:11px;margin-bottom:12px}.frameworkrow{display:flex;gap:5px;flex-wrap:wrap}.fwbtn{background:white;border:1px solid var(--border);padding:8px 9px;border-radius:7px;font-size:11px;font-weight:800}.fwbtn.selected{background:#efe7ff;color:#6329c5;border-color:#8b50df}.devices{display:flex;gap:4px}.device{border:0;background:transparent;border-radius:6px;padding:7px 9px;color:var(--muted)}.device.active{background:#eee5ff;color:#5f28be}.canvasouter{background:#f2f2fa;border-radius:10px;min-height:460px;display:flex;justify-content:center;padding:15px;overflow:auto}.canvas{width:100%;background:#fff;min-height:430px;box-shadow:0 2px 14px #1c18491c;transition:width .15s;flex-shrink:0}.canvas.tablet{width:720px;max-width:100%}.canvas.mobile{width:375px;max-width:100%}.empty{padding:96px 20px;text-align:center;color:#747b94;display:flex;flex-direction:column;align-items:center;gap:14px}.empty .large{font-size:48px;color:#b39be8}.empty h3{font-size:20px;color:var(--navy);margin:0}.empty p{font-size:13px;max-width:330px;line-height:1.5;margin:0}.block{position:relative;border:2px solid transparent;min-width:0}.block:hover{border-color:#c3a6f4}.block.selected{border:2px dashed #7d3de2}.block .blocktools{display:none;position:absolute;top:3px;right:4px;z-index:10;background:#662bc7;padding:3px;border-radius:7px;gap:3px}.block.selected .blocktools{display:flex}.blocktools button{border:0;color:white;background:transparent;font-size:14px;padding:5px}.blocktools button:hover{background:#ffffff33}.block[draggable=true]{cursor:move}.dropzone{height:10px;background:transparent;transition:.15s}.dropzone.dragover{height:28px;background:#decdfc;border:2px dashed #7d3de2}.props{padding:16px;max-height:calc(100vh - 160px);overflow:auto;position:sticky;top:8px}.props h3{font-size:15px;margin:0 0 15px}.field{margin-bottom:14px}.field label{display:block;color:#39405d;font-size:11px;font-weight:700;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:9px;border-radius:7px;border:1px solid var(--border);font-size:12px;background:white}.field textarea{min-height:67px;resize:vertical}.colorline{display:flex;align-items:center;gap:7px}.colorline input[type=color]{width:48px;height:36px;padding:2px}.colorline input[type=text]{flex:1;width:0}.help{background:#f6f1ff;border-radius:9px;padding:12px;font-size:11px;line-height:1.6;color:#51476e}.help strong{display:block;color:#4c238f;margin-bottom:4px}.help a{display:block;margin-top:5px}.codepanel{grid-column:2/4;padding:0;overflow:hidden}.tabs{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);overflow:auto}.tab{padding:14px 17px;border:0;background:transparent;font-size:12px;font-weight:700;white-space:nowrap;color:#687087}.tab.active{color:#652bbf;border-bottom:3px solid #7439d0}.codewrap{padding:14px}.codebar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.codebar h3{font-size:13px;margin:0}.codegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.codeslot{min-width:0;border:1px solid #dfe0ed;border-radius:10px;overflow:hidden}.codetitle{font-size:12px;font-weight:800;padding:10px;background:#f8f7fc;display:flex;align-items:center;justify-content:space-between}.codetitle button{background:none;border:0;font-size:11px;color:var(--purple);font-weight:700}.codebox{background:#171d31;color:#dce4fc;min-height:335px;max-height:480px;overflow:auto;margin:0;padding:12px 14px;line-height:1.65;font-size:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre;tab-size:2}.cm{color:#84c975}.tag{color:#8ac7ff}.att{color:#e1b6fa}.str{color:#ffce8b}.docbody{padding:14px 18px;font-size:13px;line-height:1.65}.docbody h3{margin:0 0 8px}.docbody p{margin:0 0 9px}.docbody a{margin-right:15px}.intro{max-width:1160px;margin:0 auto;padding:28px}.introhero{background:linear-gradient(120deg,#f2eaff,#fbfaff);border:1px solid #e7dbff;border-radius:18px;padding:37px;margin-bottom:24px}.introhero h1{font-size:35px;margin:0 0 10px;color:#2e1b62}.introhero p{color:#4b5574;max-width:690px;line-height:1.7}.introgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.introcard{border:1px solid var(--border);border-radius:14px;background:white;padding:22px;box-shadow:var(--shadow)}.introcard .logo{font-size:29px;font-weight:800}.introcard h2{font-size:19px}.introcard p{font-size:13px;color:#5b6480;line-height:1.7;min-height:74px}.introcard .meta{font-size:12px;line-height:1.6;color:#4e5573}.introcard .meta b{color:var(--navy)}.introcard a{font-size:12px}.exercise{max-width:1300px;margin:0 auto;padding:0 24px 28px}.exercisehead{padding:20px;background:white;border:1px solid var(--border);border-radius:14px;margin-bottom:15px;display:flex;align-items:center;justify-content:space-between;gap:14px}.exercisehead h2{margin:0 0 6px;font-size:21px}.exercisehead p{color:var(--muted);margin:0;font-size:13px;line-height:1.6}.exercisearea{display:grid;grid-template-columns:1fr 285px;gap:15px}.exaside{padding:18px}.checkrow{padding:9px 0;display:flex;gap:8px;align-items:center;font-size:12px;border-bottom:1px solid #f0edf8}.checkdot{width:18px;height:18px;border-radius:50%;border:2px solid #ddd;flex-shrink:0;text-align:center;font-size:11px}.checkrow.ok .checkdot{background:#13a67b;border-color:#13a67b;color:white}.progress{height:9px;background:#ebe7f3;border-radius:30px;overflow:hidden;margin:15px 0}.progress>div{height:100%;background:#7635d9;transition:width .2s}.footer{height:39px;background:#3d1b75;color:#fff;font-size:11px;padding:12px 24px}.fulloverlay{position:fixed;inset:10px;z-index:100;background:#f8f9fe;border-radius:14px;box-shadow:0 0 0 20px #1b103bc9;display:flex;flex-direction:column;padding:15px}.fulloverlay .canvasouter,.fulloverlay .codegrid{flex:1;min-height:0}.fulloverlay .codebox{max-height:none;height:calc(100vh - 130px)}.fulloverlay .canvas{max-width:1250px}.hidden{display:none!important}.toast{position:fixed;bottom:58px;right:22px;background:#24203b;color:white;padding:14px 19px;border-radius:10px;font-size:12px;z-index:300;box-shadow:0 5px 20px #2222}.muted{color:var(--muted);font-size:12px}.info{font-size:12px;color:#586078;line-height:1.6}.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.smallbtn{border:0;background:#f1e8ff;color:#6e32c6;border-radius:7px;padding:8px;font-size:11px;font-weight:700}.canvasnav{padding:18px 22px;color:white;display:flex;align-items:center;justify-content:space-between;gap:12px}.canvasnav .links{display:flex;gap:14px;font-size:13px}.canvasnav a{color:inherit;text-decoration:none}.canvashero{padding:50px 30px}.canvashero h1{font-size:30px;margin:0 0 10px}.canvashero p{font-size:14px;line-height:1.6;max-width:520px}.canvasbutton{display:inline-flex;border:0;padding:11px 19px;border-radius:6px;font-weight:700;font-size:13px;align-items:center;gap:9px}.canvascard{background:white;border:1px solid #ebebf2;padding:20px;border-radius:9px;box-shadow:0 3px 12px #2422450e;margin:12px 18px}.canvasgrid{display:grid;gap:12px;padding:22px}.canvasgrid>div{border:1px solid #e1d9ef;background:#f9f5ff;border-radius:7px;padding:22px 7px;text-align:center;font-size:12px}.canvasfield{margin:16px 22px}.canvasfield input{border:1px solid #cfd3df;padding:11px;border-radius:5px;width:100%}.canvastitle{padding:28px 22px 15px;font-size:23px}.canvastable{border-collapse:collapse;width:calc(100% - 44px);margin:18px 22px;font-size:13px}.canvastable td,.canvastable th{padding:12px;border-bottom:1px solid #ddd;text-align:left}.canvasalert{margin:18px 22px;padding:16px;border-radius:8px}.canvasfooter{padding:22px;text-align:center;font-size:12px}.propsEmpty{text-align:center;color:#76809a;font-size:12px;line-height:1.7;padding:22px 2px}.propsEmpty b{color:#3e345a}.filelabel{cursor:pointer;font-size:11px;color:var(--purple);font-weight:700}.scrollLock{overflow:hidden}.result{font-size:12px;line-height:1.7;margin:11px 0}.exselector{border:1px solid var(--border);border-radius:8px;padding:9px;max-width:270px;background:white}.sr-only{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden}@media(max-width:1160px){.workspace{grid-template-columns:205px minmax(300px,1fr)}.props{grid-column:2;position:static;max-height:none}.library{grid-row:1/3}.codepanel{grid-column:1/3}.codegrid{grid-template-columns:1fr}.codebox{min-height:160px}.exercisearea{grid-template-columns:1fr}}@media(max-width:740px){.top{height:auto;padding:15px;display:block}.brand{margin-bottom:12px}.topnav button{padding:9px 11px}.pagehead{padding:20px 14px;display:block}.toolbar{margin-top:12px}.workspace{padding:0 10px 20px;grid-template-columns:1fr}.library{grid-row:auto;position:static;max-height:none}.props,.codepanel{grid-column:1}.intro{padding:16px}.introhero{padding:25px}.introhero h1{font-size:27px}.introgrid{grid-template-columns:1fr}.exercise{padding:0 12px 20px}.exercisehead{display:block}.exselector{margin-top:12px}.canvasbar{display:block}.devices{margin-top:8px}}
+
+/* v4: Painel de propriedades mais claro; código completo com rolagem independente. */
+.props{padding:22px;max-height:calc(100vh - 135px);scrollbar-gutter:stable}
+.props h3{font-size:17px;border-bottom:1px solid var(--border);padding-bottom:13px;margin-bottom:20px}
+.field{margin-bottom:20px}.field label{font-size:12px;line-height:1.4;margin-bottom:8px}
+.field input,.field select,.field textarea{padding:12px;font-size:13px;min-height:44px}
+.colorline input[type=color]{width:57px;height:44px}
+.codepanel{border-radius:16px}.codebar{align-items:center;flex-wrap:wrap}
+.codebox{min-height:345px;line-height:1.65;tab-size:2}
+.codetitle{padding:13px 15px}.codetitle button{padding:5px 9px;border-radius:6px;background:#ede6fb}
+.codeintro{font-size:12px;color:#56617c;line-height:1.6;padding:0 2px 8px}
+.codebox .cm{color:#93cb78}.codebox .tag{color:#72c2ff}.codebox .att{color:#dab1fa}.codebox .str{color:#eec780}
+.codebox .doctype{color:#91a7d3}
+@media(max-width:1100px){.workspace{grid-template-columns:215px minmax(0,1fr)}.props{grid-column:2;grid-row:2;position:static;max-height:none}.codepanel{grid-column:1/3}.library{grid-row:1/3}}
+@media(max-width:700px){.workspace{display:block;padding:10px}.workspace>*{margin-bottom:12px}.library,.props{position:static;max-height:none}.codegrid{grid-template-columns:1fr}.canvasouter{min-height:320px}.codebox{max-height:420px}.pagehead{flex-direction:column;align-items:flex-start}}
+
+.block{cursor:pointer}.block.selected{outline:3px solid #884cde;outline-offset:1px}
+.block .blocktools{z-index:3}.select-helper{position:absolute;bottom:5px;right:7px;border:1px solid #e3d5ff;border-radius:6px;background:#fff;color:#6634c4;padding:4px 8px;font-weight:700;font-size:11px;z-index:2}
+.code-diff{background:#f9f8ff;border:1px solid #e5dff6;border-radius:13px;padding:16px;margin:15px 0 2px}
+.code-diff h4{margin:0 0 8px;font-size:15px}.diffgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.diffitem{background:white;border:1px solid #e7e5f2;border-radius:11px;padding:12px;font-size:12px;line-height:1.55}
+.diffitem strong{display:block;color:#432280;margin-bottom:5px}.diffitem code{background:#f2edff;border-radius:4px;padding:1px 4px;font-size:11px}
+@media(max-width:820px){.diffgrid{grid-template-columns:1fr}.wizard-top{align-items:flex-start}}
+
+
+/* Preview consistently renders at every device size, including narrower layout. */
+.canvasouter{align-items:flex-start;scrollbar-gutter:stable;}
+.canvas{min-width:0;min-height:430px;overflow-wrap:anywhere;}
+.canvas.mobile{width:min(375px,100%);}
+.canvas.tablet{width:min(720px,100%);}
+.canvasnav{flex-wrap:wrap;overflow-wrap:anywhere;}
+.canvasnav .links{flex-wrap:wrap;justify-content:flex-end;}
+.canvasgrid{min-width:0;overflow-x:auto;}
+.canvashero{overflow-wrap:anywhere;}
+.block{width:100%;min-width:0;}
+@media(max-width:1200px){.workspace{grid-template-columns:200px minmax(0,1fr) 260px}.canvasouter{padding:9px}}
+@media(max-width:940px){.workspace{grid-template-columns:210px minmax(0,1fr)}.library{grid-row:1/3}.props{grid-column:2;position:static;max-height:none}.codepanel{grid-column:1/3}.canvasouter{min-height:330px}}
+@media(max-width:640px){.workspace{display:flex;flex-direction:column}.library,.center,.props,.codepanel{width:100%;position:static;max-height:none}.codegrid{grid-template-columns:1fr}.canvasouter{min-height:330px}.canvas{min-height:320px}}
+
+/* v7: the properties panel remains inside its own grid row and never overlays code */
+.workspace{grid-template-rows:auto auto;align-items:start}
+.workspace>.props{position:static!important;top:auto!important;grid-column:3;grid-row:1;max-height:none!important;overflow:visible!important}
+.workspace>.library{position:static!important;grid-row:1;max-height:800px}
+.workspace>.codepanel{grid-column:2/4;grid-row:2;position:relative;z-index:1}
+@media(max-width:1100px){.workspace>.props{grid-column:2;grid-row:2}.workspace>.codepanel{grid-column:1/3;grid-row:3}.workspace>.library{grid-row:1}}
+@media(max-width:700px){.workspace>.props,.workspace>.library,.workspace>.codepanel{grid-column:auto;grid-row:auto}}
+/* v7: tutorial-style practice workspace */
+.practice-v7{padding:8px 24px 36px;max-width:1750px;margin:auto}
+.practice-intro{display:flex;justify-content:space-between;align-items:center;padding:20px 7px 23px;gap:20px}
+.practice-intro h1{font-size:27px;margin:10px 0 5px}.practice-intro p{font-size:13px;color:var(--muted);margin:0;line-height:1.6}
+.practice-progress{background:#f0e6ff;border:1px solid #e4d4ff;border-radius:13px;padding:13px 24px;text-align:center;flex-shrink:0}
+.practice-progress strong{font-size:24px;color:#5f27bb;display:block}.practice-progress small{color:#635478}
+.practice-shell{display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:start}
+.practice-lessons{padding:20px;position:sticky;top:12px}.practice-lessons h3{margin:0;font-size:16px}
+.lesson-choice{display:flex;gap:11px;width:100%;text-align:left;background:transparent;border:1px solid transparent;border-radius:10px;padding:13px 10px;margin:5px 0;color:#333c58;align-items:center;font-size:12px}
+.lesson-choice:hover{background:#f7f3ff}.lesson-choice.active{border-color:#cbb8f5;background:#f1e9ff;color:#5625a2;font-weight:800}
+.lesson-index{background:#ede5ff;padding:7px;border-radius:7px;font-size:11px;font-weight:800;min-width:29px;text-align:center}
+.lesson-choice.done .lesson-index{background:#d6f6e8;color:#06734c}
+.practice-note{background:#f5f0ff;padding:13px;border-radius:10px;margin-top:16px;color:#604d84;line-height:1.6;font-size:11px}
+.practice-main{min-width:0;display:flex;flex-direction:column;gap:14px}
+.practice-challenge{padding:23px 25px}.practice-challenge-top{display:flex;justify-content:space-between;align-items:center}
+.practice-challenge h2{font-size:23px;margin:12px 0 5px}.practice-challenge p{color:#596380;font-size:13px;line-height:1.7;margin:0 0 12px}
+#lessonFramework{border:1px solid #dad9e8;padding:9px;border-radius:8px;background:#fff;font-size:12px}
+.lesson-requirements{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}.lesson-requirements span{font-size:11px;border-radius:7px;background:#f3f0fa;padding:7px 10px;color:#4a4465}
+.lesson-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.lesson-actions a{font-size:12px}.lesson-tip{background:#fef8e8;border-left:3px solid #f0b64b;padding:12px;border-radius:5px;font-size:12px;margin-top:12px;line-height:1.65}
+.practice-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;min-height:445px}
+.practice-editor,.practice-result{overflow:hidden;display:flex;flex-direction:column}
+.practice-editor-head{padding:12px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--border);min-height:60px}
+.practice-editor-head strong{font-size:13px}
+#lessonCode{display:block;resize:vertical;flex:1;min-height:380px;width:100%;padding:17px;background:#171d31;color:#e1e8fd;font:12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;outline:0;border:0;white-space:pre}
+.lesson-code-editor{position:relative;flex:1;min-height:380px;overflow:hidden;background:#171d31}
+#lessonCodeHighlight,#lessonCode{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:17px;border:0;border-radius:0;overflow:auto;white-space:pre;tab-size:2;font:12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:0;word-spacing:0;overflow-wrap:normal;box-sizing:border-box}
+#lessonCodeHighlight{pointer-events:none;color:#dce4fc;z-index:1;scrollbar-width:none}
+#lessonCode{color:transparent!important;-webkit-text-fill-color:transparent;caret-color:#f8fafc;background:transparent!important;z-index:2;resize:none;outline:none}
+#lessonCode::selection{background:rgba(132,165,255,.35);-webkit-text-fill-color:transparent}
+#lessonFrame{border:0;width:100%;flex:1;min-height:380px;background:#fff}
+.practice-editor-foot{padding:10px 15px;font-size:11px;color:#6f7690;background:#faf9fe;border-top:1px solid var(--border)}
+.practice-feedback{padding:20px 23px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.practice-feedback h3{font-size:16px;margin:0 0 5px}.practice-feedback p{margin:0}.lesson-checks{flex-basis:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.lesson-check{font-size:12px;padding:9px;background:#f6f5fa;border-radius:7px}.lesson-check.pass{background:#e7f8ef;color:#11744b}.lesson-check.fail{background:#fff2ef;color:#a33e36}
+@media(max-width:1050px){.practice-shell{grid-template-columns:1fr}.practice-lessons{position:static}.practice-lessons #lessonList{display:flex;flex-wrap:wrap}.lesson-choice{width:auto}.practice-editor-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.practice-v7{padding:8px 12px}.practice-intro{align-items:flex-start}.practice-progress{padding:8px}.practice-challenge{padding:17px}.practice-editor-head{flex-wrap:wrap}.lesson-checks{grid-template-columns:1fr}}
+
+/* Referência de código: exemplo comentado ANTES do editor do aluno */
+.lesson-target{border:1px solid #ddd8f0;border-radius:13px;margin:18px 0 20px;overflow:hidden;background:#fff}
+.lesson-target-header{display:flex;align-items:center;justify-content:space-between;gap:14px;background:#faf8ff;padding:14px 17px;border-bottom:1px solid #e9e4f4}
+.lesson-target-header strong{font-size:14px;color:#29204a}
+.lesson-target-header p{margin:5px 0 0;font-size:12px;line-height:1.5;color:#64708d}
+.lesson-target-badge{font-size:11px;white-space:nowrap;font-weight:800;color:#652dbb;background:#eee5fd;padding:7px 10px;border-radius:7px}
+.lesson-target-stage{background:#171d31;padding:0;overflow:auto;max-height:290px}
+#lessonExampleCode{display:block;color:#e1e8fd;white-space:pre;overflow:auto;padding:17px 20px;margin:0;font:12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}
+.lesson-target-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;background:#fff}
+.lesson-target-footer span{font-size:11px;color:#6d7690}
+.lesson-target-footer button{font-size:11px;padding:7px 10px}
+@media(max-width:600px){.lesson-target-header{align-items:flex-start}.lesson-target-badge{max-width:100px;white-space:normal}.lesson-target-footer{flex-wrap:wrap}}
+
+
+.fw-logo{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:9px;color:white;font-size:23px;font-weight:900;vertical-align:middle;margin-right:7px}
+.bs-logo{background:#7952b3}.tw-logo{background:#0ea5ae}.mz-logo{background:#ef6179}
+.student-profile{border:1px solid #e2d8f4;padding:12px 16px;border-radius:12px;background:white;min-width:260px}.student-profile label{display:block;font-size:11px;font-weight:700;margin-bottom:5px}.student-profile input{width:100%;border:1px solid #d6cee6;border-radius:7px;padding:8px}.student-profile small{color:#75728a;font-size:10px}.student-score{display:flex;align-items:center;gap:10px;margin:8px 0}.student-score strong{color:#6129b5;font-size:14px}.student-score span{font-size:11px;color:#797188}.practice-fw-logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;color:white;font-weight:900;margin-right:8px;background:#7952b3}.practice-fw-logo.tailwind{background:#0ea5ae}.practice-fw-logo.materialize{background:#ef6179}
+.lesson-diagnostics{width:100%;font-size:12px;color:#963b35;background:#fff5f2;padding:12px 15px;border-radius:9px}.lesson-diagnostics:empty{display:none}.lesson-diagnostics strong{display:block;margin-bottom:6px}.lesson-diagnostics ul{margin:0;padding-left:20px;line-height:1.7}.diag-ok{color:#06734c}.example-notice{font-size:11px;color:#6e6282}
+@media(max-width:650px){.student-profile{width:100%}.practice-intro{flex-wrap:wrap}}
+
+/* v13 — Experiência de prévia: visualização ampla, responsiva e em tela cheia */
+.practice-v7{max-width:1900px}
+.practice-shell{grid-template-columns:210px minmax(0,1fr)}
+.practice-editor-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);min-height:650px;align-items:stretch}
+.practice-editor,.practice-result{min-height:650px;min-width:0}
+.lesson-code-editor{min-height:560px}
+#lessonFrame{min-height:560px;height:100%;width:100%;display:block;background:#fff;}
+.preview-viewport{flex:1;min-height:560px;overflow:auto;background:#eef0f8;padding:12px;display:flex;align-items:stretch;justify-content:center}
+.preview-frame-wrap{width:100%;height:100%;min-height:540px;background:white;box-shadow:0 2px 16px #1b16451c;transition:width .16s;flex-shrink:0}
+.preview-frame-wrap[data-device="tablet"]{width:min(768px,100%)}
+.preview-frame-wrap[data-device="mobile"]{width:min(390px,100%)}
+.preview-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.preview-device{background:white;border:1px solid #dedbec;color:#4a4668;border-radius:7px;padding:7px 9px;font-size:11px}
+.preview-device.active{background:#efe6ff;border-color:#8650d0;color:#6223bd;font-weight:800}
+.preview-fullscreen{position:fixed;inset:0;z-index:1000;background:#f5f5fc;display:flex;flex-direction:column;padding:12px;gap:9px}
+.preview-fullscreen.hidden{display:none!important}
+.preview-fullscreen-head{display:flex;justify-content:space-between;align-items:center;background:white;padding:12px 17px;border:1px solid #e1dfec;border-radius:11px;gap:12px;flex-wrap:wrap}
+.preview-fullscreen .preview-viewport{min-height:0;flex:1;border:1px solid #ddddeb;border-radius:11px;padding:14px;overflow:auto}
+.preview-fullscreen .preview-frame-wrap{height:100%;min-height:0;max-height:none}
+.preview-fullscreen iframe{width:100%;height:100%;border:0;background:#fff}
+body.preview-lock{overflow:hidden}
+.practice-reference-compact .lesson-target-stage{max-height:165px}
+.reference-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+@media(max-width:1100px){.practice-editor-grid{grid-template-columns:1fr}.practice-editor,.practice-result{min-height:560px}.preview-viewport{min-height:510px}}
+@media(max-width:600px){.practice-editor-head{align-items:flex-start}.preview-tools{width:100%}.practice-result{min-height:490px}}
+
+
+/* Modo foco do construtor: prévia ocupa toda a largura útil */
+.workspace.focus-mode{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto auto!important}
+.workspace.focus-mode>.library,.workspace.focus-mode>.props{display:none!important}
+.workspace.focus-mode>.center{grid-column:1!important;grid-row:1!important;width:100%}
+.workspace.focus-mode>.codepanel{grid-column:1!important;grid-row:2!important}
+.workspace.focus-mode .canvasouter{min-height:660px;padding:22px}
+.workspace.focus-mode .canvas{min-height:620px;max-width:1450px}
+.workspace.focus-mode .canvas.mobile{width:min(390px,100%)}
+.workspace.focus-mode .canvas.tablet{width:min(768px,100%)}
+.fulloverlay:has(.canvasouter){inset:0;border-radius:0;padding:20px}
+.fulloverlay:has(.canvasouter) .canvasouter{min-height:0;overflow:auto;align-items:flex-start}
+.fulloverlay:has(.canvasouter) .canvas{width:100%;max-width:1440px;min-height:95%;margin:auto}
+
+
+/* v14 — Guia de classes contextual, sem ocupar o editor principal */
+.lesson-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.lesson-tip{background:#f7f3ff!important;color:#2d2853!important;border:1px solid #e2d7fb!important;border-left:4px solid #7c3aed!important;border-radius:10px;padding:15px 18px!important;font-size:13px;line-height:1.65}
+.lesson-tip strong{display:block;margin:0 0 6px;color:#3f2188;font-size:14px}
+.lesson-tip ol{margin:6px 0 0 19px;padding:0}.lesson-tip li{padding:3px 0}.lesson-tip code{background:#e9defe;padding:1px 5px;border-radius:4px;color:#401693}
+.reference-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#lessonCopyExample{background:#6a33c5;color:#fff;border-color:#6a33c5;white-space:nowrap}
+#lessonClassGuide{color:#6734c6;border-color:#cfb6ef}
+.classguide-overlay{position:fixed;inset:0;z-index:600;background:rgba(19,13,42,.72);display:flex;align-items:center;justify-content:center;padding:18px}
+.classguide-dialog{width:min(1100px,98vw);height:min(850px,94vh);min-height:400px;display:flex;flex-direction:column;background:#fff;border-radius:16px;box-shadow:0 12px 70px #130f3060;overflow:hidden}
+.classguide-top{padding:17px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #e8e4f4}
+.classguide-top h2{font-size:21px;margin:0 0 5px}.classguide-top p{font-size:12px;color:#677088;margin:0}
+.classguide-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 20px;border-bottom:1px solid #eee9f8;flex-wrap:wrap}
+.classguide-tabs{display:flex;gap:6px;flex-wrap:wrap}.classguide-tabs button{border:1px solid #dfd5f1;border-radius:8px;background:#fff;padding:9px 12px;font-weight:700;color:#403d5c;font-size:12px;cursor:pointer}
+.classguide-tabs button.active{background:#eee7ff;color:#6229b6;border-color:#b390eb}
+#classGuideSearch{border:1px solid #d9d6e8;border-radius:8px;padding:10px 12px;min-width:205px;max-width:100%;font-size:12px}
+.classguide-content{padding:17px 21px;overflow:auto;flex:1;min-height:0}.guide-intro{padding:12px 15px;border-radius:8px;background:#f5f1ff;color:#4c3c75;font-size:12px;line-height:1.65;margin-bottom:16px}
+.guide-group{margin:0 0 23px}.guide-group h3{font-size:15px;margin:0 0 10px}.guide-group p{font-size:12px;color:#64708a;line-height:1.6}
+.guide-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.guide-swatch{display:flex;flex-direction:column;align-items:stretch;gap:5px;border:1px solid #e3dfed;border-radius:9px;background:#fff;padding:7px;text-align:left;cursor:pointer;min-width:0}
+.guide-swatch:hover{border-color:#7640d3;background:#f8f4ff}.guide-swatch-chip{height:34px;border-radius:5px;border:1px solid #00000015}.guide-swatch code{font-size:10px;color:#302e56;overflow-wrap:anywhere}.guide-swatch small{color:#66708c;font-size:10px}
+.guide-classes{display:flex;flex-wrap:wrap;gap:9px}.guide-class{font-size:12px;text-align:left;border:1px solid #ded6ee;border-radius:7px;padding:9px 12px;background:#fff;color:#442680;cursor:pointer}.guide-class:hover{background:#eee5ff}
+.guide-class strong{display:block}.guide-class span{font-size:10px;color:#6c7187}
+.classguide-bottom{display:flex;justify-content:space-between;gap:10px;padding:12px 20px;background:#f8f6fd;border-top:1px solid #e7e1f3;font-size:12px;color:#514b6e}
+@media(max-width:730px){.classguide-top{align-items:flex-start}.classguide-dialog{height:95vh}.classguide-toolbar{align-items:stretch}.classguide-tabs button{flex:1}#classGuideSearch{width:100%}.guide-swatches{grid-template-columns:repeat(auto-fill,minmax(83px,1fr))}.lesson-target-header{flex-direction:column;align-items:flex-start}}
+
+
+/* v15: controles de navegação e visualização responsiva dos exercícios */
+.lesson-nav-options{display:flex;gap:18px;align-items:center;justify-content:space-between;background:#f7f4ff;border:1px solid #e7dcff;padding:13px 16px;border-radius:12px;margin:12px 0 18px;flex-wrap:wrap}
+.lesson-nav-options strong{display:block;color:#271a4b;font-size:13px}.lesson-nav-options small{display:block;color:#66708a;margin-top:4px;font-size:11px}
+.nav-variant-controls{display:flex;gap:7px;flex-wrap:wrap}.nav-variant-controls button{background:white;border:1px solid #ddd0f4;color:#51368e;border-radius:8px;padding:9px 13px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.nav-variant-controls button.active{background:#692fc0;border-color:#692fc0;color:white}
+/* Modo Desktop: permitir inspecionar todo o menu mesmo dentro da coluna estreita */
+.preview-frame-wrap[data-device="desktop"]{width:100%;max-width:none}
+.preview-viewport{min-width:0}
+.preview-fullscreen{z-index:9999}
+.preview-fullscreen .preview-frame-wrap{max-width:100%}
+
+
+/* Portal de aprendizagem: identificação e painel docente */
+.student-gate{max-width:780px;margin:34px auto;padding:46px!important;text-align:center;border:1px solid #e3daf7;border-radius:24px}.student-gate h2{font-size:30px;margin:8px}.student-gate p{color:#616b85}.gate-icon{font-size:38px}.gate-form{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0;text-align:left}.gate-form label,.teacher-login label{font-size:14px;font-weight:700;color:#253052;display:grid;gap:7px}.gate-form label:first-child,.gate-form label:nth-child(3),.gate-form button{grid-column:1/-1}.gate-form input,.teacher-login input{height:48px;box-sizing:border-box;border:1px solid #d8d9ed;border-radius:10px;padding:0 14px;font:inherit;background:white}.gate-message,#teacherLoginMessage{color:#b42318;font-weight:600}.mission-title{font-weight:800;margin:24px 0 12px;color:#2b2755}.teacher-page{max-width:1450px;margin:0 auto;padding:20px}.teacher-heading h1{font-size:32px;margin:18px 0 8px}.teacher-login{max-width:490px;padding:30px;margin:30px auto}.teacher-login form{display:grid;gap:16px;margin-top:18px}.teacher-tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:26px 0}.teacher-tools input{flex:1;min-width:240px;padding:12px;border:1px solid #ddddec;border-radius:10px}.teacher-stats{display:flex;gap:18px;margin:20px 0}.teacher-stats>div{padding:18px 26px;background:white;border-radius:14px;border:1px solid #e5e3f0;min-width:170px}.teacher-stats strong{display:block;font-size:24px;color:#6233b3}.teacher-table-wrap{overflow:auto;padding:10px}.teacher-table{border-collapse:collapse;width:100%;text-align:left}.teacher-table th,.teacher-table td{padding:14px;border-bottom:1px solid #e5e5ef;white-space:nowrap}.teacher-table th{background:#f7f4ff}.teacher-table button{border:1px solid #cfc6e8;border-radius:8px;background:#fff;padding:7px 10px;cursor:pointer}.attempt-details{margin:20px 0;padding:24px}.attempt-details pre{overflow:auto;max-height:240px;background:#151c31;color:#eaf1ff;padding:16px;border-radius:10px}.attempt-card{border-top:1px solid #e6e2f3;margin:16px 0;padding:12px 0}#studentPracticeBody[hidden],#teacherData[hidden],#teacherAuth[hidden],#studentAttempts[hidden]{display:none!important}@media(max-width:700px){.gate-form{grid-template-columns:1fr}.student-gate{padding:20px!important}.teacher-stats{flex-wrap:wrap}}
+</style>
+<!-- FA_EDITOR_V17: dependências do editor com numeração de linhas -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<style>
+/* FA_EDITOR_V17: gutter e editor do mesmo tamanho do campo anterior */
+.lesson-code-editor .CodeMirror {height: 100%;min-height: 560px;width:100%;font: 13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;background:#171d31;color:#e1e8fd}
+.lesson-code-editor .CodeMirror-gutters {background:#12192b;border-right:1px solid #38425b}
+.lesson-code-editor .CodeMirror-linenumber {color:#94a3b8;padding:0 7px}
+.lesson-code-editor .CodeMirror-lines {padding:15px 0}
+.lesson-code-editor .CodeMirror-activeline-background {background:rgba(100,116,139,.13)}
+.lesson-code-editor .CodeMirror-scroll {min-height:560px}
+/* O campo fonte permanece no DOM para os recursos de validação e salvamento. */
+.lesson-code-editor:has(.CodeMirror) > #lessonCodeHighlight {display:none}
+.lesson-code-editor:has(.CodeMirror) > #lessonCode {display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Frontend Frameworks na Prática</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">◫ Aprender</button><button data-view="practice">☷ Praticar</button><button data-view="teacher">▤ Resultados do professor</button></nav><div class="headright">Ana Arrais · 2026</div></header>
+<main class="app">
+<section id="view-learn" class="view active"><div class="intro"><div class="introhero"><span class="pill">APRENDA • PRATIQUE • EVOLUA</span><h1>Entenda o framework.<br>Depois, resolva desafios.</h1><p>Conheça três abordagens para construir interfaces: componentes prontos no Bootstrap, linguagem Material Design no Materialize e estilização por utilitários no Tailwind. Aplique os conceitos em exercícios interativos e acompanhe sua pontuação.</p><button class="btn primary" data-view="practice">Começar os exercícios →</button></div><div class="introgrid"><article class="introcard"><div class="logo" style="color:#7952b3"><span class="fw-logo bs-logo">B</span> Bootstrap</div><h2>Componentes prontos</h2><p>Framework com grid, formulários, navegação e componentes estilizados. Útil quando é importante desenvolver rapidamente uma interface consistente.</p><div class="meta"><b>Vantagem:</b> ecossistema abrangente.<br><b>Atenção:</b> personalizações exigem cuidado com os padrões do tema.</div><p><a href="https://getbootstrap.com/docs/5.3/" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article><article class="introcard"><div class="logo" style="color:#0ea5ae"><span class="fw-logo tw-logo">〰</span> Tailwind CSS</div><h2>Utility-first</h2><p>Classes pequenas compõem diretamente a aparência da interface. É flexível para produtos com identidade visual própria.</p><div class="meta"><b>Vantagem:</b> controle granular.<br><b>Atenção:</b> não oferece todos os componentes interativos prontos.</div><p><a href="https://tailwindcss.com/docs" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article><article class="introcard"><div class="logo" style="color:#f06275"><span class="fw-logo mz-logo">M</span> Materialize</div><h2>Baseado em Material Design</h2><p>Oferece grid, cores, botões, cards e componentes com estética inspirada nas diretrizes de Material Design.</p><div class="meta"><b>Vantagem:</b> experiência visual consistente.<br><b>Atenção:</b> a linguagem visual pode exigir ajustes para produtos muito personalizados.</div><p><a href="https://materializecss.com/" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article></div></div></section>
+<section id="view-create" class="view"><div class="pagehead"><div><h1>Criar página <span id="fwPill" class="pill">Bootstrap</span></h1><p>Monte sua interface visualmente. Selecione os componentes para editar e compreender o código.</p></div><div class="toolbar"><button class="btn" id="undoBtn">↶ Desfazer</button><button class="btn" id="redoBtn">↷ Refazer</button><button class="btn" id="clearBtn">♲ Limpar</button><button class="btn" id="exportBtn">↓ Exportar HTML</button><button class="btn primary" id="saveBtn">▣ Salvar</button></div></div><div id="workspaceMount"></div></section>
+<section id="view-practice" class="view">
+<div class="practice-v7">
+<div id="studentGate" class="student-gate panel">
+  <div class="gate-icon">🎓</div><h2>Identificação do aluno</h2>
+  <p>Informe seus dados para iniciar. As tentativas e pontuações serão registradas no banco PostgreSQL.</p>
+  <form id="studentRegisterForm" class="gate-form">
+    <label>Nome completo<input id="registerName" name="name" required minlength="3" maxlength="120" placeholder="Seu nome completo"></label>
+    <label>Matrícula<input id="registerEnrollment" name="enrollment" required minlength="3" maxlength="48" placeholder="Sua matrícula"></label>
+    <label>Curso<input id="registerCourse" name="course" required minlength="2" maxlength="120" placeholder="Ex.: Análise e Desenvolvimento de Sistemas"></label>
+    <button class="btn primary" type="submit">Entrar no laboratório →</button>
+  </form><p id="registrationMessage" class="gate-message" role="status"></p>
+</div>
+<div id="studentPracticeBody" hidden>
+  <div class="practice-intro"><div><span class="pill">LABORATÓRIO DE EXERCÍCIOS</span><h1>Pratique e veja o resultado</h1></div><div class="student-profile"><div><strong id="studentIdentity">Aluno</strong><br><small id="studentCourse"></small></div><input id="studentName" type="hidden"><div class="student-score"><strong id="practiceDone">0/14</strong><span>concluídos</span><strong id="studentScore">0 pontos</strong></div><small>Pontuação registrada no PostgreSQL.</small></div></div>
+  <div class="practice-shell">
+    <aside class="panel practice-lessons"><h3>Conteúdo prático</h3><p class="muted">Selecione um exercício</p><div id="lessonList"></div><div class="practice-note">💡 Escolha Bootstrap, Tailwind ou Materialize. O editor adapta o exemplo ao framework selecionado.</div></aside>
+    <div class="practice-main">
+      <div class="panel practice-challenge"><div class="practice-challenge-top"><span class="pill" id="lessonNumber">Exercício 01</span><span id="practiceFrameworkLogo" class="practice-fw-logo">B</span><select id="lessonFramework" aria-label="Framework do exercício"><option value="bootstrap">Bootstrap</option><option value="tailwind">Tailwind CSS</option><option value="materialize">Materialize</option></select></div><h2 id="lessonTitle">Menu de navegação</h2><p id="lessonBrief"></p><div id="lessonNavOptions" class="lesson-nav-options"><div><strong>Tipo de navegação</strong><small>Escolha um modelo. No celular, os links podem ficar ocultos: o botão ☰ deve abrir e fechar o menu.</small></div><div class="nav-variant-controls" role="group" aria-label="Tipo de menu"><button type="button" data-nav-variant="top" class="active">☰ Menu superior</button><button type="button" data-nav-variant="side">▤ Menu lateral</button></div></div>
+        <section class="lesson-target" aria-label="Exemplo de código do framework">
+          <div class="lesson-target-header"><div><strong>⌘ Exemplo de código comentado</strong><p>Estude a estrutura e as classes do framework. Use este exemplo como referência para resolver a atividade abaixo.</p></div><div class="reference-toolbar"><span class="lesson-target-badge" id="lessonTargetFramework">Materialize</span><button type="button" class="btn" id="lessonCopyExample">⧉ Copiar exemplo</button><button type="button" class="btn" id="lessonCompactReference" title="Reduzir ou expandir código de referência">↕ Reduzir referência</button></div></div>
+          <div class="lesson-target-stage"><pre id="lessonExampleCode" aria-label="Código de exemplo comentado"></pre></div>
+          <div class="lesson-target-footer"><span>Exemplo didático; a atividade é realizada no editor abaixo.</span><span class="example-notice">Exemplo para estudo · produza sua própria solução</span></div>
+        </section>
+        <div class="mission-title">✅ Desafios para concluir esta atividade</div><div id="lessonRequirements" class="lesson-requirements"></div><div class="lesson-actions"><button class="btn" id="lessonHint">💡 Orientação passo a passo</button><button class="btn" id="lessonClassGuide">🎨 Cores, textos e espaçamentos</button><a id="lessonDocs" href="https://getbootstrap.com/docs/5.3/" target="_blank" rel="noopener">Documentação oficial ↗</a></div><div id="lessonTip" class="lesson-tip hidden" aria-live="polite"></div></div>
+      <div class="practice-editor-grid"><section class="panel practice-editor"><div class="practice-editor-head"><strong>✎ Seu código HTML</strong><div class="inline"><button class="btn" id="lessonReset">Restaurar</button><button class="btn primary" id="lessonRun">▶ Executar</button></div></div><div class="lesson-code-editor"><pre id="lessonCodeHighlight" aria-hidden="true"></pre><textarea spellcheck="false" id="lessonCode" aria-label="Editor de HTML do exercício" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div><div class="practice-editor-foot">Edite HTML e classes CSS. <b>Ctrl + Enter</b> executa o código.</div></section><section class="panel practice-result"><div class="practice-editor-head"><strong>◉ Resultado da sua página</strong><div class="preview-tools"><button type="button" class="preview-device active" data-lesson-device="desktop">▣ Desktop</button><button type="button" class="preview-device" data-lesson-device="tablet">▯ Tablet</button><button type="button" class="preview-device" data-lesson-device="mobile">▯ Celular</button><button class="btn primary" id="lessonMaxPreview">⛶ Tela cheia</button></div></div><div class="preview-viewport" id="lessonPreviewViewport"><div class="preview-frame-wrap" id="lessonFrameWrap" data-device="desktop"><iframe id="lessonFrame" title="Resultado do exercício" sandbox="allow-scripts allow-modals"></iframe></div></div><div class="practice-editor-foot">Veja a página inteira em <b>Tela cheia</b> e alterne entre desktop, tablet e celular. Role a página dentro da prévia.</div></section></div>
+      <div class="panel practice-feedback"><div><h3>Verifique seu exercício</h3><p id="lessonFeedback" class="muted">Execute e clique em Verificar para analisar os requisitos.</p></div><div class="inline"><button class="btn primary" id="lessonCheck">✓ Verificar resposta</button><button class="btn" id="lessonNext">Próximo exercício →</button></div><div id="lessonChecks" class="lesson-checks"></div><div id="lessonDiagnostics" class="lesson-diagnostics" aria-live="polite"></div></div>
+    </div>
+  </div>
+</div></div></section>
+<section id="view-teacher" class="view">
+  <div class="teacher-page"><div class="teacher-heading"><div><span class="pill">ACESSO DO PROFESSOR</span><h1>Resultados da turma</h1><p>Consulte matrícula, curso, pontuação e histórico de tentativas dos alunos.</p></div></div>
+  <div id="teacherAuth" class="panel teacher-login"><h2>Entrar como professor</h2><p>Utilize a senha configurada no servidor.</p><form id="teacherLoginForm"><label>Senha do professor<input id="teacherPassword" type="password" required autocomplete="current-password"></label><button type="submit" class="btn primary">Acessar resultados</button></form><p id="teacherLoginMessage" role="status"></p></div>
+  <div id="teacherData" hidden><div class="teacher-tools"><input type="search" id="teacherSearch" placeholder="Buscar por nome, matrícula ou curso"><a class="btn" href="/api/teacher/export.csv">↓ Exportar CSV</a><button class="btn" id="teacherRefresh">↻ Atualizar</button><button class="btn" id="teacherLogout">Sair</button></div><div class="teacher-stats" id="teacherSummary"></div><div class="panel teacher-table-wrap"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Pontos</th><th>Exercícios</th><th>Tentativas</th><th>Ações</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
+  </div>
+</section>
+</main><footer class="footer">© 2026 Ana Arrais - Uninassau - Frontend Frameworks 2026</footer>
+<div id="classGuideOverlay" class="classguide-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="classGuideTitle">
+  <div class="classguide-dialog">
+    <div class="classguide-top"><div><h2 id="classGuideTitle">Biblioteca de classes</h2><p>Explore os recursos do framework selecionado. Clique em uma classe para copiá-la.</p></div><button class="btn" id="closeClassGuide">✕ Fechar</button></div>
+    <div class="classguide-toolbar"><div class="classguide-tabs" role="tablist"><button class="active" data-guide-tab="colors">🎨 Cores</button><button data-guide-tab="type">Aa Tipografia e fontes</button><button data-guide-tab="spacing">↔ Espaçamentos</button></div><input id="classGuideSearch" type="search" aria-label="Buscar classe" placeholder="Buscar cor ou classe…"></div>
+    <div id="classGuideContent" class="classguide-content"></div>
+    <div class="classguide-bottom"><span id="guideFrameworkLabel">Materialize</span><a id="guideOfficial" target="_blank" rel="noopener noreferrer">Consultar documentação oficial ↗</a></div>
+  </div>
+</div>
+<div id="overlay" class="fulloverlay hidden"></div>
+<div id="lessonFullPreview" class="preview-fullscreen hidden" role="dialog" aria-modal="true" aria-label="Visualização ampliada da página"><div class="preview-fullscreen-head"><div><strong>Prévia completa da página</strong><div class="muted">Navegue e role dentro da página. Pressione Esc para fechar.</div></div><div class="preview-tools"><button type="button" class="preview-device active" data-full-device="desktop">Desktop</button><button type="button" class="preview-device" data-full-device="tablet">Tablet</button><button type="button" class="preview-device" data-full-device="mobile">Celular</button><button class="btn primary" id="closeFullPreview">✕ Voltar ao editor</button></div></div><div class="preview-viewport"><div class="preview-frame-wrap" id="lessonFullFrameWrap" data-device="desktop"><iframe id="lessonFullFrame" title="Página completa em visualização ampliada" sandbox="allow-scripts allow-modals"></iframe></div></div></div><div id="toast" class="toast hidden" role="status"></div>
+<script>
+'use strict';
+const $=(s,root=document)=>root.querySelector(s), $$=(s,root=document)=>Array.from(root.querySelectorAll(s));
+const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+const attr=esc;
+const hexOk=s=>/^#[\da-fA-F]{6}$/.test(s||'');
+const frameworks=['bootstrap','tailwind','materialize'];
+const names={bootstrap:'Bootstrap',tailwind:'Tailwind CSS',materialize:'Materialize'};
+const docs={bootstrap:'https://getbootstrap.com/docs/5.3/',tailwind:'https://tailwindcss.com/docs/',materialize:'https://materializecss.com/'};
+const ids={navbar:0,hero:0,button:0,card:0,grid:0,input:0,heading:0,alert:0,table:0,footer:0};
+const catalog=[['Estrutura e layout',[['grid','▦','Grid'],['heading','T','Título'],['hero','▣','Seção de destaque']]],['Navegação',[['navbar','☰','Menu de navegação']]],['Conteúdo',[['card','▤','Card'],['alert','⚑','Alerta'],['table','▥','Tabela']]],['Formulários e ações',[['button','▭','Botão'],['input','▤','Campo de texto']]],['Estrutura final',[['footer','▱','Rodapé']]]];
+const componentDocs={navbar:{bootstrap:'components/navbar/',tailwind:'responsive-design',materialize:'navbar.html'},hero:{bootstrap:'layout/containers/',tailwind:'padding',materialize:'grid.html'},button:{bootstrap:'components/buttons/',tailwind:'hover-focus-and-other-states',materialize:'buttons.html'},card:{bootstrap:'components/card/',tailwind:'box-shadow',materialize:'cards.html'},grid:{bootstrap:'layout/grid/',tailwind:'grid-template-columns',materialize:'grid.html'},input:{bootstrap:'forms/form-control/',tailwind:'border-width',materialize:'text-inputs.html'},heading:{bootstrap:'content/typography/',tailwind:'font-size',materialize:'typography.html'},alert:{bootstrap:'components/alerts/',tailwind:'background-color',materialize:'color.html'},table:{bootstrap:'content/tables/',tailwind:'border-collapse',materialize:'table.html'},footer:{bootstrap:'utilities/spacing/',tailwind:'padding',materialize:'footer.html'}};
+const explanations={navbar:'A barra de navegação organiza a identidade e os links da página. A construção e a responsividade diferem entre os frameworks.',hero:'Uma seção de destaque reúne título, descrição e ação principal. É composta por classes de layout, cor e espaçamento.',button:'O botão indica uma ação. É possível mudar texto, cor, ícone e comportamento. Os eventos de clique dependem de JavaScript.',card:'Um card agrupa informações relacionadas. Bootstrap e Materialize têm estruturas prontas; no Tailwind, utiliza-se um conjunto de utilitários.',grid:'O grid organiza colunas responsivas. Bootstrap e Materialize usam um sistema de 12 colunas; Tailwind permite definir colunas utilitárias.',input:'Campos de formulário permitem entrada de dados. Rótulos e atributos HTML continuam necessários para acessibilidade.',heading:'Os títulos definem hierarquia semântica (h1 a h6); as classes controlam a apresentação visual.',alert:'Alertas comunicam avisos e informações importantes. Em Bootstrap há componente próprio; em Tailwind e Materialize este exemplo usa utilitários e cores.',table:'Tabelas organizam dados tabulares em linhas e colunas.',footer:'O rodapé reúne créditos e informações complementares.'};
+const defaultProps={navbar:{brand:'Meu Projeto',links:'Início, Sobre, Serviços, Contato',bg:'#4f2e9c',color:'#ffffff',align:'left',logo:''},hero:{title:'Bem-vindo ao meu site!',description:'Uma página construída com componentes do framework.',bg:'#f3edff',color:'#222044',align:'left'},button:{text:'Saiba mais',icon:'arrow_forward',action:'toast',target:'',message:'Você clicou no botão!',bg:'#673ab7',color:'#ffffff',align:'left'},card:{title:'Meu Card',description:'Adicione informações sobre este conteúdo.',bg:'#ffffff',color:'#202344',align:'left'},grid:{columns:'3',bg:'#ffffff',color:'#202344',align:'center'},input:{label:'Nome completo',placeholder:'Digite seu nome',type:'text',bg:'#ffffff',color:'#202344',align:'left'},heading:{title:'Título da seção',level:'h2',bg:'#ffffff',color:'#202344',align:'left'},alert:{description:'Esta é uma mensagem de exemplo.',bg:'#e6f0ff',color:'#163e7a',align:'left'},table:{title:'Tabela de exemplo',bg:'#ffffff',color:'#202344',align:'left'},footer:{description:'Todos os direitos reservados.',bg:'#3a2577',color:'#ffffff',align:'center'}};
+const createBlock=type=>({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),type,props:structuredClone(defaultProps[type])});
+const fresh=()=>({framework:'bootstrap',pageBg:'#ffffff',blocks:[],selected:null,device:'desktop'});
+let states={create:fresh(),practice:fresh()};let history={create:{past:[],future:[]},practice:{past:[],future:[]}};let mode='create',activeView='learn',codeTab='code',displayOnlySelected=false,librarySearch='',exerciseIndex=0,lastValidation=null,overlayTarget=null;
+const challenges=[{title:'Desafio 01 — Portal acadêmico',description:'Crie uma página institucional com navegação, apresentação, botão e pelo menos dois cards.',requirements:[['navbar','Adicionar menu de navegação',20],['hero','Inserir uma seção de destaque',20],['button','Criar um botão',15],['twoCards','Adicionar dois cards',25],['buttonText','Personalizar o texto do botão',20]]},{title:'Desafio 02 — Formulário de contato',description:'Monte uma página para receber contatos, contendo título, campos de texto e botão de envio.',requirements:[['heading','Inserir título',20],['twoInputs','Adicionar dois campos',30],['button','Adicionar botão de envio',20],['action','Configurar ação do botão',20],['footer','Adicionar rodapé',10]]},{title:'Desafio 03 — Painel de cursos',description:'Organize um catálogo utilizando um grid, cards informativos e uma seção de apresentação.',requirements:[['navbar','Adicionar menu',15],['hero','Adicionar apresentação',15],['grid','Inserir grid',30],['card','Adicionar um card',20],['color','Personalizar cor de algum componente',20]]}];
+function cur(){return states[mode]};
+function syncSelection(s){if(s.selected&&!s.blocks.find(b=>b.id===s.selected))s.selected=null}
+function transact(fn){let s=cur();history[mode].past.push(structuredClone(s));if(history[mode].past.length>70)history[mode].past.shift();history[mode].future=[];fn(s);syncSelection(s);lastValidation=null;render();}
+function undo(){const h=history[mode];if(!h.past.length)return notify('Não há alterações para desfazer.');h.future.push(structuredClone(cur()));states[mode]=h.past.pop();lastValidation=null;render()}
+function redo(){const h=history[mode];if(!h.future.length)return notify('Não há alterações para refazer.');h.past.push(structuredClone(cur()));states[mode]=h.future.pop();lastValidation=null;render()}
+function notify(message){const t=$('#toast');t.textContent=message;t.classList.remove('hidden');clearTimeout(notify.timeout);notify.timeout=setTimeout(()=>t.classList.add('hidden'),3200)}
+function setView(v){activeView=v;mode=v==='practice'?'practice':'create';$$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));$$('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='practice')renderChallenge();if(v!=='learn')render()}
+$$('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+function addBlock(type,at){transact(s=>{let block=createBlock(type);s.blocks.splice(at===undefined?s.blocks.length:at,0,block);s.selected=block.id;})}
+function removeBlock(id){transact(s=>{s.blocks=s.blocks.filter(b=>b.id!==id);s.selected=null})}
+function moveBlock(id,to){transact(s=>{let ix=s.blocks.findIndex(b=>b.id===id);if(ix<0)return;let [b]=s.blocks.splice(ix,1);if(to>ix)to--;s.blocks.splice(Math.max(0,to),0,b);s.selected=id})}
+function updateProp(key,val){let b=cur().blocks.find(b=>b.id===cur().selected);if(!b)return;transact(s=>{s.blocks.find(x=>x.id===b.id).props[key]=val})}
+function chooseFramework(f){transact(s=>s.framework=f)}
+function selectBlock(id){cur().selected=id;render()}
+function delSelected(){if(cur().selected)removeBlock(cur().selected)}
+function diffHTML(){let b=cur().blocks.find(x=>x.id===cur().selected);let kind=b?.type||'página';const examples={navbar:['<code>navbar</code>, <code>navbar-expand</code>, e utilitários para alinhamento; comportamento móvel via Bootstrap JS.','<code>flex</code>, <code>justify-between</code>, <code>bg-*</code>; menu móvel exige lógica ou biblioteca adicional.','<code>nav-wrapper</code>, <code>brand-logo</code>, <code>sidenav</code>; menu móvel inicializado com Materialize JS.'],grid:['<code>row</code> + <code>col-md-*</code>, grade de 12 colunas.','<code>grid</code> + <code>grid-cols-*</code> + <code>md:grid-cols-*</code>.','<code>row</code> + <code>col s12 m6 l4</code>, grade de 12 colunas.'],button:['<code>btn btn-primary</code>; eventos e componentes interativos via JS.','<code>px-*</code>, <code>py-*</code>, <code>bg-*</code>, <code>rounded</code>; comportamento via JS próprio.','<code>btn waves-effect</code>; ícones Material Icons e inicialização de componentes interativos.']};const data=examples[kind]||['Componentes pré-estilizados e classes de layout; estilos e recursos interativos da biblioteca.','Utilitários de cor, tipografia, espaçamento e responsividade; não pressupõe componentes completos.','Componentes pré-estilizados com linguagem Material Design, grid e inicialização JavaScript.'];return `<section class="code-diff"><h4>Entenda as diferenças ${b?'— '+esc(explanations[b.type]||kind):'entre os três frameworks'}</h4><div class="diffgrid">${frameworks.map((f,i)=>`<div class="diffitem"><strong>${names[f]}</strong>${data[i]}<p><a href="${docs[f]+(b?componentDocs[b.type][f]:'')}" target="_blank" rel="noopener noreferrer">Documentação oficial ↗</a></p></div>`).join('')}</div></section>`;}
+function render(){if(mode==='practice')return;const mount=$('#workspaceMount');if(!mount)return;mount.innerHTML=workspaceHTML();bindWorkspace(mount);$('#fwPill').textContent=names[cur().framework];$('#undoBtn').disabled=!history.create.past.length;$('#redoBtn').disabled=!history.create.future.length}
+let focusCanvasMode=false;
+function workspaceHTML(){return `<div class="workspace ${typeof focusCanvasMode!=='undefined'&&focusCanvasMode?'focus-mode':''}" data-mode="${mode}"><aside class="panel library"><div class="panelhead">Componentes ${esc(names[cur().framework])}</div><input class="search" id="componentSearch" placeholder="⌕ Buscar componente..." value="${attr(librarySearch)}"><div id="componentList">${catalogHTML()}</div><div class="libhint">💡 <b>Dica:</b> clique ou arraste um componente para a página. O código e a documentação serão atualizados automaticamente.</div></aside><section class="center"><div class="panel canvaspanel"><div class="canvasbar"><div class="frameworkrow">${frameworks.map(f=>`<button class="fwbtn ${cur().framework===f?'selected':''}" data-fw="${f}">${names[f]}</button>`).join('')}</div><div class="inline"><div class="devices">${[['desktop','▣'],['tablet','▯'],['mobile','▮']].map(([v,icon])=>`<button title="${v}" class="device ${cur().device===v?'active':''}" data-device="${v}">${icon}</button>`).join('')}</div><button class="btn" id="toggleCanvasFocus" title="Ocultar painéis laterais e ampliar a página">${focusCanvasMode?'⇤ Mostrar painéis':'⛶ Foco na página'}</button><button class="btn" data-max="preview" title="Maximizar prévia">⛶</button></div></div><div class="canvasouter" id="canvasOuter"><div class="canvas ${cur().device==='desktop'?'':cur().device}" id="designCanvas" style="background:${hexOk(cur().pageBg)?cur().pageBg:'#fff'}">${canvasHTML()}</div></div><div class="inline" style="justify-content:space-between;margin-top:11px"><span class="muted">${cur().blocks.length} componentes · ${names[cur().framework]}</span><div class="inline"><button class="smallbtn" data-add="hero">+ Adicionar seção</button><button class="smallbtn" data-max="preview">⛶ Tela cheia</button></div></div></div></section><aside class="panel props">${propsHTML()}</aside><section class="panel codepanel"><div class="tabs"><button class="tab ${codeTab==='code'?'active':''}" data-codetab="code">⌨ Código gerado</button><button class="tab ${codeTab==='explain'?'active':''}" data-codetab="explain">ⓘ Entenda o componente</button><button class="tab ${codeTab==='refs'?'active':''}" data-codetab="refs">↗ Documentação</button></div>${codeHTML()}</section></div>`}
+function catalogHTML(){return catalog.map(([group,items])=>{let filtered=items.filter(([type,,label])=>(label+' '+type).toLowerCase().includes(librarySearch.toLowerCase()));if(!filtered.length)return '';return `<div class="sectionlabel">${group}</div><div class="componentgrid">${filtered.map(([type,icon,label])=>`<button draggable="true" data-add="${type}" class="comp" title="Arraste para a página ou clique"><span>${icon}</span><strong>${label}</strong></button>`).join('')}</div>`}).join('')||'<p class="muted">Nenhum componente encontrado.</p>'}
+function canvasHTML(){let blocks=cur().blocks;if(!blocks.length)return `<div class="empty"><div class="large">▧</div><h3>Sua página começa aqui</h3><p>Adicione componentes pela biblioteca à esquerda. Depois, selecione um elemento para editar.</p><button class="btn primary" data-add="navbar">+ Começar pelo menu</button></div><div class="dropzone" data-drop="0"></div>`;return blocks.map((b,i)=>`<div class="dropzone" data-drop="${i}"></div><div class="block ${cur().selected===b.id?'selected':''}" draggable="true" data-block="${attr(b.id)}"><div class="blocktools"><button title="Mover acima" data-up="${attr(b.id)}">↑</button><button title="Duplicar" data-dup="${attr(b.id)}">⧉</button><button title="Excluir" data-del="${attr(b.id)}">✕</button></div>${previewBlock(b)}<button class="select-helper" data-edit="${attr(b.id)}">✎ Editar</button></div>`).join('')+`<div class="dropzone" data-drop="${blocks.length}"></div>`}
+function previewBlock(b){let p=b.props, bg=hexOk(p.bg)?p.bg:'#fff', color=hexOk(p.color)?p.color:'#202344',al=p.align||'left';switch(b.type){case'navbar':return `<div class="canvasnav" style="background:${bg};color:${color}"><b>${p.logo?`<img src="${attr(p.logo)}" style="max-width:60px;max-height:35px;vertical-align:middle" alt="Logo">`:''} ${esc(p.brand)}</b><div class="links">${String(p.links).split(',').slice(0,5).map(s=>`<a href="#" class="demo-link">${esc(s.trim())}</a>`).join('')}</div></div>`;case'hero':return `<div class="canvashero" style="background:${bg};color:${color};text-align:${al}"><h1>${esc(p.title)}</h1><p style="margin-left:${al==='center'?'auto':'0'};margin-right:${al==='center'?'auto':'0'}">${esc(p.description)}</p></div>`;case'button':return `<div style="padding:20px;text-align:${al}"><button class="canvasbutton" data-preview-action="${attr(b.id)}" style="background:${bg};color:${color}">${p.icon?`<span>${p.icon==='arrow_forward'?'➜':p.icon==='send'?'➤':p.icon==='favorite'?'♥':p.icon==='download'?'↓':p.icon==='search'?'⌕':'★'}</span>`:''}${esc(p.text)}</button></div>`;case'card':return `<article class="canvascard" style="background:${bg};color:${color};text-align:${al}"><h3 style="margin:0 0 8px">${esc(p.title)}</h3><p style="margin:0;line-height:1.5">${esc(p.description)}</p></article>`;case'grid':return `<div class="canvasgrid" style="grid-template-columns:repeat(${Math.max(1,Math.min(4,Number(p.columns)||3))},1fr);background:${bg};color:${color}">${Array.from({length:Math.max(1,Math.min(4,Number(p.columns)||3))},(_,i)=>`<div>Coluna ${i+1}</div>`).join('')}</div>`;case'input':return `<div class="canvasfield" style="color:${color}"><label>${esc(p.label)}<input type="${p.type==='email'?'email':'text'}" placeholder="${attr(p.placeholder)}"></label></div>`;case'heading':return `<h2 class="canvastitle" style="background:${bg};color:${color};text-align:${al}">${esc(p.title)}</h2>`;case'alert':return `<div class="canvasalert" style="background:${bg};color:${color};text-align:${al}">ⓘ ${esc(p.description)}</div>`;case'table':return `<div style="background:${bg};color:${color}"><table class="canvastable"><thead><tr><th>Curso</th><th>Status</th></tr></thead><tbody><tr><td>Front-end</td><td>Ativo</td></tr><tr><td>Design</td><td>Concluído</td></tr></tbody></table></div>`;case'footer':return `<div class="canvasfooter" style="background:${bg};color:${color};text-align:${al}">${esc(p.description)}</div>`;default:return ''}}
+function field(key,label,value,type='text',options){if(type==='select')return `<div class="field"><label>${label}</label><select data-prop="${key}">${options.map(([v,t])=>`<option value="${attr(v)}" ${String(v)===String(value)?'selected':''}>${esc(t)}</option>`).join('')}</select></div>`;if(type==='color')return `<div class="field"><label>${label}</label><div class="colorline"><input type="color" data-prop="${key}" value="${hexOk(value)?value:'#ffffff'}"><input type="text" data-prop="${key}" value="${attr(value)}"></div></div>`;if(type==='textarea')return `<div class="field"><label>${label}</label><textarea data-prop="${key}">${esc(value)}</textarea></div>`;return `<div class="field"><label>${label}</label><input type="${type}" data-prop="${key}" value="${attr(value)}"></div>`}
+function propsHTML(){let s=cur(),b=s.blocks.find(x=>x.id===s.selected);if(!b)return `<h3>⚙ Propriedades da página</h3>${field('pageBg','Cor de fundo da página',s.pageBg,'color')}<div class="propsEmpty"><div style="font-size:35px">☞</div><b>Selecione um componente</b><br>Ao clicar em um elemento, suas opções aparecerão aqui.</div><div class="help"><strong>Sobre o framework</strong>${names[s.framework]} utiliza suas próprias classes e convenções. A troca de framework atualiza o código, mas mantém o conteúdo da página.<a href="${docs[s.framework]}" target="_blank" rel="noopener">Consultar documentação ↗</a></div>`;let p=b.props;let title=catalog.flatMap(g=>g[1]).find(x=>x[0]===b.type)?.[2]||b.type;let fields='';if('title'in p)fields+=field('title','Título',p.title);if('brand'in p)fields+=field('brand','Nome / marca',p.brand);if('logo'in p)fields+=field('logo','URL da logo (https://...)',p.logo);if('links'in p)fields+=field('links','Links (separados por vírgula)',p.links);if('description'in p)fields+=field('description','Descrição',p.description,'textarea');if('text'in p)fields+=field('text','Texto do botão',p.text);if('label'in p)fields+=field('label','Rótulo do campo',p.label);if('placeholder'in p)fields+=field('placeholder','Placeholder',p.placeholder);if('columns'in p)fields+=field('columns','Colunas',p.columns,'select',[[1,'1 coluna'],[2,'2 colunas'],[3,'3 colunas'],[4,'4 colunas']]);if('level'in p)fields+=field('level','Nível do título',p.level,'select',[['h1','H1'],['h2','H2'],['h3','H3']]);if('type'in p)fields+=field('type','Tipo de campo',p.type,'select',[['text','Texto'],['email','E-mail']]);if('icon'in p)fields+=field('icon','Ícone',p.icon,'select',[['','Sem ícone'],['arrow_forward','Seta'],['send','Enviar'],['favorite','Coração'],['download','Download'],['search','Buscar'],['star','Estrela']]);if('action'in p)fields+=field('action','Ação do botão',p.action,'select',[['toast','Mostrar mensagem'],['scroll','Ir até uma seção'],['modal','Abrir janela de aviso'],['none','Sem ação']]);if('message'in p&&p.action==='toast')fields+=field('message','Texto da mensagem',p.message);if('target'in p&&p.action==='scroll')fields+=field('target','Identificador do destino',p.target);if('bg'in p)fields+=field('bg','Cor de fundo',p.bg,'color');if('color'in p)fields+=field('color','Cor do texto',p.color,'color');if('align'in p)fields+=field('align','Alinhamento',p.align,'select',[['left','Esquerda'],['center','Centro'],['right','Direita']]);return `<h3>⚙ ${esc(title)}</h3>${fields}<div class="inline"><button class="btn" data-delete-selected>Excluir componente</button></div><div class="help" style="margin-top:16px"><strong>Entenda este componente</strong>${esc(explanations[b.type])}<a href="${docs[s.framework]+componentDocs[b.type][s.framework]}" target="_blank" rel="noopener">Documentação ${names[s.framework]} ↗</a></div>`}
+function currentSources(){const s=cur(),blocks=s.selected&&displayOnlySelected?s.blocks.filter(x=>x.id===s.selected):s.blocks;return Object.fromEntries(frameworks.map(f=>[f,displayOnlySelected && s.selected ? generateBlock(blocks[0],f) : generateCompleteHTML(s,f)]))}
+function codeHTML(){let s=cur(),b=s.blocks.find(x=>x.id===s.selected);if(codeTab==='explain')return `<div class="docbody"><h3>${b?'Componente selecionado: '+esc(b.type):'Como o editor funciona'}</h3><p>${b?esc(explanations[b.type]):'Selecione um componente na página para ver sua explicação. O código é produzido com regras específicas para cada framework. O documento gerado inclui DOCTYPE, head, body, CDN, comentários e scripts necessários.'}</p><p><b>Código e classes:</b> a estrutura HTML define o conteúdo; as classes do framework controlam apresentação, espaçamento e responsividade. Eventos interativos precisam de JavaScript.</p><p class="muted">Cores muito específicas podem exigir CSS adicional; o gerador sinaliza isso nos comentários.</p></div>`;if(codeTab==='refs')return `<div class="docbody"><h3>Documentação oficial</h3><p>Referências para estudar os componentes utilizados:</p>${frameworks.map(f=>`<p><a href="${docs[f]+(b?componentDocs[b.type][f]:'')}" target="_blank" rel="noopener">${names[f]} — ${b?esc(b.type):'documentação geral'} ↗</a></p>`).join('')}</div>`;let src=currentSources();return `<div class="codewrap"><div class="codebar"><h3>${displayOnlySelected&&s.selected?'Trecho do componente selecionado':'Documento HTML completo'} <span class="muted">· As 3 versões estão disponíveis</span></h3><div class="inline"><label class="muted"><input id="onlySelected" type="checkbox" ${displayOnlySelected?'checked':''} ${!s.selected?'disabled':''}> Ver só o componente</label><button class="btn" data-max="code">⛶ Maximizar código</button></div></div><p class="codeintro">Código completo, responsivo e preparado para executar no navegador: estrutura HTML, dependências, seções, classes do framework e JavaScript comentado. Selecione “Ver só o componente” para estudar um bloco isoladamente.</p><div class="codegrid">${frameworks.map(f=>`<div class="codeslot"><div class="codetitle"><span>${names[f]}</span><button data-copy="${f}">Copiar</button></div><pre class="codebox"><code>${highlight(src[f])}</code></pre></div>`).join('')}</div>${diffHTML()}</div>`}
+function highlight(code){
+  // Destaque por tokens: não modifica HTML já colorido (evita tags quebradas).
+  const escapeToken = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(code).split(/(<!--[\s\S]*?-->|<!DOCTYPE[^>]*>|<\/?[a-zA-Z][^>]*>)/gi).map(token=>{
+    if(token.startsWith('<!--')) return '<span class="cm">'+escapeToken(token)+'</span>';
+    if(/^<!doctype/i.test(token)) return '<span class="doctype">'+escapeToken(token)+'</span>';
+    if(/^<\/?[a-zA-Z]/.test(token)) {
+      const match=token.match(/^(<\/?)([\w:-]+)([\s\S]*?)(\/?>)$/);
+      if(!match) return escapeToken(token);
+      const attrs=match[3].split(/(\s+[\w:-]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))/g).map(part=>{
+        const a=part.match(/^(\s+)([\w:-]+)(\s*=\s*)([\s\S]*)$/);
+        return a ? escapeToken(a[1])+'<span class="att">'+escapeToken(a[2])+'</span>'+escapeToken(a[3])+'<span class="str">'+escapeToken(a[4])+'</span>' : escapeToken(part);
+      }).join('');
+      return '<span class="tag">'+escapeToken(match[1]+match[2])+'</span>'+attrs+'<span class="tag">'+escapeToken(match[4])+'</span>';
+    }
+    return escapeToken(token);
+  }).join('');
+}
+
+function generate(s,f,blocks){let start=`<!-- Framework Academy | ${names[f]} -->\n<!-- Referência: ${docs[f]} -->\n`;if(!blocks.length)return start+'<!-- Página vazia: adicione componentes no editor para começar. -->';let parts=blocks.map(b=>generateBlock(b,f));let end='';if(f==='bootstrap'){start+='<!-- Bootstrap 5: incluir CSS e JS no documento final -->\n';end='\n<!-- JS de Bootstrap: necessário para os componentes interativos -->'}if(f==='materialize'){start+='<!-- Materialize: incluir CSS, JavaScript e Material Icons -->\n';end='\n<!-- Inicialize componentes interativos: M.AutoInit() após carregar o HTML -->'}if(f==='tailwind')start+='<!-- Tailwind: projeto de produção usa build e classes utilitárias -->\n';return start+'\n'+parts.join('\n\n')+end}
+// Utilitário compartilhado: estilos escolhidos visualmente nos três frameworks.
+function customStyle(p, f){
+  const parts=[];
+  if(hexOk(p.bg)) parts.push('background-color: '+p.bg);
+  if(hexOk(p.color)) parts.push('color: '+p.color);
+  if(['left','center','right'].includes(p.align)) parts.push('text-align: '+p.align);
+  return parts.join('; ');
+}
+function generateBlock(b,f){let p=b.props,t=b.type;const style=customStyle(p,f);const sty=style?` style="${style}"`:'';const E=esc;let comment=`<!-- ${t.toUpperCase()}: ${explanations[t]} -->\n<!-- Referência: ${docs[f]+componentDocs[t][f]} -->\n`;let c='',out='';switch(t){case'navbar':{const links=String(p.links).split(',').map(x=>x.trim()).filter(Boolean);if(f==='bootstrap')out=`<nav class="navbar navbar-expand-lg navbar-dark"${sty}>\n  <div class="container">\n    <a class="navbar-brand" href="#">${E(p.brand)}</a>\n    <ul class="navbar-nav ms-auto">\n${links.map(x=>`      <li class="nav-item"><a class="nav-link" href="#">${E(x)}</a></li>`).join('\n')}\n    </ul>\n  </div>\n</nav>`;else if(f==='materialize')out=`<nav${sty}>\n  <div class="nav-wrapper container">\n    <a class="brand-logo" href="#">${E(p.brand)}</a>\n    <ul class="right hide-on-med-and-down">\n${links.map(x=>`      <li><a href="#">${E(x)}</a></li>`).join('\n')}\n    </ul>\n  </div>\n</nav>`;else out=`<nav class="p-4 text-white"${sty}>\n  <div class="mx-auto max-w-6xl flex items-center justify-between">\n    <a class="text-xl font-bold" href="#">${E(p.brand)}</a>\n    <div class="flex gap-5">\n${links.map(x=>`      <a href="#">${E(x)}</a>`).join('\n')}\n    </div>\n  </div>\n</nav>`;if(p.logo)out+='\n<!-- Logo: insira <img src="URL_DA_LOGO" alt="Logo"> ao lado da marca. -->';break}
+case'hero':{if(f==='bootstrap')out=`<section class="py-5"${sty}>\n  <div class="container">\n  <h1 class="display-5 fw-bold">${E(p.title)}</h1>\n  <p class="lead">${E(p.description)}</p>\n  </div>\n</section>`;else if(f==='materialize')out=`<section class="section"${sty}>\n  <div class="container">\n    <h3>${E(p.title)}</h3>\n    <p class="flow-text">${E(p.description)}</p>\n  </div>\n</section>`;else out=`<section class="px-6 py-12"${sty}>\n  <div class="mx-auto max-w-6xl">\n  <h1 class="text-4xl font-bold mb-3">${E(p.title)}</h1>\n  <p class="text-lg">${E(p.description)}</p>\n  </div>\n</section>`;break}
+case'button':{let icon=p.icon?`<!-- Ícone solicitado: ${E(p.icon)}. Inclua biblioteca de ícones compatível. -->\n`:'';let action=p.action==='toast'?`<!-- Ação: executar mensagem '${E(p.message)}' com JavaScript -->\n`:p.action==='scroll'?`<!-- Ação: navegar até a seção #${E(p.target||'destino')} -->\n`:p.action==='modal'?'<!-- Ação: abrir modal (exige componente e JS) -->\n':'<!-- Sem ação configurada -->\n';if(f==='bootstrap')out=`<button type="button" id="acao-${E(b.id)}" class="btn btn-primary"${sty}>${E(p.text)}</button>`;else if(f==='materialize')out=`<button type="button" id="acao-${E(b.id)}" class="btn waves-effect waves-light"${sty}>${p.icon?`<i class="material-icons left">${E(p.icon)}</i>`:''}${E(p.text)}</button>`;else out=`<button type="button" id="acao-${E(b.id)}" class="px-5 py-3 rounded font-semibold text-white"${sty}>${E(p.text)}</button>`;out=icon+action+out;break}
+case'card':{if(f==='bootstrap')out=`<div class="card shadow-sm"${sty}>\n  <div class="card-body">\n    <h5 class="card-title">${E(p.title)}</h5>\n    <p class="card-text">${E(p.description)}</p>\n  </div>\n</div>`;else if(f==='materialize')out=`<div class="card"${sty}>\n  <div class="card-content">\n    <span class="card-title">${E(p.title)}</span>\n    <p>${E(p.description)}</p>\n  </div>\n</div>`;else out=`<article class="p-6 rounded-lg shadow-md border"${sty}>\n  <h3 class="font-bold text-xl">${E(p.title)}</h3>\n  <p>${E(p.description)}</p>\n</article>`;break}
+case'grid':{
+  let n=Math.min(4,Math.max(1,Number(p.columns)||3));
+  const items=Array.from({length:n},(_,i)=>i+1);
+  // As colunas têm cartões visíveis para demonstrar a distribuição espacial.
+  if(f==='bootstrap')out=`<!-- Container, row e col: grid responsivo de 12 colunas -->\n<section class="container py-4">\n  <div class="row g-3">\n${items.map(i=>`    <div class="col-12 col-md-${12/n}">\n      <div class="p-4 border rounded bg-light text-center">Coluna ${i}</div>\n    </div>`).join('\n')}\n  </div>\n</section>`;
+  else if(f==='materialize')out=`<!-- container e row: largura centralizada e linha responsiva -->\n<section class="container section">\n  <div class="row">\n${items.map(i=>`    <div class="col s12 m${12/n}">\n      <div class="card-panel grey lighten-4 center-align">Coluna ${i}</div>\n    </div>`).join('\n')}\n  </div>\n</section>`;
+  else out=`<!-- grid-cols-1: celular | md:grid-cols-${n}: telas médias e maiores -->\n<section class="mx-auto max-w-6xl px-6 py-6">\n  <div class="grid grid-cols-1 md:grid-cols-${n} gap-4">\n${items.map(i=>`    <div class="rounded-lg bg-gray-100 border border-gray-200 p-6 text-center">Coluna ${i}</div>`).join('\n')}\n  </div>\n</section>`;
+  break;
+}
+case'input':{if(f==='bootstrap')out=`<div class="mb-3">\n  <label for="campo" class="form-label">${E(p.label)}</label>\n  <input id="campo" type="${E(p.type)}" class="form-control" placeholder="${E(p.placeholder)}">\n</div>`;else if(f==='materialize')out=`<div class="input-field">\n  <input id="campo" type="${E(p.type)}" placeholder="${E(p.placeholder)}">\n  <label class="active" for="campo">${E(p.label)}</label>\n</div>`;else out=`<div class="mb-4">\n  <label for="campo" class="block mb-1">${E(p.label)}</label>\n  <input id="campo" type="${E(p.type)}" class="border rounded p-2 w-full" placeholder="${E(p.placeholder)}">\n</div>`;break}
+case'heading':{let lvl=['h1','h2','h3'].includes(p.level)?p.level:'h2';let cl=f==='bootstrap'?'text-center':f==='materialize'?'center-align':'text-2xl font-bold';out=`<${lvl} class="${cl}"${sty}>${E(p.title)}</${lvl}>`;break}
+case'alert':out=f==='bootstrap'?`<div class="alert alert-info" role="alert"${sty}>${E(p.description)}</div>`:f==='materialize'?`<div class="card-panel blue lighten-5"${sty}>${E(p.description)}</div>`:`<div class="bg-blue-100 text-blue-900 p-4 rounded" role="alert"${sty}>${E(p.description)}</div>`;break;
+case'table':out=f==='bootstrap'?`<table class="table table-striped"><thead><tr><th>Curso</th><th>Status</th></tr></thead><tbody><tr><td>Front-end</td><td>Ativo</td></tr></tbody></table>`:f==='materialize'?`<table class="striped"><thead><tr><th>Curso</th><th>Status</th></tr></thead><tbody><tr><td>Front-end</td><td>Ativo</td></tr></tbody></table>`:`<table class="w-full border-collapse"><thead><tr><th class="p-2 border-b">Curso</th><th class="p-2 border-b">Status</th></tr></thead><tbody><tr><td class="p-2">Front-end</td><td class="p-2">Ativo</td></tr></tbody></table>`;break;
+case'footer':out=f==='bootstrap'?`<footer class="py-4 text-center"${sty}><div class="container">${E(p.description)}</div></footer>`:f==='materialize'?`<footer class="page-footer"${sty}><div class="container center-align" style="padding:18px 0">${E(p.description)}</div></footer>`:`<footer class="py-6 text-center"${sty}><div class="mx-auto max-w-6xl">${E(p.description)}</div></footer>`;break;}
+return comment+out}
+function indentBlock(input, spaces=4){
+  return String(input).split('\n').map(line=>' '.repeat(spaces)+line).join('\n');
+}
+function htmlSafeText(t){return String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function componentNotes(type,f){
+  const note={
+    navbar:{bootstrap:['navbar: barra de navegação','navbar-expand-lg: expande no desktop','navbar-brand: identificação da marca','navbar-nav: grupo de links'],materialize:['nav-wrapper: conteúdo interno do menu','brand-logo: identidade visual','right: alinha os links à direita','hide-on-med-and-down: oculta links no celular'],tailwind:['flex: organiza os itens em linha','justify-between: separa logo e navegação','items-center: centraliza verticalmente','gap-5: espaço entre os links']},
+    hero:{bootstrap:['container: largura centralizada','py-5: espaçamento vertical','display-5: tamanho do título','lead: destaque para o subtítulo'],materialize:['section: espaçamento vertical','container: largura centralizada','flow-text: texto com tamanho adaptável'],tailwind:['px-6 e py-12: espaçamento interno','text-4xl: tamanho do título','font-bold: peso da fonte']},
+    grid:{bootstrap:['container: centraliza conteúdo','row: cria a linha','col-12: largura total no celular','col-md-*: colunas em telas médias'],materialize:['container: área centralizada','row: linha de 12 colunas','col s12: 12 colunas no celular','m*: largura em telas médias'],tailwind:['grid: ativa CSS Grid','grid-cols-1: uma coluna no celular','md:grid-cols-*: colunas no desktop','gap-4: espaçamento entre elementos']},
+    button:{bootstrap:['btn: estilo padrão do botão','btn-primary: variante de cor principal'],materialize:['btn: botão padrão','waves-effect: efeito visual de clique','waves-light: efeito claro'],tailwind:['px-5 e py-3: espaçamento interno','rounded: cantos arredondados','font-semibold: texto destacado']},
+    card:{bootstrap:['card: contêiner do componente','card-body: conteúdo interno','card-title: título do card'],materialize:['card: contêiner do componente','card-content: conteúdo interno','card-title: título do card'],tailwind:['p-6: espaçamento interno','rounded-lg: bordas arredondadas','shadow-md: sombra do card']},
+    input:{bootstrap:['form-label: estilo do rótulo','form-control: estilo do input'],materialize:['input-field: agrupamento de campo e rótulo','label: identificador do campo'],tailwind:['block: rótulo em bloco','border: adiciona borda','p-2: espaçamento interno']}
+  };return (note[type]&&note[type][f]||['O HTML define o conteúdo.','As classes do framework controlam a aparência.']).map(x=>'<!-- '+x+' -->').join('\n');
+}
+function generateCompleteHTML(s,f){
+  const css=f==='bootstrap'?'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css':f==='materialize'?'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css':null;
+  const scriptEnd='</scr'+'ipt>';
+  let out=['<!DOCTYPE html>','<html lang="pt-BR">','<head>','  <!-- Configurações iniciais do documento -->','  <meta charset="UTF-8">','  <meta name="viewport" content="width=device-width, initial-scale=1.0">','  <title>Meu Projeto | Framework Academy</title>'];
+  if(css)out.push('  <!-- CSS oficial do '+names[f]+' -->','  <link rel="stylesheet" href="'+css+'">');
+  if(f==='materialize')out.push('  <!-- Material Icons: ícones utilizados pelo Materialize -->','  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">');
+  if(f==='tailwind')out.push('  <!-- Tailwind Play CDN: uso educacional; em produção, usar build compilado -->','  <script src="https://cdn.tailwindcss.com">'+scriptEnd);
+  if(f==='bootstrap')out.push('  <!-- Bootstrap Icons: opcional, utilizado quando houver ícones -->','  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">');
+  // Flexível para que o rodapé permaneça no fim da tela quando houver pouco conteúdo.
+  if(f==='materialize')out.push('  <!-- Complemento mínimo: Materialize não oferece utilitários nativos para rodapé fixado ao fim do viewport -->','  <style>html, body {min-height:100%;} body {min-height:100vh;display:flex;flex-direction:column;} main {flex:1 0 auto;}</style>');
+  out.push('</head>');
+  const bodyClass=f==='bootstrap'?' class="d-flex flex-column min-vh-100"':f==='tailwind'?' class="min-h-screen flex flex-col"':'';
+  out.push('<body'+bodyClass+(s.pageBg&&s.pageBg.toLowerCase()!=='#ffffff'?' style="background-color: '+s.pageBg+';"':'')+'>','  <!-- Estrutura do site: cabeçalho, conteúdo principal e rodapé -->');
+  let mainOpen=false;
+  const hasNavbar=s.blocks.some(x=>x.type==='navbar');
+  const hasFooter=s.blocks.some(x=>x.type==='footer');
+  if(!hasNavbar){out.push('  <!-- Dica: adicione um componente de navegação no editor. -->');}
+
+  if(!s.blocks.length)out.push('  <!-- Página vazia: adicione componentes para visualizar o código. -->');
+  for(const b of s.blocks){
+    if(b.type!=='navbar' && b.type!=='footer' && !mainOpen){
+      out.push('  <!-- main: agrupa o conteúdo principal; ocupa o espaço livre da página -->');
+      out.push(f==='bootstrap'?'  <main class="flex-grow-1">':f==='tailwind'?'  <main class="flex-1">':'  <main>');mainOpen=true;
+    }
+    if(b.type==='footer' && mainOpen){out.push('  </main>');mainOpen=false;}
+    out.push('','  <!-- ===== '+b.type.toUpperCase()+' | '+names[f]+' ===== -->');
+    out.push('  <!-- Documentação: '+docs[f]+componentDocs[b.type][f]+' -->');
+    out.push(indentBlock(componentNotes(b.type,f),mainOpen?4:2));
+    out.push(indentBlock(generateBlock(b,f),mainOpen?4:2));
+  }
+  if(mainOpen)out.push('  </main>');
+  // Se a página não contiver rodapé, não inventamos um rodapé do projeto.
+  out.push('','  <!-- Fim do conteúdo criado no laboratório -->');
+  if(f==='bootstrap')out.push('','  <!-- JS Bootstrap Bundle: interações, dropdowns e componentes dinâmicos -->','  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">'+scriptEnd);
+  if(f==='materialize')out.push('','  <!-- JS Materialize: necessário para componentes como Modal e Sidenav -->','  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">'+scriptEnd,'  <script>','    // Ativa componentes interativos após o carregamento da página.','    document.addEventListener("DOMContentLoaded", function () {','      M.AutoInit();','    });','  '+scriptEnd);
+  const buttons=s.blocks.filter(b=>b.type==='button'&&b.props.action&&b.props.action!=='none');
+  if(buttons.length){
+    out.push('','  <!-- Ações dos botões definidas no editor visual -->','  <script>','    document.addEventListener("DOMContentLoaded", function () {');
+    for(const b of buttons){const p=b.props, id='acao-'+b.id.replace(/[^a-zA-Z0-9_-]/g,'');let script='';
+      if(p.action==='toast')script=f==='materialize'?`M.toast({html: ${JSON.stringify(p.message||'Ação executada')}});`:`alert(${JSON.stringify(p.message||'Ação executada')});`;
+      else if(p.action==='modal')script=`alert(${JSON.stringify('Informações: '+p.text)});`;
+      else if(p.action==='scroll')script=`document.getElementById(${JSON.stringify(p.target||'inicio')})?.scrollIntoView({behavior: 'smooth'});`;
+      out.push('      // Clique no botão: '+p.text,'      document.getElementById('+JSON.stringify(id)+')?.addEventListener("click", function () {','        '+script,'      });');
+    }
+    out.push('    });','  '+scriptEnd);
+  }
+  out.push('</body>','</html>');
+  return out.join('\n');
+}
+function exportFullHTML(){return generateCompleteHTML(cur(),cur().framework)}
+
+function exportHTML(){const content=exportFullHTML(),blob=new Blob([content],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='meu-projeto-'+cur().framework+'.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);notify('Arquivo HTML exportado.');}
+function bindWorkspace(mount){let focus=$('#toggleCanvasFocus',mount);if(focus)focus.onclick=()=>{focusCanvasMode=!focusCanvasMode;render()};$$('[data-add]',mount).forEach(x=>{x.onclick=e=>{e.preventDefault();addBlock(x.dataset.add)};x.ondragstart=e=>{e.dataTransfer.setData('text/component',x.dataset.add);e.dataTransfer.effectAllowed='copy'}});$$('[data-block]',mount).forEach(el=>{el.onclick=e=>{if(e.target.closest('[data-del],[data-dup],[data-up]'))return;if(e.target.closest('a'))e.preventDefault();if(e.target.closest('[data-preview-action]')){e.preventDefault();e.stopPropagation();selectBlock(el.dataset.block);return;}selectBlock(el.dataset.block)};el.ondragstart=e=>{if(e.target.closest('input')){e.preventDefault();return}e.dataTransfer.setData('text/block',el.dataset.block);e.dataTransfer.effectAllowed='move'}});$$('[data-drop]',mount).forEach(el=>{el.ondragover=e=>{e.preventDefault();el.classList.add('dragover')};el.ondragleave=()=>el.classList.remove('dragover');el.ondrop=e=>{e.preventDefault();el.classList.remove('dragover');let type=e.dataTransfer.getData('text/component');let block=e.dataTransfer.getData('text/block');if(type)addBlock(type,Number(el.dataset.drop));else if(block)moveBlock(block,Number(el.dataset.drop))}});$$('[data-edit]',mount).forEach(x=>x.onclick=e=>{e.stopPropagation();selectBlock(x.dataset.edit)});$$('[data-del]',mount).forEach(x=>x.onclick=e=>{e.stopPropagation();removeBlock(x.dataset.del)});$$('[data-dup]',mount).forEach(x=>x.onclick=e=>{e.stopPropagation();transact(s=>{let i=s.blocks.findIndex(b=>b.id===x.dataset.dup);let b=structuredClone(s.blocks[i]);b.id=createBlock(b.type).id;s.blocks.splice(i+1,0,b);s.selected=b.id})});$$('[data-up]',mount).forEach(x=>x.onclick=e=>{e.stopPropagation();let i=cur().blocks.findIndex(b=>b.id===x.dataset.up);if(i>0)moveBlock(x.dataset.up,i-1)});$$('[data-fw]',mount).forEach(x=>x.onclick=()=>chooseFramework(x.dataset.fw));$$('[data-device]',mount).forEach(x=>x.onclick=()=>{cur().device=x.dataset.device;render()});$$('[data-prop]',mount).forEach(el=>{el.onchange=e=>{let v=e.target.value;if(el.dataset.prop==='pageBg'){transact(s=>s.pageBg=v)}else updateProp(el.dataset.prop,v)}});$('#componentSearch',mount).oninput=e=>{librarySearch=e.target.value;$('#componentList',mount).innerHTML=catalogHTML();bindCatalogAfterSearch(mount)};$$('[data-codetab]',mount).forEach(x=>x.onclick=()=>{codeTab=x.dataset.codetab;render()});const only=$('#onlySelected',mount);if(only)only.onchange=e=>{displayOnlySelected=e.target.checked;render()};$$('[data-copy]',mount).forEach(x=>x.onclick=async()=>{let val=currentSources()[x.dataset.copy];await copyText(val);notify('Código copiado.')});$$('[data-max]',mount).forEach(x=>x.onclick=()=>openOverlay(x.dataset.max));const del=$('[data-delete-selected]',mount);if(del)del.onclick=delSelected;$$('.demo-link',mount).forEach(x=>x.onclick=e=>{e.preventDefault();e.stopPropagation();notify('Navegação desabilitada na edição. Configure links na publicação.')});$$('[data-preview-action]',mount).forEach(x=>x.onclick=e=>{e.preventDefault();e.stopPropagation();let b=cur().blocks.find(b=>b.id===x.dataset.previewAction);if(!b)return;let p=b.props;if(p.action==='toast')notify(p.message||'Ação executada');else if(p.action==='modal')alert('Exemplo de janela modal: '+p.text);else if(p.action==='scroll')notify('Em uma página publicada, este botão rolaria para '+(p.target||'a seção escolhida')+'.');else notify('Botão sem ação configurada.')})}
+function bindCatalogAfterSearch(mount){$$('[data-add]',$('#componentList',mount)).forEach(x=>{x.onclick=()=>addBlock(x.dataset.add);x.ondragstart=e=>{e.dataTransfer.setData('text/component',x.dataset.add);e.dataTransfer.effectAllowed='copy'}})}
+async function copyText(text){try{await navigator.clipboard.writeText(text)}catch{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}}
+function openOverlay(kind){overlayTarget=kind;let ov=$('#overlay');ov.classList.remove('hidden');document.body.classList.add('scrollLock');let s=cur();ov.innerHTML=`<div class="inline" style="justify-content:space-between;margin-bottom:12px"><b>${kind==='preview'?'Prévia ampliada':'Código ampliado'}</b><button class="btn primary" id="closeOverlay">✕ Fechar</button></div>${kind==='preview'?`<div class="canvasouter"><div class="canvas ${s.device==='desktop'?'':s.device}" style="background:${s.pageBg}">${canvasHTML()}</div></div>`:`<div class="codegrid">${frameworks.map(f=>`<div class="codeslot"><div class="codetitle">${names[f]} <button data-big-copy="${f}">Copiar</button></div><pre class="codebox"><code>${highlight(currentSources()[f])}</code></pre></div>`).join('')}</div>`}`;$('#closeOverlay').onclick=closeOverlay;$$('[data-big-copy]',ov).forEach(b=>b.onclick=async()=>{await copyText(currentSources()[b.dataset.bigCopy]);notify('Código copiado.')});$$('.demo-link',ov).forEach(a=>a.onclick=e=>e.preventDefault());$$('[data-preview-action]',ov).forEach(a=>a.onclick=e=>e.preventDefault())}
+function closeOverlay(){document.body.classList.remove('scrollLock');$('#overlay').classList.add('hidden');$('#overlay').innerHTML='';overlayTarget=null}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlayTarget)closeOverlay();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();e.shiftKey?redo():undo()}});
+$('#undoBtn').onclick=()=>{mode='create';undo()};$('#redoBtn').onclick=()=>{mode='create';redo()};$('#clearBtn').onclick=()=>{mode='create';if(cur().blocks.length===0)return;transact(s=>{s.blocks=[];s.selected=null})};$('#exportBtn').onclick=()=>{mode='create';exportHTML()};$('#saveBtn').onclick=()=>{try{localStorage.setItem('frameworkAcademyProject',JSON.stringify(states.create));notify('Projeto salvo neste navegador.')}catch{notify('Não foi possível salvar neste navegador.')}};
+function renderChallenge(){renderLesson();}
+function testRequirement(key,blocks){switch(key){case'navbar':case'hero':case'button':case'grid':case'card':case'heading':case'footer':return blocks.some(b=>b.type===key);case'twoCards':return blocks.filter(b=>b.type==='card').length>=2;case'twoInputs':return blocks.filter(b=>b.type==='input').length>=2;case'buttonText':return blocks.some(b=>b.type==='button'&&b.props.text!==defaultProps.button.text&&b.props.text.trim());case'action':return blocks.some(b=>b.type==='button'&&b.props.action!=='none');case'color':return blocks.some(b=>b.props.bg&&b.props.bg!==defaultProps[b.type].bg);default:return false}}
+function updateChecks(){let c=challenges[exerciseIndex],passed=0;$('#checklist').innerHTML=c.requirements.map(([key,label,points])=>{let ok=testRequirement(key,states.practice.blocks);if(ok)passed+=points;return `<div class="checkrow ${ok?'ok':''}"><span class="checkdot">${ok?'✓':''}</span><span style="flex:1">${esc(label)}</span><b>${points} pts</b></div>`}).join('');$('#progressbar').style.width=passed+'%';$('#exscore').textContent=passed+'/100 pontos';$('#exstatus').textContent=lastValidation===null?'Ainda não validado':passed===100?'Todos os requisitos atendidos':'Revise os itens pendentes'}
+
+
+// ===== LABORATÓRIO DE EXERCÍCIOS (inspirado no fluxo tutorial + editor) =====
+const lessonCatalog=[
+ {name:'Menu de navegação',description:'Crie uma navegação com nome ou marca e links de sua escolha.',hint:'Comece por <nav>. Bootstrap usa navbar; Materialize usa nav-wrapper; Tailwind combina flex, background e padding.',doc:{bootstrap:'components/navbar/',materialize:'navbar.html',tailwind:'flex'},requirements:['nav','brand']},
+ {name:'Cores e fundo',description:'Crie uma seção com título e aplique uma cor de fundo do framework.',hint:'Bootstrap: bg-primary / bg-success; Materialize: blue / purple; Tailwind: bg-blue-500 / bg-purple-600.',doc:{bootstrap:'utilities/background/',materialize:'color.html',tailwind:'background-color'},requirements:['section','heading','background']},
+ {name:'Grid responsivo',description:'Organize três cards dentro de uma grade que se adapta à tela.',hint:'Bootstrap e Materialize usam row e col; Tailwind usa grid e classes grid-cols-*, como md:grid-cols-3.',doc:{bootstrap:'layout/grid/',materialize:'grid.html',tailwind:'grid-template-columns'},requirements:['grid','cards','responsive']},
+ {name:'Botões e ícones',description:'Crie um botão de ação com texto e a estilização adequada ao framework.',hint:'Bootstrap: btn btn-primary; Materialize: btn waves-effect; Tailwind: bg-*, px-*, py-* e text-*.',doc:{bootstrap:'components/buttons/',materialize:'buttons.html',tailwind:'hover-focus-and-other-states'},requirements:['button','buttonClass','buttonText']},
+ {name:'Cards de conteúdo',description:'Crie um card com título, descrição e espaço interno.',hint:'Bootstrap: card + card-body; Materialize: card + card-content; Tailwind: shadow + p-4 + rounded.',doc:{bootstrap:'components/card/',materialize:'cards.html',tailwind:'box-shadow'},requirements:['card','heading','description']},
+ {name:'Formulários',description:'Monte um formulário com campos de nome, e-mail e botão para enviar.',hint:'Use form, labels, inputs com type="email" e um botão. Consulte as classes próprias do framework.',doc:{bootstrap:'forms/overview/',materialize:'text-inputs.html',tailwind:'border-width'},requirements:['form','twoInputs','submit']},
+ {name:'Tipografia',description:'Crie um título e um parágrafo, diferenciando tamanhos, pesos e cor do texto.',hint:'Experimente classes de tamanho, peso e cor: fs-*/fw-* no Bootstrap, flow-text no Materialize, text-*/font-* no Tailwind.',doc:{bootstrap:'content/typography/',materialize:'typography.html',tailwind:'font-size'},requirements:['heading','description','typographyStyle']},
+ {name:'Espaçamento',description:'Monte uma seção com espaçamento interno e externo.',hint:'Bootstrap usa p-* e m-*; Tailwind usa p-* e m-*; Materialize usa section, container e helper classes como section.',doc:{bootstrap:'utilities/spacing/',materialize:'helpers.html',tailwind:'padding'},requirements:['section','heading','spacingStyle']},
+ {name:'Imagens responsivas',description:'Adicione uma imagem com descrição alternativa e comportamento responsivo.',hint:'Bootstrap: img-fluid; Materialize: responsive-img; Tailwind: w-full h-auto.',doc:{bootstrap:'content/images/',materialize:'media-css.html',tailwind:'max-width'},requirements:['image','altText','imageResponsive']},
+ {name:'Listas e coleções',description:'Crie uma lista com pelo menos três itens e aplique o estilo do framework.',hint:'Bootstrap usa list-group/list-group-item; Materialize usa collection/collection-item; Tailwind usa utilitários.',doc:{bootstrap:'components/list-group/',materialize:'collections.html',tailwind:'border-width'},requirements:['list','threeItems','listStyle']},
+ {name:'Alertas e mensagens',description:'Crie uma mensagem de sucesso ou aviso com destaque visual.',hint:'Bootstrap: alert; Materialize: card-panel com uma cor; Tailwind: border, background e padding.',doc:{bootstrap:'components/alerts/',materialize:'color.html',tailwind:'background-color'},requirements:['message','description','alertStyle']},
+ {name:'Tabelas',description:'Apresente dados em uma tabela com cabeçalho e duas linhas.',hint:'Use table, thead e tbody. Bootstrap: table; Materialize: striped ou highlight; Tailwind: border e padding.',doc:{bootstrap:'content/tables/',materialize:'table.html',tailwind:'border-collapse'},requirements:['table','tableHead','tableRows','tableStyle']},
+ {name:'Alinhamento',description:'Centralize um título e organize dois elementos lado a lado.',hint:'Bootstrap: text-center e d-flex; Materialize: center-align e row; Tailwind: text-center e flex.',doc:{bootstrap:'utilities/text/',materialize:'helpers.html',tailwind:'text-align'},requirements:['heading','alignStyle','twoItems']},
+ {name:'Rodapé',description:'Crie um rodapé com copyright e pelo menos um link.',hint:'Bootstrap: footer com bg-* e text-*; Materialize: page-footer; Tailwind: footer com bg-* p-* e text-*.',doc:{bootstrap:'examples/footers/',materialize:'footer.html',tailwind:'background-color'},requirements:['footer','copyright','footerLink','footerStyle']}
+];
+const lessonRequirementsText={nav:'Usar a tag <nav>',brand:'Adicionar nome/marca',section:'Criar seção principal',heading:'Incluir título visível',background:'Aplicar uma classe de cor de fundo',grid:'Criar container de grid',cards:'Criar pelo menos 3 cards',responsive:'Usar classes responsivas',button:'Criar um botão',buttonClass:'Aplicar classes do framework',buttonText:'Inserir texto de ação',card:'Criar estrutura de card',description:'Adicionar um parágrafo',form:'Criar formulário',twoInputs:'Incluir nome e e-mail',submit:'Criar botão de envio',typographyStyle:'Aplicar classes de tipografia',spacingStyle:'Aplicar classes de espaçamento',image:'Adicionar uma imagem',altText:'Incluir texto alternativo (alt)',imageResponsive:'Tornar a imagem responsiva',list:'Criar uma lista',threeItems:'Incluir pelo menos três itens',listStyle:'Estilizar a lista com o framework',message:'Criar uma mensagem destacada',alertStyle:'Aplicar estilos de alerta',table:'Criar uma tabela',tableHead:'Adicionar cabeçalho à tabela',tableRows:'Incluir duas linhas de dados',tableStyle:'Estilizar a tabela',alignStyle:'Aplicar classe de alinhamento',twoItems:'Adicionar dois elementos',footer:'Criar rodapé',copyright:'Inserir copyright',footerLink:'Adicionar link ao rodapé',footerStyle:'Aplicar estilo ao rodapé'};
+let lessonIdx=0,lessonFW='bootstrap';let studentName='';const solvedLessons=new Set();const lessonDrafts={};let lastLessonChecks=null;
+function lessonHtml(f,i,complete=false){
+ const cdn={bootstrap:'<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">',materialize:'<link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">',tailwind:'<script src="https://cdn.tailwindcss.com"><\/script>'};
+ const body={
+ bootstrap:[`<nav class="navbar navbar-dark bg-primary"><div class="container"><a class="navbar-brand" href="#">CampusLab</a></div></nav>`,`<section class="container p-4 bg-primary text-white"><h1>Aprenda na prática</h1></section>`,`<main class="container my-4"><div class="row g-3">${'<div class="col-12 col-md-4"><div class="card"><div class="card-body">Curso</div></div></div>'.repeat(3)}</div></main>`,`<main class="container py-5"><button class="btn btn-primary">Inscreva-se</button></main>`,`<article class="card m-4"><div class="card-body"><h2 class="card-title">Curso Web</h2><p class="card-text">Aprenda HTML e CSS.</p></div></article>`,`<form class="container my-4"><label class="form-label" for="nome">Nome</label><input id="nome" class="form-control" type="text"><label class="form-label" for="email">E-mail</label><input id="email" class="form-control" type="email"><button class="btn btn-primary mt-3" type="submit">Enviar</button></form>`],
+ materialize:[`<nav class="deep-purple"><div class="nav-wrapper container"><a href="#" class="brand-logo">CampusLab</a><ul class="right"></ul></div></nav>`,`<section class="container section blue white-text"><h3>Aprenda na prática</h3></section>`,`<main class="container section"><div class="row">${'<div class="col s12 m4"><div class="card"><div class="card-content">Curso</div></div></div>'.repeat(3)}</div></main>`,`<main class="container section"><button class="btn waves-effect waves-light purple">Inscreva-se</button></main>`,`<article class="card"><div class="card-content"><span class="card-title">Curso Web</span><p>Aprenda HTML e CSS.</p></div></article>`,`<form class="container section"><div class="input-field"><input id="nome" type="text"><label for="nome">Nome</label></div><div class="input-field"><input id="email" type="email"><label for="email">E-mail</label></div><button class="btn" type="submit">Enviar</button></form>`],
+ tailwind:[`<nav class="bg-purple-700 text-white p-4"><div class="max-w-5xl mx-auto flex justify-between"><a class="font-bold text-xl" href="#">CampusLab</a></div></nav>`,`<section class="bg-blue-600 text-white p-8"><h1 class="text-3xl font-bold">Aprenda na prática</h1></section>`,`<main class="max-w-5xl mx-auto p-4"><div class="grid grid-cols-1 md:grid-cols-3 gap-4">${'<div class="bg-white shadow p-4 rounded-lg">Curso</div>'.repeat(3)}</div></main>`,`<main class="p-6"><button class="bg-purple-700 text-white px-4 py-2 rounded">Inscreva-se</button></main>`,`<article class="shadow rounded-lg p-6 m-4"><h2 class="font-bold text-xl">Curso Web</h2><p>Aprenda HTML e CSS.</p></article>`,`<form class="p-6 max-w-lg"><label class="block" for="nome">Nome</label><input id="nome" class="border rounded p-2 w-full" type="text"><label class="block mt-3" for="email">E-mail</label><input id="email" class="border rounded p-2 w-full" type="email"><button class="bg-purple-700 text-white px-4 py-2 rounded mt-3" type="submit">Enviar</button></form>`]
+ };
+ const incomplete={0:'<!-- Exercício: crie aqui um menu com sua marca. -->',1:'<!-- Exercício: crie uma <section> com classe de cor e título. -->',2:'<!-- Exercício: crie um grid com três cards responsivos. -->',3:'<!-- Exercício: crie um botão com classes do framework. -->',4:'<!-- Exercício: crie um card com título e parágrafo. -->',5:'<!-- Exercício: crie um formulário com nome, e-mail e botão. -->'};
+ let content=complete?(i===0?navSamples[f][lessonNavVariant]:(body[f][i] ?? (lessonCodeExamples[f]?.[i] || ''))):(incomplete[i] ?? '<!-- Sua atividade começa aqui. Consulte o exemplo comentado acima e implemente os requisitos. -->');
+ return `<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <title>Exercício ${i+1} — ${names[f]}</title>\n  <!-- Framework selecionado: ${names[f]} -->\n  ${cdn[f]}\n  ${i===0&&f==='materialize'?'<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">':''}\n</head>\n<body>\n  ${content}\n  ${i===0?lessonExtras(f):''}\n</body>\n</html>`;
+}
+function syncLessonSyntax(){
+ const editor=$('#lessonCode'),display=$('#lessonCodeHighlight');if(!editor||!display)return;
+ display.innerHTML=highlight(editor.value)+(editor.value.endsWith('\n')?'\n':'');
+ display.scrollTop=editor.scrollTop;display.scrollLeft=editor.scrollLeft;
+}
+function studentKey(){return 'fa_progress_v12:'+studentName.trim().toLocaleLowerCase('pt-BR')}
+function loadStudentProgress(){solvedLessons.clear()}
+function persistStudentProgress(){}
+function updateStudentScore(){const total=solvedLessons.size,score=total*100;const done=document.querySelector('#practiceDone'), points=document.querySelector('#studentScore');if(done)done.textContent=total+'/'+lessonCatalog.length*3;if(points)points.textContent=score+' pontos';}
+function normalizeSolution(source){const doc=new DOMParser().parseFromString(source,'text/html');const normalizeNode=n=>{if(n.nodeType===3)return n.textContent.replace(/\s+/g,' ').trim();if(n.nodeType!==1)return '';const tag=n.tagName.toLowerCase();if(['script','style','meta','link','title'].includes(tag))return '';const attrs=[...n.attributes].filter(x=>!['nonce'].includes(x.name)).sort((a,b)=>a.name.localeCompare(b.name)).map(a=>a.name+'='+ (a.name==='class'?a.value.split(/\s+/).sort().join(' '):a.value.trim())).join('|');return '<'+tag+'|'+attrs+'>'+[...n.childNodes].map(normalizeNode).join('')+'</'+tag+'>';};return [...doc.body.childNodes].map(normalizeNode).join('');}
+function detectCopy(source){const doc=new DOMParser().parseFromString(source,'text/html');const sample=lessonCodeExamples[lessonFW][lessonIdx];const clean=x=>x.replace(/<!--[\s\S]*?-->/g,'').replace(/\s+/g,' ').trim().toLowerCase();const body=clean(doc.body.innerHTML);const example=clean(sample);const sameMarkup=normalizeSolution(sample)===normalizeSolution(source);return {sameMarkup, pastedExample:example.length>65&&body.includes(example)};}
+function analyzeSyntax(source){const errors=[];const voids=new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);const opens=[];const re=/<(\/?)([a-z][\w:-]*)([^<>]*)>/gi;const stripped=source.replace(/<!--[\s\S]*?-->/g,match=>' '.repeat(match.length)).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,match=>' '.repeat(match.length)).replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,match=>' '.repeat(match.length));let m;const loc=offset=>stripped.slice(0,offset).split('\n').length;while((m=re.exec(stripped))){const closing=!!m[1],tag=m[2].toLowerCase(),line=loc(m.index);if(voids.has(tag))continue;if(!closing){if(!m[3].trim().endsWith('/'))opens.push({tag,line})}else{if(!opens.length){errors.push('Linha '+line+': fechamento </'+tag+'> sem abertura correspondente.');continue}let top=opens[opens.length-1];if(top.tag!==tag){errors.push('Linha '+line+': esperado </'+top.tag+'> (aberto na linha '+top.line+'), mas encontrado </'+tag+'>.');let pos=opens.map(x=>x.tag).lastIndexOf(tag);if(pos>=0)opens.splice(pos);else continue}else opens.pop()}}opens.filter(x=>!['html','head','body'].includes(x.tag)).slice(-6).forEach(x=>errors.push('Linha '+x.line+': falta fechar <'+x.tag+'>.'));if(/class\s*=\s*["'][^"']*$/.test(source))errors.push('Atributo class sem aspas de fechamento.');return [...new Set(errors)].slice(0,8);}
+function computeDiagnostics(src,checks){const errors=analyzeSyntax(src),copy=detectCopy(src);if(copy.sameMarkup||copy.pastedExample)errors.unshift('O código repete integralmente o exemplo apresentado. Personalize a estrutura, o conteúdo ou a implementação para que sua solução seja autoral.');for(const chk of checks){if(!chk.ok){let detail='Revise o requisito: '+chk.label+'.';if(chk.key==='nav')detail=lessonIdx===0&&lessonNavVariant==='side'?'Inclua o painel lateral e seu botão de abertura, com identificadores correspondentes (data-target, data-bs-target ou aria-controls).':'Inclua a tag semântica <nav> ao redor do menu.';if(chk.key==='responsive')detail='Confira as classes responsivas: Bootstrap col-md-*, Materialize col m*, Tailwind md:grid-cols-*.';if(chk.key==='background')detail='Aplique uma classe de fundo do '+names[lessonFW]+' à seção.';if(chk.key==='imageResponsive')detail='Use img-fluid (Bootstrap), responsive-img (Materialize) ou w-full/max-w-full (Tailwind).';errors.push(detail)}}return {errors,blocked:copy.sameMarkup||copy.pastedExample||analyzeSyntax(src).length>0};}
+function currentLessonKey(){return lessonFW+'|'+lessonIdx}
+function lessonDraftKey(){return (studentName.trim().toLocaleLowerCase('pt-BR')||'sem-nome')+'|'+currentLessonKey()+(lessonIdx===0?'|'+lessonNavVariant:'')}
+function saveLessonDraft(){let ed=$('#lessonCode');if(ed)lessonDrafts[lessonDraftKey()]=ed.value}
+function lessonChecks(src){let doc=new DOMParser().parseFromString(src,'text/html'),i=lessonIdx,f=lessonFW;
+ const is=(sel)=>!!doc.querySelector(sel),count=sel=>doc.querySelectorAll(sel).length,cls=(sel)=>Array.from(doc.querySelectorAll(sel)).map(x=>x.className||'').join(' '),body=doc.body?.textContent||'';
+ const color=cls('section,main,div,body'),grid=cls('main,section,div'),btn=cls('button,a'),card=cls('article,div');
+ const isSide=lessonIdx===0&&lessonNavVariant==='side';
+ const sidebar=isSide?doc.querySelector(f==='materialize'?'.sidenav':f==='bootstrap'?'.offcanvas':'aside'):null;
+ const trigger=isSide?doc.querySelector(f==='materialize'?'.sidenav-trigger[data-target]':f==='bootstrap'?'[data-bs-toggle="offcanvas"][data-bs-target]':'[data-menu-toggle]'):null;
+ const triggerTarget=trigger?.getAttribute(f==='materialize'?'data-target':f==='bootstrap'?'data-bs-target':'aria-controls')||'';
+ const linkedSide=!!(sidebar&&trigger&&(f==='materialize'?sidebar.id===triggerTarget:f==='bootstrap'?'#'+sidebar.id===triggerTarget:sidebar.id===triggerTarget));
+ const checks={nav:isSide?linkedSide:is('nav'),brand:!!(doc.querySelector('nav,header')?.textContent.trim()),link:Array.from(doc.querySelectorAll(isSide?'aside a,.sidenav a,.offcanvas a':'nav a')).some(a=>a.textContent.toLowerCase().includes('curso')),section:is('section'),heading:is('h1,h2,h3'),background:f==='bootstrap'?/\bbg-(?:primary|success|danger|info|warning|secondary|dark|light)\b/.test(color):f==='materialize'?/\b(?:red|pink|purple|deep-purple|indigo|blue|light-blue|cyan|teal|green|light-green|lime|yellow|amber|orange|deep-orange|brown|grey|blue-grey)\b/.test(color):/\bbg-[a-z]+-(?:[1-9]00|50)\b/.test(color),grid:f==='tailwind'?/\bgrid\b/.test(grid):/\brow\b/.test(grid),cards:i===2?(f==='tailwind'?count('main .grid > div')>=3:count('main .row > div')>=3):count('.card')>=3,responsive:f==='bootstrap'?/\bcol-(?:sm|md|lg|xl)-/.test(grid):f==='materialize'?/\bcol\s+s\d+\s+m\d+/.test(grid):/\b(?:sm|md|lg):grid-cols-/.test(grid),button:is('button, a[role="button"]'),buttonClass:f==='bootstrap'?/\bbtn\s+btn-/.test(btn):f==='materialize'?/\bbtn\b/.test(btn):/\bbg-[\w-]+\b/.test(btn)&&/\bpx-/.test(btn),buttonText:Array.from(doc.querySelectorAll('button')).some(b=>b.textContent.trim().length>2),card:f==='tailwind'?/\bshadow\b/.test(card):/\bcard\b/.test(card),description:is('p'),form:is('form'),twoInputs:is('input[type="email"]')&&is('input[type="text"]'),submit:is('button[type="submit"], input[type="submit"]')};
+ if(i>=6){
+   const all=Array.from(doc.querySelectorAll('*'));
+   const hasClass=(re)=>all.some(el=>re.test(typeof el.className==='string'?el.className:''));
+   const n=(selector)=>doc.querySelectorAll(selector).length;
+   const validate={
+     heading:is('h1,h2,h3,h4,h5,h6'),description:is('p'),
+     typographyStyle:f==='bootstrap'?hasClass(/\b(?:fs-\d|fw-bold|text-(?:primary|secondary))\b/):f==='materialize'?hasClass(/\b(?:flow-text|(?:blue|purple|green)-text|center-align)\b/):hasClass(/\b(?:text-(?:xl|2xl|3xl|blue-\d+)|font-bold)\b/),
+     section:is('section'),spacingStyle:f==='bootstrap'?hasClass(/\b[mp][trblxy]?-[0-5]\b/):f==='materialize'?hasClass(/\b(?:section|container|card-panel)\b/):hasClass(/\b[mp][trblxy]?-(?:\d+|px)\b/),
+     image:is('img'),altText:Array.from(doc.querySelectorAll('img')).some(x=>(x.getAttribute('alt')||'').trim()),imageResponsive:f==='bootstrap'?hasClass(/\bimg-fluid\b/):f==='materialize'?hasClass(/\bresponsive-img\b/):hasClass(/\b(?:w-full|max-w-full)\b/),
+     list:is('ul,ol'),threeItems:n('li')>=3,listStyle:f==='bootstrap'?hasClass(/\blist-group\b/):f==='materialize'?hasClass(/\bcollection\b/):hasClass(/\b(?:divide-y|border|space-y-\d+)\b/),
+     message:is('div,p,section'),alertStyle:f==='bootstrap'?hasClass(/\balert\b/):f==='materialize'?hasClass(/\bcard-panel\b/):hasClass(/\bbg-[a-z]+-\d+\b/),
+     table:is('table'),tableHead:is('thead th'),tableRows:n('tbody tr')>=2,tableStyle:f==='bootstrap'?hasClass(/\btable\b/):f==='materialize'?hasClass(/\b(?:striped|highlight|responsive-table)\b/):hasClass(/\b(?:border|divide-y)\b/),
+     alignStyle:f==='bootstrap'?hasClass(/\b(?:text-center|d-flex)\b/):f==='materialize'?hasClass(/\b(?:center-align|valign-wrapper)\b/):hasClass(/\b(?:text-center|flex|items-center)\b/),
+     twoItems:n('section > div,main > div,section > span,main > span')>=2,
+     footer:is('footer'),copyright:/©|copyright|direitos reservados/i.test(doc.querySelector('footer')?.textContent||''),footerLink:is('footer a'),footerStyle:f==='bootstrap'?hasClass(/\b(?:bg-dark|bg-primary|text-white)\b/):f==='materialize'?hasClass(/\bpage-footer\b/):hasClass(/\b(?:bg-[a-z]+-\d+|p-\d+)\b/)
+   };
+   return lessonCatalog[i].requirements.map(k=>({key:k,ok:!!validate[k],label:lessonRequirementsText[k]}));
+ }
+ return lessonCatalog[i].requirements.map(k=>({key:k,ok:!!checks[k],label:lessonRequirementsText[k]}))
+}
+
+// v15: modelos didáticos de navegação responsiva, com links e gatilho funcional.
+let lessonNavVariant='top';
+const navSamples={
+  materialize:{
+    top:`<!-- Materialize: nav é a barra; deep-purple define a cor -->
+<nav class="deep-purple">
+  <div class="nav-wrapper container">
+    <a href="#inicio" class="brand-logo">Minha Escola</a>
+    <!-- sidenav-trigger: aparece em telas menores -->
+    <a href="#" data-target="menu-mobile" class="sidenav-trigger" aria-label="Abrir menu">
+      <i class="material-icons">menu</i>
+    </a>
+    <!-- Os links desktop ficam ocultos em tablets e celulares -->
+    <ul class="right hide-on-med-and-down">
+      <li><a href="#inicio">Início</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </div>
+</nav>
+<!-- Menu lateral móvel, ligado ao data-target do gatilho -->
+<ul id="menu-mobile" class="sidenav">
+  <li><a href="#inicio">Início</a></li>
+  
+  <li><a href="#contato">Contato</a></li>
+</ul>`,
+    side:`<!-- Materialize: barra superior com botão para abrir menu lateral -->
+<nav class="deep-purple">
+  <div class="nav-wrapper container">
+    <a href="#" data-target="menu-lateral" class="sidenav-trigger show-on-large left" style="display:block" aria-label="Abrir menu lateral">
+      <i class="material-icons">menu</i>
+    </a>
+    <a class="brand-logo" href="#inicio">Minha Escola</a>
+  </div>
+</nav>
+<!-- sidenav: lista de navegação lateral -->
+<ul id="menu-lateral" class="sidenav">
+  <li><a class="sidenav-close" href="#inicio">Início</a></li>
+  
+  <li><a class="sidenav-close" href="#contato">Contato</a></li>
+</ul>`
+  },
+  bootstrap:{
+    top:`<!-- Bootstrap: navbar-expand-lg exibe links em telas largas -->
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#inicio">Minha Escola</a>
+    <!-- navbar-toggler alterna o menu móvel -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu-b">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="menu-b">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#inicio">Início</a></li>
+        <li class="nav-item"></li>
+        <li class="nav-item"><a class="nav-link" href="#contato">Contato</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>`,
+    side:`<!-- Bootstrap: offcanvas é o menu lateral interativo -->
+<nav class="navbar bg-primary" data-bs-theme="dark">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#menu-lateral-b" aria-label="Abrir menu lateral">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#inicio">Minha Escola</a>
+  </div>
+</nav>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="menu-lateral-b">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Menu</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="nav-link mb-3" href="#inicio">Início</a>
+    
+    <a class="nav-link" href="#contato">Contato</a>
+  </div>
+</div>`
+  },
+  tailwind:{
+    top:`<!-- Tailwind: utilitários cuidam da aparência; JS abre o menu -->
+<nav class="bg-purple-700 text-white p-4">
+  <div class="mx-auto max-w-6xl flex items-center justify-between">
+    <a href="#inicio" class="font-bold text-xl">Minha Escola</a>
+    <button type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-tw" class="md:hidden px-3 py-2 border rounded">☰ Menu</button>
+    <div id="menu-tw" class="hidden md:flex gap-6">
+      <a href="#inicio">Início</a>
+      <a href="#contato">Contato</a>
+    </div>
+  </div>
+</nav>`,
+    side:`<!-- Tailwind: a navegação lateral recebe utilitários de posição -->
+<header class="bg-purple-700 text-white p-4 flex gap-4 items-center">
+  <button type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-tw" class="border rounded px-3 py-2">☰ Menu</button>
+  <a href="#inicio" class="font-bold text-xl">Minha Escola</a>
+</header>
+<!-- fixed posiciona; -translate-x-full oculta o painel -->
+<aside id="menu-tw" class="fixed z-40 top-0 left-0 h-full w-64 bg-white shadow-xl p-6 -translate-x-full transition-transform duration-200">
+  <button type="button" data-menu-toggle class="block mb-6 text-purple-700">✕ Fechar</button>
+  <nav class="flex flex-col gap-4 text-gray-800">
+    <a href="#inicio">Início</a>
+    
+    <a href="#contato">Contato</a>
+  </nav>
+</aside>`
+  }
+};
+function lessonExtras(f){
+ if(f==='materialize')return `<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"><\/script><script>document.addEventListener('DOMContentLoaded',function(){M.Sidenav.init(document.querySelectorAll('.sidenav'));});<\/script>`;
+ if(f==='bootstrap')return `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"><\/script>`;
+ return `<script>document.addEventListener('click',function(e){const trigger=e.target.closest('[data-menu-toggle]');if(!trigger)return;const target=document.getElementById(trigger.getAttribute('aria-controls')||'menu-tw');if(!target)return;const side=target.tagName==='ASIDE';if(side){target.classList.toggle('-translate-x-full');target.classList.toggle('translate-x-0');}else{target.classList.toggle('hidden');target.classList.toggle('flex');target.classList.toggle('flex-col');}const open=side?target.classList.contains('translate-x-0'):!target.classList.contains('hidden');trigger.setAttribute('aria-expanded',String(open));});<\/script>`;
+}
+function exercisePreviewHTML(src){
+ // Enhanced preview receives just the authored document; no fixed / external navigation.
+ return src;
+}
+function renderLesson(){const l=lessonCatalog[lessonIdx];$('#lessonList').innerHTML=lessonCatalog.map((x,i)=>`<button class="lesson-choice ${i===lessonIdx?'active':''} ${solvedLessons.has(lessonFW+'|'+i)?'done':''}" data-lesson="${i}"><span class="lesson-index">${solvedLessons.has(lessonFW+'|'+i)?'✓':String(i+1).padStart(2,'0')}</span><span>${esc(x.name)}</span></button>`).join('');
+ $('#lessonNavOptions').style.display=lessonIdx===0?'flex':'none';$$('[data-nav-variant]').forEach(b=>b.classList.toggle('active',b.dataset.navVariant===lessonNavVariant));$('#lessonTargetFramework').textContent=names[lessonFW];renderLessonTarget();
+ $('#lessonFramework').value=lessonFW;const fl=$('#practiceFrameworkLogo');fl.textContent=lessonFW==='bootstrap'?'B':lessonFW==='tailwind'?'〰':'M';fl.className='practice-fw-logo '+lessonFW;$('#lessonNumber').textContent='Exercício '+String(lessonIdx+1).padStart(2,'0')+' de '+lessonCatalog.length;$('#lessonTitle').textContent=l.name;$('#lessonBrief').textContent=lessonIdx===0?(lessonNavVariant==='side'?'Construa um menu lateral: um botão ☰ abre o painel com a identidade do site.':'Construa uma barra superior responsiva: em telas menores, o botão ☰ deve abrir o menu.'):l.description;
+ $('#lessonRequirements').innerHTML=(lessonIdx===0&&lessonNavVariant==='side'?['Criar navegação e botão de abertura','Incluir marca e menu lateral']:l.requirements.map(k=>lessonRequirementsText[k])).map(label=>'<span>○ '+esc(label)+'</span>').join('');$('#lessonDocs').href=lessonIdx===0&&lessonNavVariant==='side'?(lessonFW==='bootstrap'?'https://getbootstrap.com/docs/5.3/components/offcanvas/':lessonFW==='materialize'?'https://materializecss.com/sidenav.html':'https://tailwindcss.com/docs/translate'):docs[lessonFW]+l.doc[lessonFW];$('#lessonCode').value=lessonDrafts[lessonDraftKey()]??lessonHtml(lessonFW,lessonIdx,false);
+ syncLessonSyntax();$('#lessonTip').classList.add('hidden');$('#lessonFeedback').textContent='Execute e clique em Verificar para analisar os requisitos.';$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';
+ updateStudentScore();
+ $$('[data-lesson]').forEach(b=>b.onclick=()=>{saveLessonDraft();lessonIdx=Number(b.dataset.lesson);renderLesson()});runLesson();}
+
+// Referências curtas, comentadas e específicas de cada framework.
+// Não substituem a solução do desafio; mostram a sintaxe que o aluno irá utilizar.
+const lessonCodeExamples={
+ bootstrap:[
+`<!-- Bootstrap: estrutura de uma barra de navegação -->
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+  <div class="container">
+    <!-- navbar-brand: identidade do site -->
+    <a class="navbar-brand" href="#">Minha Escola</a>
+    <!-- navbar-nav: organiza os links -->
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="#inicio">Início</a></li>
+    </ul>
+  </div>
+</nav>`,
+`<!-- bg-primary: cor de fundo; text-white: texto branco -->
+<section class="container bg-primary text-white p-4">
+  <h2>Minha seção</h2>
+</section>`,
+`<!-- row: linha do grid; col-md-6: 2 colunas em telas médias -->
+<div class="container"><div class="row g-3">
+  <div class="col-12 col-md-6"><div class="card card-body">Bloco A</div></div>
+  <div class="col-12 col-md-6"><div class="card card-body">Bloco B</div></div>
+</div></div>`,
+`<!-- btn: base do componente; btn-success: variante verde -->
+<button type="button" class="btn btn-success">Confirmar</button>`,
+`<!-- card: recipiente; card-body: espaço interno -->
+<article class="card"><div class="card-body">
+  <h3 class="card-title">Notícia</h3>
+  <p class="card-text">Descrição da notícia.</p>
+</div></article>`,
+`<!-- form-control: estiliza o campo; form-label: rótulo -->
+<label for="usuario" class="form-label">Usuário</label>
+<input id="usuario" type="text" class="form-control">`,
+`<!-- fs-2: título maior; fw-bold: texto em negrito -->
+<h2 class="fs-2 fw-bold text-primary">Tipografia</h2>
+<p class="text-secondary">Texto de apoio.</p>`,
+`<!-- p-4: espaço interno; my-4: margem vertical -->
+<section class="container p-4 my-4"><h2>Espaçamento</h2></section>`,
+`<!-- img-fluid: imagem que se ajusta à largura disponível -->
+<img src="https://placehold.co/600x300" alt="Paisagem ilustrativa" class="img-fluid">`,
+`<!-- list-group e list-group-item: lista visual Bootstrap -->
+<ul class="list-group"><li class="list-group-item">HTML</li><li class="list-group-item">CSS</li><li class="list-group-item">JS</li></ul>`,
+`<!-- alert e alert-success: mensagem de sucesso -->
+<div class="alert alert-success" role="alert"><p>Operação concluída!</p></div>`,
+`<!-- table e table-striped: tabela com linhas alternadas -->
+<table class="table table-striped"><thead><tr><th>Curso</th></tr></thead>
+<tbody><tr><td>HTML</td></tr><tr><td>CSS</td></tr></tbody></table>`,
+`<!-- text-center: centraliza texto; d-flex: alinha elementos -->
+<section class="text-center"><h2>Equipe</h2><div class="d-flex gap-3"><span>Ana</span><span>João</span></div></section>`,
+`<!-- bg-dark e text-white: cores nativas Bootstrap -->
+<footer class="bg-dark text-white p-4">© 2026 Escola <a href="#contato">Contato</a></footer>`],
+ materialize:[
+`<!-- nav: barra de navegação com a cor nativa deep-purple -->
+<nav class="deep-purple">
+  <!-- nav-wrapper: estrutura interna do Materialize -->
+  <div class="nav-wrapper container">
+    <a href="#" class="brand-logo">Minha Escola</a>
+    <!-- right: posiciona links à direita -->
+    <ul class="right hide-on-med-and-down">
+      <li><a href="#inicio">Início</a></li>
+    </ul>
+  </div>
+</nav>`,
+`<!-- blue: cor de fundo nativa; white-text: texto branco -->
+<section class="container section blue white-text">
+  <h4>Minha seção</h4>
+</section>`,
+`<!-- row: linha de 12 colunas; s12: celular; m6: tablet -->
+<div class="row">
+  <div class="col s12 m6"><div class="card-panel">Bloco A</div></div>
+  <div class="col s12 m6"><div class="card-panel">Bloco B</div></div>
+</div>`,
+`<!-- btn: botão do Materialize; waves-effect: efeito ao clicar -->
+<button class="btn waves-effect waves-light green">Confirmar</button>`,
+`<!-- card-content: conteúdo; card-title: título do card -->
+<article class="card"><div class="card-content">
+  <span class="card-title">Notícia</span>
+  <p>Descrição da notícia.</p>
+</div></article>`,
+`<!-- input-field: campo com label flutuante -->
+<div class="input-field">
+  <input id="usuario" type="text">
+  <label for="usuario">Usuário</label>
+</div>`,
+`<!-- flow-text: texto fluido; purple-text: cor do texto -->
+<h4 class="purple-text">Tipografia</h4><p class="flow-text">Texto fluido.</p>`,
+`<!-- section: espaçamento vertical; container: largura central -->
+<section class="container section"><h4>Espaçamento</h4></section>`,
+`<!-- responsive-img: imagem que respeita a largura disponível -->
+<img class="responsive-img" src="https://placehold.co/600x300" alt="Paisagem ilustrativa">`,
+`<!-- collection e collection-item: lista visual nativa -->
+<ul class="collection"><li class="collection-item">HTML</li><li class="collection-item">CSS</li><li class="collection-item">JS</li></ul>`,
+`<!-- card-panel e green lighten-4: mensagem com cor -->
+<div class="card-panel green lighten-4"><p>Operação concluída!</p></div>`,
+`<!-- striped: tabela com linhas alternadas -->
+<table class="striped"><thead><tr><th>Curso</th></tr></thead>
+<tbody><tr><td>HTML</td></tr><tr><td>CSS</td></tr></tbody></table>`,
+`<!-- center-align: centraliza; row: organiza elementos -->
+<section class="center-align"><h4>Equipe</h4><div class="row"><div class="col s6">Ana</div><div class="col s6">João</div></div></section>`,
+`<!-- page-footer: componente próprio de rodapé -->
+<footer class="page-footer deep-purple"><div class="container">© 2026 Escola <a href="#contato" class="white-text">Contato</a></div></footer>`],
+ tailwind:[
+`<!-- bg-purple-700: fundo; flex: linha; justify-between: separação -->
+<nav class="bg-purple-700 text-white p-4">
+  <div class="max-w-5xl mx-auto flex justify-between items-center">
+    <a href="#" class="font-bold text-xl">Minha Escola</a>
+    <a href="#inicio" class="hover:underline">Início</a>
+  </div>
+</nav>`,
+`<!-- bg-blue-600: cor; p-6: espaço interno; text-white: texto -->
+<section class="bg-blue-600 text-white p-6">
+  <h2 class="text-2xl font-bold">Minha seção</h2>
+</section>`,
+`<!-- grid-cols-1: celular; md:grid-cols-2: telas médias -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="rounded shadow p-4">Bloco A</div>
+  <div class="rounded shadow p-4">Bloco B</div>
+</div>`,
+`<!-- bg-green-600: cor; px-4 py-2: espaçamento; rounded: cantos -->
+<button class="bg-green-600 text-white px-4 py-2 rounded">Confirmar</button>`,
+`<!-- shadow: sombra; rounded-lg: cantos; p-6: espaço -->
+<article class="shadow rounded-lg p-6">
+  <h3 class="text-xl font-bold">Notícia</h3>
+  <p>Descrição da notícia.</p>
+</article>`,
+`<!-- block: label em linha própria; border: borda -->
+<label for="usuario" class="block mb-1">Usuário</label>
+<input id="usuario" type="text" class="border rounded p-2">`,
+`<!-- text-2xl: tamanho; font-bold: negrito -->
+<h2 class="text-2xl font-bold text-blue-600">Tipografia</h2><p class="text-gray-600">Texto de apoio.</p>`,
+`<!-- p-6: padding; my-4: margem vertical -->
+<section class="p-6 my-4"><h2>Espaçamento</h2></section>`,
+`<!-- max-w-full h-auto: imagem responsiva -->
+<img class="max-w-full h-auto" src="https://placehold.co/600x300" alt="Paisagem ilustrativa">`,
+`<!-- divide-y: divisão visual; border: contorno -->
+<ul class="border divide-y"><li class="p-2">HTML</li><li class="p-2">CSS</li><li class="p-2">JS</li></ul>`,
+`<!-- bg-green-100: cor de fundo; p-4: espaçamento -->
+<div class="bg-green-100 p-4"><p>Operação concluída!</p></div>`,
+`<!-- border: borda; p-2: espaçamento das células -->
+<table class="border"><thead><tr><th class="p-2">Curso</th></tr></thead>
+<tbody><tr><td>HTML</td></tr><tr><td>CSS</td></tr></tbody></table>`,
+`<!-- text-center: centralização; flex: itens em linha -->
+<section class="text-center"><h2>Equipe</h2><div class="flex gap-4"><span>Ana</span><span>João</span></div></section>`,
+`<!-- bg-gray-900: fundo; p-4: espaço interno -->
+<footer class="bg-gray-900 text-white p-4">© 2026 Escola <a href="#contato">Contato</a></footer>`]
+};
+function renderLessonTarget(){
+ const target=$('#lessonExampleCode');if(!target)return;
+ const example=lessonIdx===0?(navSamples[lessonFW][lessonNavVariant]+(lessonFW==='materialize'?`
+<!-- No fim do body, após carregar materialize.min.js:
+  document.addEventListener('DOMContentLoaded', () => {
+    M.Sidenav.init(document.querySelectorAll('.sidenav'));
+  });
+  A estrutura inicial do exercício já inclui essa inicialização. -->`:lessonFW==='bootstrap'?`
+<!-- Carregue bootstrap.bundle.min.js antes de fechar o body.
+  O bundle ativa Collapse e Offcanvas automaticamente. -->`:`
+<!-- Tailwind estiliza; para abrir/fechar, use JavaScript.
+  O exercício já inclui esse manipulador no fim do body. -->`)):lessonCodeExamples[lessonFW][lessonIdx];
+ // textContent preserva o HTML como TEXTO: não executa o exemplo nem expõe tags.
+ target.innerHTML=highlight(example);
+}
+
+function runLesson(){syncLessonSyntax();const iframe=$('#lessonFrame');if(!iframe)return;iframe.srcdoc=exercisePreviewHTML($('#lessonCode').value);saveLessonDraft()}
+function validateLesson(){
+ const src=$('#lessonCode').value;const checks=lessonChecks(src),n=checks.filter(v=>v.ok).length;
+ const report=computeDiagnostics(src,checks);
+ $('#lessonChecks').innerHTML=checks.map(x=>`<div class="lesson-check ${x.ok?'pass':'fail'}">${x.ok?'✓':'○'} ${esc(x.label)}</div>`).join('');
+ $('#lessonDiagnostics').innerHTML=report.errors.length?'<strong>Diagnóstico do código</strong><ul>'+report.errors.map(msg=>'<li>'+esc(msg)+'</li>').join('')+'</ul>':'<div class="diag-ok">Nenhum erro estrutural básico detectado.</div>';
+ if(!studentName.trim()){$('#lessonFeedback').textContent='Informe seu nome no topo para registrar pontos. '+n+' de '+checks.length+' critérios atendidos.';return;}
+ const success=n===checks.length&&!report.blocked;const already=solvedLessons.has(currentLessonKey());
+ $('#lessonFeedback').textContent=success?(already?'Exercício validado! Pontuação já registrada.':'Exercício validado! +100 pontos.'):report.blocked?'A solução precisa ser autoral e não conter erros estruturais.':'Você atendeu '+n+' de '+checks.length+' critérios. Confira o diagnóstico abaixo.';
+ if(success){solvedLessons.add(currentLessonKey());persistStudentProgress();updateStudentScore();renderLessonListOnly();}
+}
+function renderLessonListOnly(){$$('[data-lesson]').forEach(b=>{let id=Number(b.dataset.lesson),done=solvedLessons.has(lessonFW+'|'+id);b.classList.toggle('done',done);b.querySelector('.lesson-index').textContent=done?'✓':String(id+1).padStart(2,'0')})}
+$('#studentName').value=studentName;loadStudentProgress();updateStudentScore();
+$$('[data-nav-variant]').forEach(b=>b.onclick=()=>{if(lessonNavVariant===b.dataset.navVariant)return;saveLessonDraft();lessonNavVariant=b.dataset.navVariant;renderLesson();$('#lessonFeedback').textContent='Modelo alterado. Crie o menu no editor e execute para testar.';});$('#lessonFramework').onchange=e=>{saveLessonDraft();lessonFW=e.target.value;renderLesson()};$('#lessonRun').onclick=runLesson;$('#lessonCheck').onclick=()=>{runLesson();validateLesson()};$('#lessonHint').onclick=()=>{const tip=$('#lessonTip');tip.innerHTML=lessonHintHtml(lessonIdx,lessonFW);tip.classList.toggle('hidden')};$('#lessonReset').onclick=()=>{if(!confirm('Restaurar o código inicial deste exercício?'))return;$('#lessonCode').value=lessonHtml(lessonFW,lessonIdx,false);saveLessonDraft();$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';runLesson()};$('#lessonNext').onclick=()=>{const report=computeDiagnostics($('#lessonCode').value,lessonChecks($('#lessonCode').value));if(report.errors.some(e=>/repete integralmente|c[oó]pia|exemplo apresentado/i.test(e))){validateLesson();notify('Altere o código: não é permitido avançar com cópia do exemplo.');return;}saveLessonDraft();lessonIdx=(lessonIdx+1)%lessonCatalog.length;renderLesson()};$('#lessonCode').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();let t=e.target,a=t.selectionStart,b=t.selectionEnd;t.setRangeText('  ',a,b,'end');t.dispatchEvent(new Event('input',{bubbles:true}))}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runLesson()}});$('#lessonCode').oninput=()=>{saveLessonDraft();syncLessonSyntax()};$('#lessonCode').addEventListener('scroll',syncLessonSyntax);$('#lessonCode').addEventListener('keyup',syncLessonSyntax);
+let currentLessonDevice='desktop';
+function syncLessonDevice(device){currentLessonDevice=device;$('#lessonFrameWrap').dataset.device=device;$('#lessonFullFrameWrap').dataset.device=device;$$('[data-lesson-device]').forEach(b=>b.classList.toggle('active',b.dataset.lessonDevice===device));$$('[data-full-device]').forEach(b=>b.classList.toggle('active',b.dataset.fullDevice===device));}
+$$('[data-lesson-device]').forEach(b=>b.addEventListener('click',()=>syncLessonDevice(b.dataset.lessonDevice)));
+$$('[data-full-device]').forEach(b=>b.addEventListener('click',()=>syncLessonDevice(b.dataset.fullDevice)));
+// PATCH_FA_V16: reutilizar o iframe que já exibe o exercício no editor.
+// Assim, tela cheia mostra o MESMO documento, sem segunda prévia vazia.
+function openLessonFullPreview(){
+ const live=$('#lessonFrame');
+ if(!live)return;
+ const destination=$('#lessonFullFrameWrap');
+ const unused=$('#lessonFullFrame');
+ if(unused)unused.remove();
+ $('#lessonFullPreview').classList.remove('hidden');
+ document.body.classList.add('preview-lock');
+ destination.appendChild(live);
+ syncLessonDevice(currentLessonDevice);
+}
+$('#lessonMaxPreview').onclick=openLessonFullPreview;
+function closeLessonFullPreview(){
+ const live=$('#lessonFrame');
+ const normal=$('#lessonFrameWrap');
+ if(live&&normal)normal.appendChild(live);
+ $('#lessonFullPreview').classList.add('hidden');
+ document.body.classList.remove('preview-lock');
+ syncLessonDevice(currentLessonDevice);
+}
+$('#closeFullPreview').onclick=closeLessonFullPreview;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#lessonFullPreview').classList.contains('hidden'))closeLessonFullPreview()});
+$('#lessonCompactReference').onclick=()=>{const section=$('.practice-challenge');const compact=section.classList.toggle('practice-reference-compact');$('#lessonCompactReference').textContent=compact?'↕ Expandir referência':'↕ Reduzir referência'};
+
+
+
+// v14: exemplos de orientação por atividade sem entregar a solução pronta.
+const guideSteps={
+  0:['Comece com a estrutura de navegação do framework escolhido.','Adicione o nome do site ou sua marca e configure o alinhamento.','Se optar pelo menu lateral, inclua o botão e conecte-o ao painel pelo identificador correto.'],
+  1:['Crie uma section que contenha um título com h2, h3 ou h4.','Escolha uma cor no catálogo e copie uma classe de fundo adequada.','Aplique a classe na section, execute e confira a legibilidade do título.'],
+  2:['Crie uma linha ou contêiner que receba os elementos.','Adicione três itens independentes.','Use classes responsivas para que a quantidade de colunas varie por largura.'],
+  3:['Crie um button com um texto de ação que explique a finalidade.','Aplique as classes nativas de botão do framework.','Se desejar, adicione um ícone e execute para testar a apresentação.'],
+  4:['Crie o contêiner do card.','Inclua um título e um parágrafo informativo.','Aplique as classes de corpo, sombra e espaçamento adequadas.'],
+  5:['Crie um form com labels associados aos campos.','Acrescente um campo de nome e outro de e-mail com os tipos corretos.','Inclua um botão type="submit" e teste a apresentação.'],
+  6:['Insira um título e um parágrafo.','Diferencie tamanho ou peso com os recursos do framework.','Experimente outra cor de texto e confira o contraste.'],
+  7:['Crie uma seção com título.','Identifique quais classes de espaçamento realmente existem no framework escolhido.','Observe o afastamento interno e externo na prévia; se não houver utilitário nativo, consulte as opções do catálogo.'],
+  8:['Adicione uma imagem com atributo src.','Escreva um alt descritivo.','Utilize a classe responsiva e confira o resultado no celular.'],
+  9:['Crie uma lista semântica com ul e pelo menos três li.','Utilize as classes próprias de lista ou coleção do framework.','Execute e verifique os espaçamentos entre itens.'],
+  10:['Insira o texto da mensagem.','Escolha uma cor de alerta apropriada para sua intenção.','Aplique contraste e espaçamento para garantir leitura.'],
+  11:['Comece por table e adicione thead e tbody.','Crie cabeçalhos e duas linhas de dados.','Aplique a variante de tabela do framework e confira a apresentação.'],
+  12:['Insira um título.','Aplique a classe de centralização ou alinhamento.','Adicione dois elementos e organize-os horizontalmente.'],
+  13:['Crie um footer após o conteúdo principal.','Inclua copyright e um link navegável.','Estilize o rodapé e veja se ele fica legível nas três larguras.']
+};
+const lessonFrameworkAdvice={
+ bootstrap:['Use <code>navbar</code> junto das classes de cor e contêiner.','As cores de contexto usam, por exemplo, <code>bg-primary</code>, <code>bg-success</code> e <code>text-white</code>.','Para colunas responsivas, investigue <code>row</code>, <code>col-12</code> e <code>col-md-4</code>.','Combine <code>btn</code> com uma variante, como <code>btn-primary</code>.','Explore <code>card</code> e <code>card-body</code>.','Explore <code>form-control</code> e <code>form-label</code>.','Use <code>fs-1</code> a <code>fs-6</code>, <code>fw-bold</code> e <code>text-*</code>.','Explore <code>p-0</code> a <code>p-5</code>, <code>m-0</code> a <code>m-5</code> e variantes por eixo.','Use <code>img-fluid</code>.','Consulte <code>list-group</code> e <code>list-group-item</code>.','Consulte <code>alert</code> e <code>alert-success</code>.','Use <code>table</code>, <code>table-striped</code> ou <code>table-hover</code>.','Explore <code>text-center</code> e <code>d-flex</code>.','Combine elementos semânticos com classes <code>bg-*</code> e <code>text-*</code>.'],
+ materialize:['Dentro de <code>nav</code>, a estrutura usa <code>nav-wrapper</code>.','Use cores como <code>blue</code> ou <code>deep-purple lighten-2</code> e <code>white-text</code>.','Explore <code>row</code> e <code>col s12 m4</code>.','Use <code>btn</code> e opcionalmente <code>waves-effect</code>.','O card emprega <code>card</code>, <code>card-content</code> e <code>card-title</code>.','Campos podem ser agrupados em <code>input-field</code>.','Explore os títulos HTML e a classe <code>flow-text</code>; o Materialize não tem uma escala utilitária text-xs a text-9xl.','Explore <code>container</code>, <code>section</code> e <code>divider</code>; versões 1.x não trazem uma escala geral de padding/margin igual à do Bootstrap.','Use <code>responsive-img</code>.','Explore <code>collection</code> e <code>collection-item</code>.','Combine <code>card-panel</code> com uma cor oficial.','Explore <code>striped</code>, <code>highlight</code> e <code>responsive-table</code>.','Use <code>center-align</code> e as linhas do grid.','A classe <code>page-footer</code> fornece a estrutura visual do rodapé.'],
+ tailwind:['Monte a barra com <code>flex</code>, <code>justify-between</code> e utilitários de cor.','Uma cor pode ser <code>bg-blue-600</code> e <code>text-white</code>.','Explore <code>grid</code>, <code>grid-cols-1</code> e <code>md:grid-cols-3</code>.','Combine <code>px-4</code>, <code>py-2</code>, <code>rounded</code> e <code>bg-*</code>.','Use <code>shadow</code>, <code>rounded-lg</code> e <code>p-4</code>.','Explore <code>block</code>, <code>border</code>, <code>p-2</code> e <code>w-full</code>.','Explore <code>text-sm</code>, <code>text-2xl</code>, <code>font-semibold</code> e <code>font-sans</code>.','Explore <code>p-4</code>, <code>mt-6</code>, <code>px-8</code> e <code>gap-4</code>.','Use <code>w-full</code> e <code>h-auto</code>.','Combine <code>border</code>, <code>divide-y</code> e <code>p-3</code>.','Explore <code>bg-green-100</code>, <code>border</code>, <code>text-green-800</code>.','Explore <code>border-collapse</code>, <code>border</code> e <code>p-2</code>.','Use <code>text-center</code> e <code>flex</code>.','Combine <code>bg-slate-900</code>, <code>p-6</code> e <code>text-white</code>.']
+};
+function lessonHintHtml(index,fw){const steps=(index===0&&lessonNavVariant==='side')?['Crie o botão que abre o menu lateral, com uma indicação visual de menu.','Crie a área lateral com links para Início, Cursos e Contato.','Associe o botão à área lateral: data-target no Materialize; data-bs-target no Bootstrap; identificador e JavaScript no Tailwind.','Inclua a inicialização necessária, execute e clique no botão em modo desktop e celular.']:(guideSteps[index]||[]);return `<strong>Como começar — ${esc(lessonCatalog[index].name)}</strong><ol>${steps.map(t=>'<li>'+esc(t)+'</li>').join('')}</ol><p style="margin:8px 0 0"><b>No ${esc(names[fw])}:</b> ${lessonFrameworkAdvice[fw][index]}</p><p style="margin:6px 0 0">Use o botão <b>Cores, textos e espaçamentos</b> para consultar e copiar classes oficiais, depois execute sua página para conferir o resultado.</p>`}
+
+// Paleta completa do Materialize 1.0.0, conforme https://materializecss.com/color.html
+// Cada sequência segue: lighten-5 ... lighten-1, base, darken-1 ... darken-4, accent-1 ... accent-4.
+const materializeColors={
+ 'red':'ffebee ffcdd2 ef9a9a e57373 ef5350 f44336 e53935 d32f2f c62828 b71c1c ff8a80 ff5252 ff1744 d50000',
+ 'pink':'fce4ec f8bbd0 f48fb1 f06292 ec407a e91e63 d81b60 c2185b ad1457 880e4f ff80ab ff4081 f50057 c51162',
+ 'purple':'f3e5f5 e1bee7 ce93d8 ba68c8 ab47bc 9c27b0 8e24aa 7b1fa2 6a1b9a 4a148c ea80fc e040fb d500f9 aa00ff',
+ 'deep-purple':'ede7f6 d1c4e9 b39ddb 9575cd 7e57c2 673ab7 5e35b1 512da8 4527a0 311b92 b388ff 7c4dff 651fff 6200ea',
+ 'indigo':'e8eaf6 c5cae9 9fa8da 7986cb 5c6bc0 3f51b5 3949ab 303f9f 283593 1a237e 8c9eff 536dfe 3d5afe 304ffe',
+ 'blue':'e3f2fd bbdefb 90caf9 64b5f6 42a5f5 2196f3 1e88e5 1976d2 1565c0 0d47a1 82b1ff 448aff 2979ff 2962ff',
+ 'light-blue':'e1f5fe b3e5fc 81d4fa 4fc3f7 29b6f6 03a9f4 039be5 0288d1 0277bd 01579b 80d8ff 40c4ff 00b0ff 0091ea',
+ 'cyan':'e0f7fa b2ebf2 80deea 4dd0e1 26c6da 00bcd4 00acc1 0097a7 00838f 006064 84ffff 18ffff 00e5ff 00b8d4',
+ 'teal':'e0f2f1 b2dfdb 80cbc4 4db6ac 26a69a 009688 00897b 00796b 00695c 004d40 a7ffeb 64ffda 1de9b6 00bfa5',
+ 'green':'e8f5e9 c8e6c9 a5d6a7 81c784 66bb6a 4caf50 43a047 388e3c 2e7d32 1b5e20 b9f6ca 69f0ae 00e676 00c853',
+ 'light-green':'f1f8e9 dcedc8 c5e1a5 aed581 9ccc65 8bc34a 7cb342 689f38 558b2f 33691e ccff90 b2ff59 76ff03 64dd17',
+ 'lime':'f9fbe7 f0f4c3 e6ee9c dce775 d4e157 cddc39 c0ca33 afb42b 9e9d24 827717 f4ff81 eeff41 c6ff00 aeea00',
+ 'yellow':'fffde7 fff9c4 fff59d fff176 ffee58 ffeb3b fdd835 fbc02d f9a825 f57f17 ffff8d ffff00 ffea00 ffd600',
+ 'amber':'fff8e1 ffecb3 ffe082 ffd54f ffca28 ffc107 ffb300 ffa000 ff8f00 ff6f00 ffe57f ffd740 ffc400 ffab00',
+ 'orange':'fff3e0 ffe0b2 ffcc80 ffb74d ffa726 ff9800 fb8c00 f57c00 ef6c00 e65100 ffd180 ffab40 ff9100 ff6d00',
+ 'deep-orange':'fbe9e7 ffccbc ffab91 ff8a65 ff7043 ff5722 f4511e e64a19 d84315 bf360c ff9e80 ff6e40 ff3d00 dd2c00',
+ 'brown':'efebe9 d7ccc8 bcaaa4 a1887f 8d6e63 795548 6d4c41 5d4037 4e342e 3e2723',
+ 'grey':'fafafa f5f5f5 eeeeee e0e0e0 bdbdbd 9e9e9e 757575 616161 424242 212121',
+ 'blue-grey':'eceff1 cfd8dc b0bec5 90a4ae 78909c 607d8b 546e7a 455a64 37474f 263238'
+};
+const materializeVariantNames=['lighten-5','lighten-4','lighten-3','lighten-2','lighten-1','','darken-1','darken-2','darken-3','darken-4','accent-1','accent-2','accent-3','accent-4'];
+let guideTab='colors';let guideQuery='';
+const guideBaseDocs={bootstrap:'https://getbootstrap.com/docs/5.3/',materialize:'https://materializecss.com/',tailwind:'https://tailwindcss.com/docs/'};
+const tailwindNames='slate gray zinc neutral stone red orange amber yellow lime green emerald teal cyan sky blue indigo violet purple fuchsia pink rose'.split(' ');
+const tailwindBaseColors={'slate':'64748b','gray':'6b7280','zinc':'71717a','neutral':'737373','stone':'78716c','red':'ef4444','orange':'f97316','amber':'f59e0b','yellow':'eab308','lime':'84cc16','green':'22c55e','emerald':'10b981','teal':'14b8a6','cyan':'06b6d4','sky':'0ea5e9','blue':'3b82f6','indigo':'6366f1','violet':'8b5cf6','purple':'a855f7','fuchsia':'d946ef','pink':'ec4899','rose':'f43f5e'};
+function classChip(code,desc){return `<button type="button" class="guide-class" data-copy-class="${attr(code)}" title="Copiar ${attr(code)}"><strong>${esc(code)}</strong>${desc?'<span>'+esc(desc)+'</span>':''}</button>`}
+function guideColors(){let intro='',groups=[];
+ if(lessonFW==='materialize'){
+  intro='Paleta completa do Materialize 1.x. Cores de fundo: <code>blue lighten-2</code>. Para texto: <code>blue-text text-darken-2</code>. Clique numa amostra para copiar a classe de fundo.';
+  Object.entries(materializeColors).forEach(([name,str])=>{const colors=str.split(' ');let n=colors.length===14?materializeVariantNames:materializeVariantNames.slice(0,10);groups.push({name,items:colors.map((hex,i)=>({code:name+(n[i]?' '+n[i]:''),hex:'#'+hex,desc:'#'+hex}))})});
+  groups.push({name:'Cores especiais',items:[{code:'black',hex:'#000000'},{code:'white',hex:'#ffffff'},{code:'transparent',hex:'transparent'}]});
+ }else if(lessonFW==='bootstrap'){
+  intro='Bootstrap 5.3: paleta de cores semânticas e utilitários. As variantes exatas dependem das variáveis do tema; não existe uma classe arbitrária <code>bg-blue-500</code> no Bootstrap.';
+  const cs={'primary':'#0d6efd','secondary':'#6c757d','success':'#198754','danger':'#dc3545','warning':'#ffc107','info':'#0dcaf0','light':'#f8f9fa','dark':'#212529','body':'#ffffff'};
+  groups.push({name:'Cores de fundo',items:Object.entries(cs).map(([name,hex])=>({code:'bg-'+name,hex}))});
+  groups.push({name:'Cores de texto',items:Object.keys(cs).map(name=>({code:'text-'+name,hex:cs[name]}))});
+  groups.push({name:'Versões sutis',items:['primary','secondary','success','danger','warning','info','light','dark'].map(name=>({code:'bg-'+name+'-subtle',hex:cs[name]}))});
+ }else{
+  intro='Tailwind: todas as famílias tradicionais com níveis de intensidade de 50 a 950. As amostras representam a família de cor; a tonalidade exata é definida pelo Tailwind no projeto.';
+  for(const name of tailwindNames){groups.push({name,items:[50,100,200,300,400,500,600,700,800,900,950].map(i=>({code:'bg-'+name+'-'+i,hex:'#'+tailwindBaseColors[name]}))})}
+  groups.push({name:'Cores especiais',items:['bg-white','bg-black','bg-transparent','text-white','text-black','text-transparent'].map(code=>({code,hex:code.includes('white')?'#fff':code.includes('black')?'#000':'transparent'}))});
+ }
+ return {intro,groups};
+}
+function guideType(){let groups=[],intro='Tipografia: prefira as classes do framework quando existirem. Veja também tamanhos, pesos, famílias e alinhamento.';
+ if(lessonFW==='materialize'){
+ intro='O Materialize 1.x usa Roboto como fonte padrão e títulos HTML h1–h6. Não oferece utilitários nativos para todos os tamanhos de texto ou famílias de fontes; nesses casos, use CSS personalizado.';
+ groups=[{name:'Tamanhos e destaques',codes:[['h1','Elemento HTML de título'],['h2','Elemento HTML de título'],['h3','Elemento HTML de título'],['h4','Elemento HTML de título'],['h5','Elemento HTML de título'],['h6','Elemento HTML de título'],['flow-text','Parágrafos com tamanho fluido']]},{name:'Alinhamento e visibilidade',codes:['left-align','center-align','right-align','truncate','hide-on-small-only','hide-on-med-and-down'].map(x=>[x,'Classe nativa'])},{name:'Fontes',codes:[['Roboto','Fonte padrão do tema; não é classe CSS'],['CSS personalizado','Para escolher outras famílias ou escalas de fonte']]}];
+ }else if(lessonFW==='bootstrap'){
+ groups=[{name:'Tamanhos',codes:[...Array.from({length:6},(_,i)=>['fs-'+(i+1),'Escala de fonte']),...Array.from({length:6},(_,i)=>['display-'+(i+1),'Título de destaque']),['lead','Parágrafo de destaque'],['small','Texto menor']]},{name:'Pesos, fontes e alinhamento',codes:['fw-bold','fw-semibold','fw-normal','fw-light','fst-italic','font-monospace','text-start','text-center','text-end','text-wrap','text-nowrap'].map(x=>[x,'Classe nativa'])},{name:'Famílias',codes:[['font-monospace','Família monoespaçada'],['Fonte padrão','Pilha de fontes do tema definida pelo Bootstrap']]}];
+ }else{
+ groups=[{name:'Tamanhos',codes:'text-xs text-sm text-base text-lg text-xl text-2xl text-3xl text-4xl text-5xl text-6xl text-7xl text-8xl text-9xl'.split(' ').map(x=>[x,'Utilitário de tamanho'])},{name:'Pesos e fontes',codes:'font-thin font-extralight font-light font-normal font-medium font-semibold font-bold font-extrabold font-black font-sans font-serif font-mono italic not-italic'.split(' ').map(x=>[x,'Utilitário de tipografia'])},{name:'Alinhamento',codes:'text-left text-center text-right text-justify text-start text-end truncate whitespace-nowrap'.split(' ').map(x=>[x,'Classe nativa'])}];
+ }
+ return {intro,groups};
+}
+function guideSpacing(){let groups=[],intro='As escalas de espaçamento variam conforme o framework; use somente classes existentes.';
+ if(lessonFW==='materialize'){
+ intro='O Materialize 1.x não tem uma escala utilitária nativa de p-1, m-2, px-4 etc. Utilize seus contêineres, seções e grid. Para margens e paddings específicos, escreva CSS próprio.';
+ groups=[{name:'Layout e espaçamento estrutural',codes:[['container','Limita a largura do conteúdo'],['section','Acrescenta espaçamento vertical à seção'],['row','Agrupa colunas do grid'],['col s12 m6 l4','Larguras por breakpoint'],['divider','Separador horizontal'],['valign-wrapper','Centraliza verticalmente via flex']]},{name:'Alinhamento e helpers',codes:['left-align','right-align','center-align','left','right','hide','hide-on-med-and-down'].map(x=>[x,'Classe nativa'])},{name:'Personalização',codes:[['padding: 16px;','CSS personalizado, não classe nativa'],['margin: 24px;','CSS personalizado, não classe nativa']]}];
+ }else if(lessonFW==='bootstrap'){
+ const axes=['m','mt','mb','ms','me','mx','my','p','pt','pb','ps','pe','px','py'];
+ groups=[{name:'Escala nativa 0–5',codes:axes.flatMap(a=>[0,1,2,3,4,5].map(n=>[a+'-'+n,a.startsWith('m')?'Margem':'Padding']))},{name:'Margens automáticas e gaps',codes:['m-auto','mx-auto','ms-auto','me-auto','gap-0','gap-1','gap-2','gap-3','gap-4','gap-5','g-0','g-1','g-2','g-3','g-4','g-5'].map(x=>[x,'Classe nativa'])},{name:'Breakpoints',codes:['p-md-3','px-lg-4','mt-sm-2','mb-xl-5','gap-lg-3'].map(x=>[x,'Exemplo de classe responsiva'])}];
+ }else{
+ const scale=['0','px','0.5','1','1.5','2','2.5','3','3.5','4','5','6','7','8','9','10','11','12','14','16','20','24','28','32','36','40','44','48','52','56','60','64','72','80','96'];
+ groups=[{name:'Padding',codes:['p','px','py','pt','pb','ps','pe'].flatMap(a=>scale.map(n=>[a+'-'+n,'Utilitário de espaçamento']))},{name:'Margem',codes:['m','mx','my','mt','mb','ms','me'].flatMap(a=>scale.map(n=>[a+'-'+n,'Utilitário de espaçamento']))},{name:'Gap',codes:scale.map(n=>['gap-'+n,'Espaço entre elementos'])},{name:'Automático e responsivo',codes:['mx-auto','my-auto','mt-auto','md:p-6','lg:gap-8','sm:mt-4'].map(x=>[x,'Classe nativa'])}];
+ }
+ return {intro,groups};
+}
+function renderClassGuide(){const data=guideTab==='colors'?guideColors():guideTab==='type'?guideType():guideSpacing();const query=guideQuery.trim().toLowerCase();
+ $('#guideFrameworkLabel').textContent=names[lessonFW];$('#guideOfficial').href=guideTab==='colors'?(lessonFW==='materialize'?'https://materializecss.com/color.html':lessonFW==='tailwind'?'https://tailwindcss.com/docs/colors':'https://getbootstrap.com/docs/5.3/utilities/colors/'):guideTab==='type'?(lessonFW==='materialize'?'https://materializecss.com/typography.html':lessonFW==='tailwind'?'https://tailwindcss.com/docs/font-size':'https://getbootstrap.com/docs/5.3/utilities/text/'):(lessonFW==='materialize'?'https://materializecss.com/helpers.html':lessonFW==='tailwind'?'https://tailwindcss.com/docs/padding':'https://getbootstrap.com/docs/5.3/utilities/spacing/');
+ $$('.classguide-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.guideTab===guideTab));
+ const html=data.groups.map(g=>{const filtered=(g.items||g.codes||[]).filter(x=>((x.code||x[0])+' '+g.name+' '+(x.desc||x[1]||'')).toLowerCase().includes(query));if(!filtered.length)return '';
+ const items=g.items?`<div class="guide-swatches">${filtered.map(x=>`<button type="button" class="guide-swatch" data-copy-class="${attr(x.code)}"><span class="guide-swatch-chip" style="background:${x.hex}"></span><code>${esc(x.code)}</code><small>${esc(x.desc||'Copiar classe')}</small></button>`).join('')}</div>`:`<div class="guide-classes">${filtered.map(x=>classChip(x[0],x[1])).join('')}</div>`;
+ return `<section class="guide-group"><h3>${esc(g.name)}</h3>${items}</section>`}).join('');
+ $('#classGuideContent').innerHTML='<div class="guide-intro">'+data.intro+'</div>'+(html||'<p>Nenhuma classe encontrada para este filtro.</p>');
+ $$('[data-copy-class]',$('#classGuideContent')).forEach(b=>b.addEventListener('click',async()=>{await copyText(b.dataset.copyClass);notify('Copiado: '+b.dataset.copyClass)}));
+}
+function closeClassGuide(){$('#classGuideOverlay').classList.add('hidden');document.body.classList.remove('preview-lock')}
+$('#lessonClassGuide').onclick=()=>{guideTab='colors';guideQuery='';$('#classGuideSearch').value='';renderClassGuide();$('#classGuideOverlay').classList.remove('hidden');document.body.classList.add('preview-lock')};
+$('#closeClassGuide').onclick=closeClassGuide;
+$('#classGuideOverlay').addEventListener('click',e=>{if(e.target.id==='classGuideOverlay')closeClassGuide()});
+$$('.classguide-tabs button').forEach(b=>b.onclick=()=>{guideTab=b.dataset.guideTab;renderClassGuide()});
+$('#classGuideSearch').addEventListener('input',e=>{guideQuery=e.target.value;renderClassGuide()});
+$('#lessonCopyExample').onclick=async()=>{await copyText(lessonCodeExamples[lessonFW][lessonIdx]);notify('Exemplo copiado para estudo. A cópia literal não é aceita como resolução do exercício.')};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#classGuideOverlay').classList.contains('hidden'))closeClassGuide()});
+
+try{let stored=JSON.parse(localStorage.getItem('frameworkAcademyProject')||'null');if(stored&&Array.isArray(stored.blocks)&&frameworks.includes(stored.framework)){states.create={...fresh(),...stored};syncSelection(states.create)}}catch{}
+render();
+</script>
+<script>
+// Integração do laboratório com PostgreSQL; o servidor é a fonte da pontuação.
+let loggedStudent = null;
+let teacherRowsCache = [];
+const api = async (url, options={}) => {
+ const response=await fetch(url,{credentials:'same-origin',headers:{'Content-Type':'application/json'},...options});
+ const value=await response.json().catch(()=>({error:'Resposta inválida do servidor'}));
+ if(!response.ok)throw new Error(value.error||'Falha de comunicação com o servidor');
+ return value;
+};
+function refreshRegisteredProgress(progress){
+ solvedLessons.clear();
+ for(const x of progress.completed||[])solvedLessons.add(x.framework+'|'+x.exercise);
+ const total=solvedLessons.size;
+ document.getElementById('practiceDone').textContent=total+'/42';
+ document.getElementById('studentScore').textContent=(progress.points||0)+' pontos';
+ const list=document.getElementById('lessonList');
+ if(list?.children.length)renderLessonListOnly();
+}
+function enterPractice(student,progress){
+ loggedStudent=student;studentName=student.name;
+ document.getElementById('studentName').value=student.name;
+ document.getElementById('studentIdentity').textContent=student.name+' • '+student.enrollment;
+ document.getElementById('studentCourse').textContent=student.course;
+ document.getElementById('studentGate').hidden=true;
+ document.getElementById('studentPracticeBody').hidden=false;
+ refreshRegisteredProgress(progress);
+ renderLesson();
+}
+document.getElementById('studentRegisterForm').addEventListener('submit',async e=>{
+ e.preventDefault();const message=document.getElementById('registrationMessage');
+ message.textContent='';
+ try{const result=await api('/api/student/register',{method:'POST',body:JSON.stringify({name:document.getElementById('registerName').value,enrollment:document.getElementById('registerEnrollment').value,course:document.getElementById('registerCourse').value})});enterPractice(result.student,result.progress)}
+ catch(err){message.textContent=err.message}
+});
+api('/api/student/me').then(r=>enterPractice(r.student,r.progress)).catch(()=>{});
+// Após a correção local, validar novamente no servidor para evitar pontos locais fictícios.
+validateLesson = async function(){
+ const src=document.getElementById('lessonCode').value;
+ const checks=lessonChecks(src), report=computeDiagnostics(src,checks);
+ document.getElementById('lessonChecks').innerHTML=checks.map(x=>'<div class="lesson-check '+(x.ok?'pass':'fail')+'">'+(x.ok?'✓':'○')+' '+esc(x.label)+'</div>').join('');
+ if(report.blocked){document.getElementById('lessonFeedback').textContent='Revise o código antes de enviar: cópia do exemplo ou erro de estrutura detectado.';document.getElementById('lessonDiagnostics').innerHTML='<strong>Diagnóstico local</strong><ul>'+report.errors.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';return}
+ if(!loggedStudent){document.getElementById('lessonFeedback').textContent='Faça seu cadastro antes de enviar.';return}
+ try{
+  const result=await api('/api/submissions',{method:'POST',body:JSON.stringify({code:src,framework:lessonFW,exercise:lessonIdx,variant:lessonNavVariant})});
+  refreshRegisteredProgress(result.progress);
+  document.getElementById('lessonFeedback').textContent=result.passed?'Atividade concluída! Pontuação registrada no PostgreSQL.':'Tentativa registrada. Ajuste os requisitos pendentes.';
+  document.getElementById('lessonDiagnostics').innerHTML=result.missing?.length?'<strong>Verificação no servidor</strong><ul>'+result.missing.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<div class="diag-ok">Todos os requisitos conferidos no servidor.</div>';
+ }catch(err){document.getElementById('lessonFeedback').textContent='Não foi possível registrar a tentativa: '+err.message}
+};
+// O aluno implementa livremente ambos os modelos de navegação.
+// Painel do professor
+const teacherAuth=document.getElementById('teacherAuth'), teacherData=document.getElementById('teacherData');
+function showTeacherRows(){
+ const q=document.getElementById('teacherSearch').value.toLowerCase();
+ const data=teacherRowsCache.filter(r=>(r.name+' '+r.enrollment+' '+r.course).toLowerCase().includes(q));
+ document.getElementById('teacherRows').innerHTML=data.map(s=>'<tr><td>'+esc(s.name)+'</td><td>'+esc(s.enrollment)+'</td><td>'+esc(s.course)+'</td><td><strong>'+s.points+'</strong></td><td>'+s.completed.length+'</td><td>'+s.attempts+'</td><td><button data-student-id="'+s.id+'">Ver tentativas</button></td></tr>').join('')||'<tr><td colspan="7">Nenhum aluno encontrado.</td></tr>';
+ document.getElementById('teacherSummary').innerHTML='<div><strong>'+teacherRowsCache.length+'</strong>Alunos cadastrados</div><div><strong>'+teacherRowsCache.reduce((sum,x)=>sum+x.attempts,0)+'</strong>Tentativas</div><div><strong>'+teacherRowsCache.reduce((sum,x)=>sum+x.points,0)+'</strong>Pontos distribuídos</div>';
+ document.querySelectorAll('[data-student-id]').forEach(b=>b.onclick=()=>showAttempts(Number(b.dataset.studentId)));
+}
+async function loadTeacherResults(){
+ try{const data=await api('/api/teacher/results');teacherRowsCache=data.students||[];teacherAuth.hidden=true;teacherData.hidden=false;showTeacherRows()}
+ catch(e){teacherAuth.hidden=false;teacherData.hidden=true}
+}
+async function showAttempts(id){
+ try{const r=await api('/api/teacher/student/'+id);const box=document.getElementById('studentAttempts');box.hidden=false;
+ box.innerHTML='<h3>Histórico — '+esc(r.name)+'</h3>'+r.attempts.map(a=>'<article class="attempt-card"><strong>'+esc(a.framework)+' • Exercício '+a.exercise+' • '+(a.passed?'Aprovado':'Em desenvolvimento')+'</strong><p>'+esc(a.feedback)+' • '+esc(a.at)+'</p><details><summary>Consultar código enviado</summary><pre>'+esc(a.code)+'</pre></details></article>').join('');box.scrollIntoView({behavior:'smooth',block:'nearest'})}
+ catch(e){alert(e.message)}
+}
+document.getElementById('teacherLoginForm').onsubmit=async e=>{e.preventDefault();try{await api('/api/teacher/login',{method:'POST',body:JSON.stringify({password:document.getElementById('teacherPassword').value})});document.getElementById('teacherPassword').value='';loadTeacherResults()}catch(err){document.getElementById('teacherLoginMessage').textContent=err.message}};
+document.getElementById('teacherSearch').oninput=showTeacherRows;
+document.getElementById('teacherRefresh').onclick=loadTeacherResults;
+document.getElementById('teacherLogout').onclick=async()=>{await api('/api/teacher/logout',{method:'POST'});teacherData.hidden=true;teacherAuth.hidden=false};
+document.querySelector('[data-view="teacher"]').addEventListener('click',loadTeacherResults);
+// Sem identificador visual desnecessário de edição livre.
+</script>
+<!-- FA_EDITOR_V17: integração CodeMirror com o laboratório existente -->
+<script>
+(function () {
+  const original = document.getElementById('lessonCode');
+  if (!original || typeof window.CodeMirror !== 'function') {
+    console.warn('CodeMirror indisponível. Mantido o editor anterior; confira o acesso à internet.');
+    return;
+  }
+  const cm = window.CodeMirror.fromTextArea(original, {
+    mode: 'htmlmixed',
+    theme: 'material-darker',
+    lineNumbers: true,
+    firstLineNumber: 1,
+    lineWrapping: false,
+    indentUnit: 2,
+    tabSize: 2,
+    indentWithTabs: false,
+    autoCloseTags: true,
+    autoCloseBrackets: true,
+    viewportMargin: 20,
+    extraKeys: {
+      Tab: function(editor) {
+        if (editor.somethingSelected()) editor.indentSelection('add');
+        else editor.replaceSelection('  ', 'end', '+input');
+      },
+      'Shift-Tab': function(editor) { editor.indentSelection('subtract'); },
+      'Ctrl-Enter': function(editor) { editor.save(); if (typeof runLesson === 'function') runLesson(); },
+      'Cmd-Enter': function(editor) { editor.save(); if (typeof runLesson === 'function') runLesson(); },
+      'Ctrl-Z': 'undo',
+      'Cmd-Z': 'undo',
+      'Shift-Ctrl-Z': 'redo',
+      'Shift-Cmd-Z': 'redo'
+    }
+  });
+  window.__faCodeMirror = cm;
+  cm.on('change', function(editor) {
+    // A API e a avaliação já leem #lessonCode.value; mantemos a integração intacta.
+    editor.save();
+    original.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  // Atualiza o editor quando a tela muda de exercício/framework.
+  if (typeof renderLesson === 'function') {
+    const oldRender = renderLesson;
+    renderLesson = function () {
+      const result = oldRender.apply(this, arguments);
+      if (cm.getValue() !== original.value) cm.setValue(original.value);
+      requestAnimationFrame(function () { cm.refresh(); });
+      return result;
+    };
+  }
+  // Restaurar muda diretamente o textarea: sincronizar CodeMirror após o clique.
+  const resetButton = document.getElementById('lessonReset');
+  if (resetButton) resetButton.addEventListener('click', function () {
+    queueMicrotask(function () {
+      if (cm.getValue() !== original.value) cm.setValue(original.value);
+      cm.refresh();
+    });
+  });
+  // Ao entrar em Praticar, garantir que a numeração e a gutter sejam dimensionadas.
+  document.querySelectorAll('[data-view="practice"]').forEach(function(button) {
+    button.addEventListener('click', function () {
+      setTimeout(function () { cm.refresh(); }, 0);
+    });
+  });
+  cm.setValue(original.value);
+  cm.refresh();
+})();
+</script>
+</body>
+</html>
