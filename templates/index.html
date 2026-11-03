@@ -667,9 +667,21 @@ const lessonCodeExamples={
   <h3 class="card-title">Notícia</h3>
   <p class="card-text">Descrição da notícia.</p>
 </div></article>`,
-`<!-- form-control: estiliza o campo; form-label: rótulo -->
-<label for="usuario" class="form-label">Usuário</label>
-<input id="usuario" type="text" class="form-control">`,
+`<!-- form: agrupa os campos e o botão de envio -->
+<form class="container mt-4">
+  <!-- form-label: identifica o campo; form-control: aplica o estilo Bootstrap -->
+  <div class="mb-3">
+    <label for="nome" class="form-label">Nome</label>
+    <input id="nome" type="text" class="form-control" required>
+  </div>
+  <!-- type="email": utiliza a validação nativa de e-mail -->
+  <div class="mb-3">
+    <label for="email" class="form-label">E-mail</label>
+    <input id="email" type="email" class="form-control" required>
+  </div>
+  <!-- btn e btn-primary: estilos nativos do botão Bootstrap -->
+  <button type="submit" class="btn btn-primary">Enviar</button>
+</form>`,
 `<!-- fs-2: título maior; fw-bold: texto em negrito -->
 <h2 class="fs-2 fw-bold text-primary">Tipografia</h2>
 <p class="text-secondary">Texto de apoio.</p>`,
