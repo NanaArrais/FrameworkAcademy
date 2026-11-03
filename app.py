@@ -105,7 +105,7 @@ def check_submission(source, fw, exercise, variant):
     elif exercise==2:
         criteria=[(regex(r'\b(grid|row)\b'),'Criar grid'),(len([t for t in tags if t in ['article']])+len([v for t,v in a if t=='div' and any('card' in c for c in v.get('class','').split())])>=3 or len([v for t,v in a if t=='div' and re.search(r'\bcol(?:-|\s)',v.get('class',''))])>=3,'Incluir três cards/colunas'),(regex(r'\b(md:|sm:|col-md-|\bm\d+)'),'Aplicar responsividade')]
     elif exercise==3:
-        criteria=[(has('button'),'Criar botão'),(regex(r'\bbtn\b|\bbg-[\w-]+\b'),'Aplicar classe de botão/cor'),(any('enviar' in t.lower() or 'inscrev' in t.lower() or 'saiba' in t.lower() for t in doc.texts),'Adicionar texto de ação')]
+        criteria=[(has('button'),'Criar botão'),(regex(r'\bbtn\b|\bbg-[\w-]+\b'),'Aplicar classe de botão/cor'),(any(len(re.sub(r'<[^>]+>', '', button).strip()) > 2 for button in re.findall(r'<button\b[^>]*>(.*?)</button\s*>', source, re.I | re.S)),'Adicionar texto de ação')]
     elif exercise==4:
         criteria=[(regex(r'\bcard\b|\bshadow\b'),'Criar card'),(any(t in tags for t in ['h2','h3','h4','h5']),'Adicionar título'),(has('p'),'Adicionar descrição')]
     elif exercise==5:
