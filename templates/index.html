@@ -263,7 +263,7 @@ body.preview-lock{overflow:hidden}
           <div class="lesson-target-footer"><span>Exemplo didático; a atividade é realizada no editor abaixo.</span><span class="example-notice">Exemplo para estudo · produza sua própria solução</span></div>
         </section>
       </div>
-      <div class="practice-editor-grid"><section class="panel practice-editor"><div class="practice-editor-head"><strong>✎ Seu código HTML</strong><div class="inline"><button class="btn" id="lessonReset">Restaurar</button><button class="btn primary" id="lessonRun">▶ Executar</button></div></div><div class="lesson-code-editor"><pre id="lessonCodeHighlight" aria-hidden="true"></pre><textarea spellcheck="false" id="lessonCode" aria-label="Editor de HTML do exercício" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div><div class="practice-editor-foot">Edite HTML e classes CSS. <b>Ctrl + Enter</b> executa o código.</div></section><section class="panel practice-result"><div class="practice-editor-head"><strong>◉ Resultado da sua página</strong><div class="preview-tools"><button type="button" class="preview-device active" data-lesson-device="desktop">▣ Desktop</button><button type="button" class="preview-device" data-lesson-device="tablet">▯ Tablet</button><button type="button" class="preview-device" data-lesson-device="mobile">▯ Celular</button><button class="btn primary" id="lessonMaxPreview">⛶ Tela cheia</button></div></div><div class="preview-viewport" id="lessonPreviewViewport"><div class="preview-frame-wrap" id="lessonFrameWrap" data-device="desktop"><iframe id="lessonFrame" title="Resultado do exercício" sandbox="allow-scripts allow-modals"></iframe></div></div><div class="practice-editor-foot">Veja a página inteira em <b>Tela cheia</b> e alterne entre desktop, tablet e celular. Role a página dentro da prévia.</div></section></div>
+      <div class="practice-editor-grid"><section class="panel practice-editor"><div class="practice-editor-head"><strong>✎ Seu código HTML</strong><div class="inline"><button class="btn" id="lessonReset">Restaurar</button><button class="btn primary" id="lessonRun">▶ Executar</button></div></div><div class="lesson-code-editor"><pre id="lessonCodeHighlight" aria-hidden="true"></pre><textarea spellcheck="false" id="lessonCode" aria-label="Editor de HTML do exercício" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div><div class="practice-editor-foot">Edite HTML e classes CSS. Você pode copiar, recortar e colar trechos <b>dentro deste editor e da mesma atividade</b>. Colagens externas são bloqueadas. <b>Ctrl + Enter</b> executa o código.</div></section><section class="panel practice-result"><div class="practice-editor-head"><strong>◉ Resultado da sua página</strong><div class="preview-tools"><button type="button" class="preview-device active" data-lesson-device="desktop">▣ Desktop</button><button type="button" class="preview-device" data-lesson-device="tablet">▯ Tablet</button><button type="button" class="preview-device" data-lesson-device="mobile">▯ Celular</button><button class="btn primary" id="lessonMaxPreview">⛶ Tela cheia</button></div></div><div class="preview-viewport" id="lessonPreviewViewport"><div class="preview-frame-wrap" id="lessonFrameWrap" data-device="desktop"><iframe id="lessonFrame" title="Resultado do exercício" sandbox="allow-scripts allow-modals"></iframe></div></div><div class="practice-editor-foot">Veja a página inteira em <b>Tela cheia</b> e alterne entre desktop, tablet e celular. Role a página dentro da prévia.</div></section></div>
       <div class="panel practice-feedback"><div><h3>Verifique seu exercício</h3><p id="lessonFeedback" class="muted">Execute e clique em Verificar para analisar os requisitos.</p></div><div class="inline"><button class="btn primary" id="lessonCheck">✓ Verificar resposta</button><button class="btn" id="lessonNext">Próximo exercício →</button></div><div id="lessonChecks" class="lesson-checks"></div><div id="lessonDiagnostics" class="lesson-diagnostics" aria-live="polite"></div></div>
     </div>
   </div>
@@ -1142,7 +1142,7 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
       const selected=selectedCode();
       event.preventDefault();event.stopImmediatePropagation();
       if(!selected)return;
-      internalClipboard={text:selected};
+      internalClipboard={text:selected,exercise:lessonIdx,framework:lessonFW,variant:lessonNavVariant};
       if(event.clipboardData){event.clipboardData.setData('text/plain',selected);}
       if(event.type==='cut')replaceCodeSelection('');
     }else if(event.type==='paste'){
@@ -1150,7 +1150,7 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
       const pasted=event.clipboardData?.getData('text/plain');
       // A comparação impede colar dados de uma origem externa que não tenham
       // sido copiados no editor durante esta sessão.
-      if(!internalClipboard || pasted!==internalClipboard.text){
+      if(!internalClipboard || pasted!==internalClipboard.text || internalClipboard.exercise!==lessonIdx || internalClipboard.framework!==lessonFW || internalClipboard.variant!==lessonNavVariant){
         feedback('Colagem externa bloqueada. Copie apenas trechos do seu próprio código HTML.');
         return;
       }
