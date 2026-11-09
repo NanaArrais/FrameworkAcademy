@@ -221,6 +221,23 @@ body.preview-lock{overflow:hidden}
 .student-profile>small{display:block;margin-top:10px;line-height:1.45;color:#666b82}
 .student-profile>small.complete{color:#08784e;font-weight:750}
 @media(max-width:700px){.framework-picker{width:100%}.framework-options{width:100%}.framework-options button{flex:1;justify-content:center;padding:8px}}
+/* Laboratório: leitura ampliada do exemplo e espaço de trabalho maximizado */
+.lesson-target-stage{max-height:450px;overflow:auto}
+#lessonExampleCode{font-size:14px;line-height:1.75;padding:22px 25px}
+.lesson-target-header strong{font-size:16px}
+.lesson-target-header p{font-size:13px}
+.lesson-reference-expanded{position:fixed!important;inset:18px!important;z-index:10020!important;margin:0!important;display:flex;flex-direction:column;box-shadow:0 20px 80px #110c3550}
+.lesson-reference-expanded .lesson-target-stage{max-height:none!important;flex:1;min-height:0}
+.lesson-reference-expanded #lessonExampleCode{font-size:15px;line-height:1.85}
+.lesson-reference-expanded .lesson-target-header,.lesson-reference-expanded .lesson-target-footer{flex-shrink:0}
+.lesson-workspace-expanded{position:fixed!important;inset:12px!important;z-index:10010!important;background:#f5f6fc!important;border:1px solid #dedff0;border-radius:15px;box-shadow:0 20px 80px #110c3550;padding:10px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px!important;height:auto!important;min-height:0!important;max-height:none!important}
+.lesson-workspace-expanded>.practice-editor,.lesson-workspace-expanded>.practice-result{height:100%;min-height:0;max-height:none;overflow:hidden}
+.lesson-workspace-expanded .lesson-code-editor{min-height:0;flex:1}
+.lesson-workspace-expanded .lesson-code-editor .CodeMirror,.lesson-workspace-expanded .lesson-code-editor .CodeMirror-scroll{height:100%!important;min-height:0!important}
+.lesson-workspace-expanded .preview-viewport{min-height:0;flex:1}
+.lesson-workspace-expanded .preview-frame-wrap{min-height:0;height:100%}
+.lesson-workspace-expanded #lessonFrame{min-height:0;height:100%}
+@media(max-width:760px){.lesson-workspace-expanded{grid-template-columns:1fr!important;grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important}.lesson-workspace-expanded .practice-editor,.lesson-workspace-expanded .practice-result{min-height:0!important}.lesson-reference-expanded{inset:8px!important}#lessonExampleCode{font-size:12px}}
 /* FA_EDITOR_V17: gutter e editor do mesmo tamanho do campo anterior */
 .lesson-code-editor .CodeMirror {height: 100%;min-height: 560px;width:100%;font: 13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;background:#171d31;color:#e1e8fd}
 .lesson-code-editor .CodeMirror-gutters {background:#12192b;border-right:1px solid #38425b}
@@ -258,12 +275,12 @@ body.preview-lock{overflow:hidden}
       <div class="panel practice-challenge"><div class="practice-challenge-top"><span class="pill" id="lessonNumber">Exercício 01</span><div class="framework-picker" role="group" aria-label="Escolha o framework"><span class="framework-picker-label">Selecione o framework que deseja praticar</span><div class="framework-options"><button type="button" data-framework-choice="bootstrap" aria-pressed="true"><span class="framework-dot bootstrap-dot">B</span>Bootstrap</button><button type="button" data-framework-choice="tailwind" aria-pressed="false"><span class="framework-dot tailwind-dot">T</span>Tailwind</button><button type="button" data-framework-choice="materialize" aria-pressed="false"><span class="framework-dot materialize-dot">M</span>Materialize</button></div><select id="lessonFramework" aria-label="Framework do exercício" hidden><option value="bootstrap">Bootstrap</option><option value="tailwind">Tailwind CSS</option><option value="materialize">Materialize</option></select></div></div><h2 id="lessonTitle">Menu de navegação</h2><p id="lessonBrief"></p><div id="lessonNavOptions" class="lesson-nav-options"><div><strong>Tipo de navegação</strong><small>Escolha um modelo. No celular, os links podem ficar ocultos: o botão ☰ deve abrir e fechar o menu.</small></div><div class="nav-variant-controls" role="group" aria-label="Tipo de menu"><button type="button" data-nav-variant="top" class="active">☰ Menu superior</button><button type="button" data-nav-variant="side">▤ Menu lateral</button></div></div>
         <div class="mission-title">Desafios para concluir esta atividade</div><div id="lessonRequirements" class="lesson-requirements"></div><div class="lesson-actions"><button class="btn" id="lessonHint">💡 Orientação passo a passo</button><button class="btn" id="lessonClassGuide">🎨 Cores, textos e espaçamentos</button><a id="lessonDocs" href="https://getbootstrap.com/docs/5.3/" target="_blank" rel="noopener">Documentação oficial ↗</a></div><div id="lessonTip" class="lesson-tip hidden" aria-live="polite"></div>
         <section class="lesson-target" aria-label="Exemplo de código do framework">
-          <div class="lesson-target-header"><div><strong>⌘ Exemplo de código comentado</strong><p>Estude a estrutura e as classes do framework. Use este exemplo como referência para resolver a atividade abaixo.</p></div><div class="reference-toolbar"><span class="lesson-target-badge" id="lessonTargetFramework">Materialize</span><button type="button" class="btn" id="lessonCopyExample">⧉ Copiar exemplo</button><button type="button" class="btn" id="lessonCompactReference" title="Reduzir ou expandir código de referência">↕ Reduzir referência</button></div></div>
+          <div class="lesson-target-header"><div><strong>⌘ Exemplo de código comentado</strong><p>Estude a estrutura e as classes do framework. Use este exemplo como referência para resolver a atividade abaixo.</p></div><div class="reference-toolbar"><span class="lesson-target-badge" id="lessonTargetFramework">Materialize</span><button type="button" class="btn" id="lessonCopyExample">⧉ Copiar exemplo</button><button type="button" class="btn" id="lessonCompactReference" title="Reduzir ou expandir código de referência">↕ Reduzir</button><button type="button" class="btn primary" id="lessonExpandReference" aria-expanded="false">⛶ Ampliar exemplo</button></div></div>
           <div class="lesson-target-stage"><pre id="lessonExampleCode" aria-label="Código de exemplo comentado"></pre></div>
           <div class="lesson-target-footer"><span>Exemplo didático; a atividade é realizada no editor abaixo.</span><span class="example-notice">Exemplo para estudo · produza sua própria solução</span></div>
         </section>
       </div>
-      <div class="practice-editor-grid"><section class="panel practice-editor"><div class="practice-editor-head"><strong>✎ Seu código HTML</strong><div class="inline"><button class="btn" id="lessonReset">Restaurar</button><button class="btn primary" id="lessonRun">▶ Executar</button></div></div><div class="lesson-code-editor"><pre id="lessonCodeHighlight" aria-hidden="true"></pre><textarea spellcheck="false" id="lessonCode" aria-label="Editor de HTML do exercício" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div><div class="practice-editor-foot">Edite HTML e classes CSS. Você pode copiar, recortar e colar trechos <b>dentro deste editor e da mesma atividade</b>. Colagens externas são bloqueadas. <b>Ctrl + Enter</b> executa o código.</div></section><section class="panel practice-result"><div class="practice-editor-head"><strong>◉ Resultado da sua página</strong><div class="preview-tools"><button type="button" class="preview-device active" data-lesson-device="desktop">▣ Desktop</button><button type="button" class="preview-device" data-lesson-device="tablet">▯ Tablet</button><button type="button" class="preview-device" data-lesson-device="mobile">▯ Celular</button><button class="btn primary" id="lessonMaxPreview">⛶ Tela cheia</button></div></div><div class="preview-viewport" id="lessonPreviewViewport"><div class="preview-frame-wrap" id="lessonFrameWrap" data-device="desktop"><iframe id="lessonFrame" title="Resultado do exercício" sandbox="allow-scripts allow-modals"></iframe></div></div><div class="practice-editor-foot">Veja a página inteira em <b>Tela cheia</b> e alterne entre desktop, tablet e celular. Role a página dentro da prévia.</div></section></div>
+      <div class="practice-editor-grid" id="lessonWorkspace"><section class="panel practice-editor"><div class="practice-editor-head"><strong>✎ Seu código HTML</strong><div class="inline"><button type="button" class="btn" id="lessonMaxWorkspace" aria-expanded="false">⛶ Ampliar área</button><button class="btn" id="lessonReset">Restaurar</button><button class="btn primary" id="lessonRun">▶ Executar</button></div></div><div class="lesson-code-editor"><pre id="lessonCodeHighlight" aria-hidden="true"></pre><textarea spellcheck="false" id="lessonCode" aria-label="Editor de HTML do exercício" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div><div class="practice-editor-foot">Edite HTML e classes CSS. Você pode copiar, recortar e colar trechos <b>dentro deste editor e da mesma atividade</b>. Colagens externas são bloqueadas. <b>Ctrl + Enter</b> executa o código.</div></section><section class="panel practice-result"><div class="practice-editor-head"><strong>◉ Resultado da sua página</strong><div class="preview-tools"><button type="button" class="preview-device active" data-lesson-device="desktop">▣ Desktop</button><button type="button" class="preview-device" data-lesson-device="tablet">▯ Tablet</button><button type="button" class="preview-device" data-lesson-device="mobile">▯ Celular</button><button class="btn primary" id="lessonMaxPreview">⛶ Tela cheia</button></div></div><div class="preview-viewport" id="lessonPreviewViewport"><div class="preview-frame-wrap" id="lessonFrameWrap" data-device="desktop"><iframe id="lessonFrame" title="Resultado do exercício" sandbox="allow-scripts allow-modals"></iframe></div></div><div class="practice-editor-foot">Veja a página inteira em <b>Tela cheia</b> e alterne entre desktop, tablet e celular. Role a página dentro da prévia.</div></section></div>
       <div class="panel practice-feedback"><div><h3>Verifique seu exercício</h3><p id="lessonFeedback" class="muted">Execute e clique em Verificar para analisar os requisitos.</p></div><div class="inline"><button class="btn primary" id="lessonCheck">✓ Verificar resposta</button><button class="btn" id="lessonNext">Próximo exercício →</button></div><div id="lessonChecks" class="lesson-checks"></div><div id="lessonDiagnostics" class="lesson-diagnostics" aria-live="polite"></div></div>
     </div>
   </div>
@@ -898,7 +915,30 @@ function closeLessonFullPreview(){
 }
 $('#closeFullPreview').onclick=closeLessonFullPreview;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#lessonFullPreview').classList.contains('hidden'))closeLessonFullPreview()});
-$('#lessonCompactReference').onclick=()=>{const section=$('.practice-challenge');const compact=section.classList.toggle('practice-reference-compact');$('#lessonCompactReference').textContent=compact?'↕ Expandir referência':'↕ Reduzir referência'};
+$('#lessonCompactReference').onclick=()=>{const section=$('.practice-challenge');const compact=section.classList.toggle('practice-reference-compact');$('#lessonCompactReference').textContent=compact?'↕ Expandir':'↕ Reduzir'};
+function faRefreshEditor(){requestAnimationFrame(()=>{if(window.__faCodeMirror)window.__faCodeMirror.refresh()})}
+function faOverlayLock(){document.body.classList.toggle('preview-lock',!!document.querySelector('.lesson-reference-expanded,.lesson-workspace-expanded')||!$('#lessonFullPreview').classList.contains('hidden'))}
+function faToggleWorkspace(force){
+  const section=$('#lessonWorkspace'),expanded=typeof force==='boolean'?force:!section.classList.contains('lesson-workspace-expanded');
+  section.classList.toggle('lesson-workspace-expanded',expanded);
+  $('#lessonMaxWorkspace').textContent=expanded?'↙ Voltar ao tamanho normal':'⛶ Ampliar área';
+  $('#lessonMaxWorkspace').setAttribute('aria-expanded',String(expanded));
+  faOverlayLock();faRefreshEditor();
+}
+function faToggleReference(force){
+  const section=$('.lesson-target'),expanded=typeof force==='boolean'?force:!section.classList.contains('lesson-reference-expanded');
+  section.classList.toggle('lesson-reference-expanded',expanded);
+  $('#lessonExpandReference').textContent=expanded?'↙ Fechar exemplo ampliado':'⛶ Ampliar exemplo';
+  $('#lessonExpandReference').setAttribute('aria-expanded',String(expanded));
+  faOverlayLock();
+}
+$('#lessonMaxWorkspace').onclick=()=>faToggleWorkspace();
+$('#lessonExpandReference').onclick=()=>faToggleReference();
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if($('.lesson-target')?.classList.contains('lesson-reference-expanded'))faToggleReference(false);
+  else if($('#lessonWorkspace')?.classList.contains('lesson-workspace-expanded'))faToggleWorkspace(false);
+});
 
 
 
