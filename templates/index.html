@@ -1066,7 +1066,7 @@ function renderClassGuide(){const data=guideTab==='colors'?guideColors():guideTa
  const items=g.items?`<div class="guide-swatches">${filtered.map(x=>`<button type="button" class="guide-swatch" data-copy-class="${attr(x.code)}"><span class="guide-swatch-chip" style="background:${x.hex}"></span><code>${esc(x.code)}</code><small>${esc(x.desc||'Copiar classe')}</small></button>`).join('')}</div>`:`<div class="guide-classes">${filtered.map(x=>classChip(x[0],x[1])).join('')}</div>`;
  return `<section class="guide-group"><h3>${esc(g.name)}</h3>${items}</section>`}).join('');
  $('#classGuideContent').innerHTML='<div class="guide-intro">'+data.intro+'</div>'+(html||'<p>Nenhuma classe encontrada para este filtro.</p>');
- $('[data-copy-class]',$('#classGuideContent')).forEach(b=>b.addEventListener('click',async()=>{window.__faAllowClassClipboard?.(b.dataset.copyClass);await copyText(b.dataset.copyClass);notify('Classe pronta para colar no editor: '+b.dataset.copyClass)}));
+ document.querySelectorAll('#classGuideContent [data-copy-class]').forEach(b=>b.addEventListener('click',async()=>{window.__faAllowClassClipboard?.(b.dataset.copyClass);await copyText(b.dataset.copyClass);notify('Classe pronta para colar no editor: '+b.dataset.copyClass)}));
 }
 function closeClassGuide(){$('#classGuideOverlay').classList.add('hidden');faOverlayLock()}
 $('#lessonClassGuide').onclick=()=>{guideTab='colors';guideQuery='';$('#classGuideSearch').value='';$('#classGuideOverlay').classList.remove('hidden');renderClassGuide();faOverlayLock()};
