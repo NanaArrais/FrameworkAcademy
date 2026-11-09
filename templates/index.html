@@ -203,6 +203,7 @@ body.preview-lock{overflow:hidden}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
 <style>
+.teacher-fw-pill{display:inline-block;padding:5px 8px;margin:2px 5px 2px 0;border:1px solid #e2daf5;border-radius:8px;background:#f5f1fc;color:#4e3383;font-size:11px;font-weight:700;white-space:nowrap}
 /* Navegação livre e seletor destacado do laboratório */
 .practice-challenge-top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .framework-picker{display:flex;align-items:center;gap:12px;background:#f8f7fd;border:1px solid #e4dff2;border-radius:16px;padding:9px 12px;flex-wrap:wrap}
@@ -270,7 +271,7 @@ body.preview-lock{overflow:hidden}
 <section id="view-teacher" class="view">
   <div class="teacher-page"><div class="teacher-heading"><div><span class="pill">ACESSO DO PROFESSOR</span><h1>Resultados da turma</h1><p>Consulte matrícula, curso, pontuação e histórico de tentativas dos alunos.</p></div></div>
   <div id="teacherAuth" class="panel teacher-login"><h2>Entrar como professor</h2><p>Utilize a senha configurada no servidor.</p><form id="teacherLoginForm"><label>Senha do professor<input id="teacherPassword" type="password" required autocomplete="current-password"></label><button type="submit" class="btn primary">Acessar resultados</button></form><p id="teacherLoginMessage" role="status"></p></div>
-  <div id="teacherData" hidden><div class="teacher-tools"><input type="search" id="teacherSearch" placeholder="Buscar por nome, matrícula ou curso"><a class="btn" href="/api/teacher/export.csv">↓ Exportar CSV</a><button class="btn" id="teacherRefresh">↻ Atualizar</button><button class="btn" id="teacherLogout">Sair</button></div><div class="teacher-stats" id="teacherSummary"></div><div class="panel teacher-table-wrap"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Pontos</th><th>Exercícios</th><th>Tentativas</th><th>Ações</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
+  <div id="teacherData" hidden><div class="teacher-tools"><input type="search" id="teacherSearch" placeholder="Buscar por nome, matrícula ou curso"><a class="btn" href="/api/teacher/export.csv">↓ Exportar CSV</a><button class="btn" id="teacherRefresh">↻ Atualizar</button><button class="btn" id="teacherLogout">Sair</button></div><div class="teacher-stats" id="teacherSummary"></div><div class="panel teacher-table-wrap"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Frameworks praticados</th><th>Pontos</th><th>Exercícios</th><th>Tentativas</th><th>Ações</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
   </div>
 </section>
 </main><footer class="footer">© 2026 Ana Arrais - Uninassau - Frontend Frameworks 2026</footer>
@@ -1058,8 +1059,8 @@ validateLesson = async function(){
 const teacherAuth=document.getElementById('teacherAuth'), teacherData=document.getElementById('teacherData');
 function showTeacherRows(){
  const q=document.getElementById('teacherSearch').value.toLowerCase();
- const data=teacherRowsCache.filter(r=>(r.name+' '+r.enrollment+' '+r.course).toLowerCase().includes(q));
- document.getElementById('teacherRows').innerHTML=data.map(s=>'<tr><td>'+esc(s.name)+'</td><td>'+esc(s.enrollment)+'</td><td>'+esc(s.course)+'</td><td><strong>'+s.points+'</strong></td><td>'+s.completed.length+'</td><td>'+s.attempts+'</td><td><button data-student-id="'+s.id+'">Ver tentativas</button></td></tr>').join('')||'<tr><td colspan="7">Nenhum aluno encontrado.</td></tr>';
+ const data=teacherRowsCache.filter(r=>(r.name+' '+r.enrollment+' '+r.course+' '+(r.frameworks_practiced||[]).join(' ')).toLowerCase().includes(q));
+ document.getElementById('teacherRows').innerHTML=data.map(s=>'<tr><td>'+esc(s.name)+'</td><td>'+esc(s.enrollment)+'</td><td>'+esc(s.course)+'</td><td>'+(['bootstrap','tailwind','materialize'].map(f=>{const p=(s.framework_progress||{})[f]||{completed:0,attempts:0};return p.attempts?'<span class="teacher-fw-pill">'+esc(names[f])+' · '+p.completed+'/14</span>':''}).filter(Boolean).join('')||'<span class="muted">Não iniciado</span>')+'</td><td><strong>'+s.points+'</strong></td><td>'+s.completed.length+'</td><td>'+s.attempts+'</td><td><button data-student-id="'+s.id+'">Ver tentativas</button></td></tr>').join('')||'<tr><td colspan="8">Nenhum aluno encontrado.</td></tr>';
  document.getElementById('teacherSummary').innerHTML='<div><strong>'+teacherRowsCache.length+'</strong>Alunos cadastrados</div><div><strong>'+teacherRowsCache.reduce((sum,x)=>sum+x.attempts,0)+'</strong>Tentativas</div><div><strong>'+teacherRowsCache.reduce((sum,x)=>sum+x.points,0)+'</strong>Pontos distribuídos</div>';
  document.querySelectorAll('[data-student-id]').forEach(b=>b.onclick=()=>showAttempts(Number(b.dataset.studentId)));
 }
@@ -1069,7 +1070,7 @@ async function loadTeacherResults(){
 }
 async function showAttempts(id){
  try{const r=await api('/api/teacher/student/'+id);const box=document.getElementById('studentAttempts');box.hidden=false;
- box.innerHTML='<h3>Histórico — '+esc(r.name)+'</h3>'+r.attempts.map(a=>'<article class="attempt-card"><strong>'+esc(a.framework)+' • Exercício '+a.exercise+' • '+(a.passed?'Aprovado':'Em desenvolvimento')+'</strong><p>'+esc(a.feedback)+' • '+esc(a.at)+'</p><details><summary>Consultar código enviado</summary><pre>'+esc(a.code)+'</pre></details></article>').join('');box.scrollIntoView({behavior:'smooth',block:'nearest'})}
+ box.innerHTML='<h3>Histórico — '+esc(r.name)+'</h3>'+r.attempts.map(a=>'<article class="attempt-card"><strong>'+esc(names[a.framework]||a.framework)+' • Exercício '+a.exercise+' • '+(a.passed?'Aprovado':'Em desenvolvimento')+'</strong><p>'+esc(a.feedback)+' • '+esc(a.at)+'</p><details><summary>Consultar código enviado</summary><pre>'+esc(a.code)+'</pre></details></article>').join('');box.scrollIntoView({behavior:'smooth',block:'nearest'})}
  catch(e){alert(e.message)}
 }
 document.getElementById('teacherLoginForm').onsubmit=async e=>{e.preventDefault();try{await api('/api/teacher/login',{method:'POST',body:JSON.stringify({password:document.getElementById('teacherPassword').value})});document.getElementById('teacherPassword').value='';loadTeacherResults()}catch(err){document.getElementById('teacherLoginMessage').textContent=err.message}};
