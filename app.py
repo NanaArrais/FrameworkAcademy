@@ -209,8 +209,15 @@ def results():
     data=[]
     for s in students:
         attempts=Submission.query.filter_by(student_id=s.id).order_by(Submission.submitted_at.desc()).all()
-        data.append({'id':s.id,'name':s.name,'enrollment':s.enrollment,'course':s.course,'points':progress_of(s.id)['points'],
-                     'completed':progress_of(s.id)['completed'],'attempts':len(attempts),'last_attempt':attempts[0].submitted_at.isoformat() if attempts else None})
+        progress=progress_of(s.id)
+        per_framework={fw:{'completed':sum(x['framework']==fw for x in progress['completed']),
+                           'attempts':sum(x.framework==fw for x in attempts)}
+                       for fw in ('bootstrap','tailwind','materialize')}
+        data.append({'id':s.id,'name':s.name,'enrollment':s.enrollment,'course':s.course,'points':progress['points'],
+                     'completed':progress['completed'],'attempts':len(attempts),
+                     'frameworks_practiced':[fw for fw,p in per_framework.items() if p['attempts']>0],
+                     'framework_progress':per_framework,
+                     'last_attempt':attempts[0].submitted_at.isoformat() if attempts else None})
     return jsonify(students=data)
 
 @app.get('/api/teacher/student/<int:student_id>')
@@ -224,9 +231,14 @@ def student_attempts(student_id):
 @app.get('/api/teacher/export.csv')
 @teacher_only
 def export_csv():
-    out=io.StringIO();w=csv.writer(out);w.writerow(['Nome','Matrícula','Curso','Pontuação','Atividades concluídas'])
+    out=io.StringIO();w=csv.writer(out)
+    w.writerow(['Nome','Matrícula','Curso','Frameworks praticados','Bootstrap (concluídos)','Tailwind (concluídos)','Materialize (concluídos)','Pontuação','Atividades concluídas'])
     for s in Student.query.order_by(Student.name):
-        p=progress_of(s.id);w.writerow([s.name,s.enrollment,s.course,p['points'],len(p['completed'])])
+        p=progress_of(s.id)
+        attempted={fw for (fw,) in db.session.query(Submission.framework).filter_by(student_id=s.id).distinct().all()}
+        counts={fw:sum(item['framework']==fw for item in p['completed']) for fw in ('bootstrap','tailwind','materialize')}
+        w.writerow([s.name,s.enrollment,s.course,', '.join(fw for fw in ('bootstrap','tailwind','materialize') if fw in attempted),
+                    counts['bootstrap'],counts['tailwind'],counts['materialize'],p['points'],len(p['completed'])])
     return Response('\ufeff'+out.getvalue(),mimetype='text/csv; charset=utf-8',headers={'Content-Disposition':'attachment; filename="resultados_framework_academy.csv"'})
 
 if __name__=='__main__':
