@@ -72,6 +72,9 @@ class ValidationTests(unittest.TestCase):
         self.assertIn('id="lessonCode"', html)
         self.assertIn("faSaveDraftState", html)
         self.assertIn("faLoadDraftState", html)
+        self.assertIn("document.querySelectorAll('#classGuideContent [data-copy-class]').forEach", html)
+        self.assertNotIn("$('[data-copy-class]',$('#classGuideContent')).forEach", html)
+        self.assertIn("function renderClassGuide()", html)
 
 
 if __name__ == "__main__":
