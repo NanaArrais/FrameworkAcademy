@@ -1156,17 +1156,28 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
   cm.on('beforeChange',function(editor,change){
     if(['paste','drop','+paste','cut'].includes(change.origin)){change.cancel();if(typeof notify==='function')notify('Colagem bloqueada. Digite sua solução.')}
   });
+  // A sincronização programática não pode salvar o rascunho anterior
+  // no exercício recém-selecionado.
+  let syncingLesson = false;
   cm.on('change', function(editor) {
-    // A API e a avaliação já leem #lessonCode.value; mantemos a integração intacta.
     editor.save();
-    original.dispatchEvent(new Event('input', { bubbles: true }));
+    if (!syncingLesson) original.dispatchEvent(new Event('input', { bubbles: true }));
   });
-  // Atualiza o editor quando a tela muda de exercício/framework.
   if (typeof renderLesson === 'function') {
     const oldRender = renderLesson;
     renderLesson = function () {
+      // Grava o trabalho atual ANTES de trocar exercício ou framework.
+      if (!syncingLesson && loggedStudent) {
+        cm.save();
+      }
       const result = oldRender.apply(this, arguments);
-      if (cm.getValue() !== original.value) cm.setValue(original.value);
+      const nextCode = original.value;
+      syncingLesson = true;
+      try {
+        if (cm.getValue() !== nextCode) cm.setValue(nextCode);
+      } finally {
+        syncingLesson = false;
+      }
       requestAnimationFrame(function () { cm.refresh(); });
       return result;
     };
