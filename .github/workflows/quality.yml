@@ -26,7 +26,7 @@ jobs:
           import tempfile
           from pathlib import Path
           source = Path('templates/index.html').read_text(encoding='utf-8')
-          scripts = re.findall(r'<script(?:\\s[^>]*)?>([\\s\\S]*?)</script>', source, flags=re.I)
+          scripts = re.findall(r'<script(?:\s[^>]*)?>([\s\S]*?)</script>', source, flags=re.I)
           checked = 0
           with tempfile.TemporaryDirectory() as tmp:
               for i, body in enumerate(scripts):
