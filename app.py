@@ -181,6 +181,8 @@ def submit():
     code=data.get('code',''); fw=data.get('framework'); ex=data.get('exercise'); variant=data.get('variant','top')
     if not isinstance(code,str) or len(code)>100_000 or fw not in ('bootstrap','tailwind','materialize') or type(ex)!=int or not 0<=ex<14 or variant not in ('top','side'):
         return jsonify(error='Dados do exercício inválidos.'),400
+    if ex>0 and not Award.query.filter_by(student_id=session['student_id'],framework=fw,exercise=ex-1).first():
+        return jsonify(error='Conclua o exercício anterior antes de avançar.'),403
     passed,missing=check_submission(code,fw,ex,variant)
     feedback='Concluído' if passed else 'Pendências: '+', '.join(missing)
     obj=Submission(student_id=session['student_id'],framework=fw,exercise=ex,variant=variant,code=code,passed=passed,score=100 if passed else 0,feedback=feedback)
