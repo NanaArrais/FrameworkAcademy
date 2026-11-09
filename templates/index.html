@@ -923,7 +923,7 @@ $('#closeFullPreview').onclick=closeLessonFullPreview;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#lessonFullPreview').classList.contains('hidden'))closeLessonFullPreview()});
 $('#lessonCompactReference').onclick=()=>{const section=$('.practice-challenge');const compact=section.classList.toggle('practice-reference-compact');$('#lessonCompactReference').textContent=compact?'↕ Expandir':'↕ Reduzir'};
 function faRefreshEditor(){requestAnimationFrame(()=>{if(window.__faCodeMirror)window.__faCodeMirror.refresh()})}
-function faOverlayLock(){document.body.classList.toggle('preview-lock',!!document.querySelector('.lesson-reference-expanded,.lesson-workspace-expanded')||!$('#lessonFullPreview').classList.contains('hidden'))}
+function faOverlayLock(){document.body.classList.toggle('preview-lock',!!document.querySelector('.lesson-reference-expanded,.lesson-workspace-expanded')||!$('#lessonFullPreview').classList.contains('hidden')||!$('#classGuideOverlay').classList.contains('hidden'))}
 function faToggleWorkspace(force){
   const section=$('#lessonWorkspace'),expanded=typeof force==='boolean'?force:!section.classList.contains('lesson-workspace-expanded');
   const reference=$('.lesson-target');
@@ -1068,8 +1068,8 @@ function renderClassGuide(){const data=guideTab==='colors'?guideColors():guideTa
  $('#classGuideContent').innerHTML='<div class="guide-intro">'+data.intro+'</div>'+(html||'<p>Nenhuma classe encontrada para este filtro.</p>');
  $('[data-copy-class]',$('#classGuideContent')).forEach(b=>b.addEventListener('click',async()=>{window.__faAllowClassClipboard?.(b.dataset.copyClass);await copyText(b.dataset.copyClass);notify('Classe pronta para colar no editor: '+b.dataset.copyClass)}));
 }
-function closeClassGuide(){$('#classGuideOverlay').classList.add('hidden');document.body.classList.remove('preview-lock')}
-$('#lessonClassGuide').onclick=()=>{guideTab='colors';guideQuery='';$('#classGuideSearch').value='';renderClassGuide();$('#classGuideOverlay').classList.remove('hidden');document.body.classList.add('preview-lock')};
+function closeClassGuide(){$('#classGuideOverlay').classList.add('hidden');faOverlayLock()}
+$('#lessonClassGuide').onclick=()=>{guideTab='colors';guideQuery='';$('#classGuideSearch').value='';$('#classGuideOverlay').classList.remove('hidden');renderClassGuide();faOverlayLock()};
 $('#closeClassGuide').onclick=closeClassGuide;
 $('#classGuideOverlay').addEventListener('click',e=>{if(e.target.id==='classGuideOverlay')closeClassGuide()});
 $$('.classguide-tabs button').forEach(b=>b.onclick=()=>{guideTab=b.dataset.guideTab;renderClassGuide()});
