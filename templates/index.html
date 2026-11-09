@@ -480,7 +480,13 @@ function analyzeSyntax(source){const errors=[];const voids=new Set(['area','base
 function computeDiagnostics(src,checks){const errors=analyzeSyntax(src),copy=detectCopy(src);if(copy.sameMarkup||copy.pastedExample)errors.unshift('O código repete integralmente o exemplo apresentado. Personalize a estrutura, o conteúdo ou a implementação para que sua solução seja autoral.');for(const chk of checks){if(!chk.ok){let detail='Revise o requisito: '+chk.label+'.';if(chk.key==='nav')detail=lessonIdx===0&&lessonNavVariant==='side'?'Inclua o painel lateral e seu botão de abertura, com identificadores correspondentes (data-target, data-bs-target ou aria-controls).':'Inclua a tag semântica <nav> ao redor do menu.';if(chk.key==='responsive')detail='Confira as classes responsivas: Bootstrap col-md-*, Materialize col m*, Tailwind md:grid-cols-*.';if(chk.key==='background')detail='Aplique uma classe de fundo do '+names[lessonFW]+' à seção.';if(chk.key==='imageResponsive')detail='Use img-fluid (Bootstrap), responsive-img (Materialize) ou w-full/max-w-full (Tailwind).';errors.push(detail)}}return {errors,blocked:copy.sameMarkup||copy.pastedExample||analyzeSyntax(src).length>0};}
 function currentLessonKey(){return lessonFW+'|'+lessonIdx}
 function lessonDraftKey(){return (studentName.trim().toLocaleLowerCase('pt-BR')||'sem-nome')+'|'+currentLessonKey()+(lessonIdx===0?'|'+lessonNavVariant:'')}
-function saveLessonDraft(){let ed=$('#lessonCode');if(ed)lessonDrafts[lessonDraftKey()]=ed.value}
+function faDraftStorageKey(){return 'fa_drafts_v18:'+(loggedStudent?.enrollment||studentName.trim().toLocaleLowerCase('pt-BR')||'guest')}
+function faSaveDraftState(){try{localStorage.setItem(faDraftStorageKey(),JSON.stringify({drafts:lessonDrafts,selected:{exercise:lessonIdx,framework:lessonFW,variant:lessonNavVariant},savedAt:new Date().toISOString()}))}catch(e){console.warn('Armazenamento local indisponível:',e)}}
+function faLoadDraftState(){try{const data=JSON.parse(localStorage.getItem(faDraftStorageKey())||'null');if(!data)return;Object.assign(lessonDrafts,data.drafts||{});if(data.selected&&Number.isInteger(data.selected.exercise)&&data.selected.exercise>=0&&data.selected.exercise<lessonCatalog.length){lessonIdx=data.selected.exercise;lessonFW=['bootstrap','tailwind','materialize'].includes(data.selected.framework)?data.selected.framework:'bootstrap';lessonNavVariant=data.selected.variant==='side'?'side':'top'}}catch(e){console.warn('Falha ao restaurar rascunhos:',e)}}
+function saveLessonDraft(){let ed=$('#lessonCode');if(ed){lessonDrafts[lessonDraftKey()]=ed.value;faSaveDraftState()}}
+function faUnlockedExercise(framework){for(let i=0;i<lessonCatalog.length;i++){if(!solvedLessons.has(framework+'|'+i))return i}return lessonCatalog.length-1}
+function faCanOpenExercise(index){return index<=faUnlockedExercise(lessonFW)||solvedLessons.has(lessonFW+'|'+index)}
+function faRefuseSkip(){notify('Conclua e valide o exercício atual antes de avançar para a próxima fase.')}
 function lessonChecks(src){let doc=new DOMParser().parseFromString(src,'text/html'),i=lessonIdx,f=lessonFW;
  const is=(sel)=>!!doc.querySelector(sel),count=sel=>doc.querySelectorAll(sel).length,cls=(sel)=>Array.from(doc.querySelectorAll(sel)).map(x=>x.className||'').join(' '),body=doc.body?.textContent||'';
  const color=cls('section,main,div,body'),grid=cls('main,section,div'),btn=cls('button,a'),card=cls('article,div');
@@ -634,7 +640,7 @@ function renderLesson(){const l=lessonCatalog[lessonIdx];$('#lessonList').innerH
  $('#lessonRequirements').innerHTML=(lessonIdx===0&&lessonNavVariant==='side'?['Criar navegação e botão de abertura','Incluir marca e menu lateral']:l.requirements.map(k=>lessonRequirementsText[k])).map(label=>'<span>○ '+esc(label)+'</span>').join('');$('#lessonDocs').href=lessonIdx===0&&lessonNavVariant==='side'?(lessonFW==='bootstrap'?'https://getbootstrap.com/docs/5.3/components/offcanvas/':lessonFW==='materialize'?'https://materializecss.com/sidenav.html':'https://tailwindcss.com/docs/translate'):docs[lessonFW]+l.doc[lessonFW];$('#lessonCode').value=lessonDrafts[lessonDraftKey()]??lessonHtml(lessonFW,lessonIdx,false);
  syncLessonSyntax();$('#lessonTip').classList.add('hidden');$('#lessonFeedback').textContent='Execute e clique em Verificar para analisar os requisitos.';$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';
  updateStudentScore();
- $$('[data-lesson]').forEach(b=>b.onclick=()=>{saveLessonDraft();lessonIdx=Number(b.dataset.lesson);renderLesson();document.querySelector('.practice-challenge')?.scrollIntoView({behavior:'smooth',block:'start'})});runLesson();}
+ $$('[data-lesson]').forEach(b=>b.onclick=()=>{saveLessonDraft();const nextIdx=Number(b.dataset.lesson);if(!faCanOpenExercise(nextIdx)){faRefuseSkip();return}lessonIdx=nextIdx;renderLesson();document.querySelector('.practice-challenge')?.scrollIntoView({behavior:'smooth',block:'start'})});runLesson();}
 
 // Referências curtas, comentadas e específicas de cada framework.
 // Não substituem a solução do desafio; mostram a sintaxe que o aluno irá utilizar.
@@ -824,7 +830,7 @@ function validateLesson(){
 }
 function renderLessonListOnly(){$$('[data-lesson]').forEach(b=>{let id=Number(b.dataset.lesson),done=solvedLessons.has(lessonFW+'|'+id);b.classList.toggle('done',done);b.querySelector('.lesson-index').textContent=done?'✓':String(id+1).padStart(2,'0')})}
 $('#studentName').value=studentName;loadStudentProgress();updateStudentScore();
-$$('[data-nav-variant]').forEach(b=>b.onclick=()=>{if(lessonNavVariant===b.dataset.navVariant)return;saveLessonDraft();lessonNavVariant=b.dataset.navVariant;renderLesson();$('#lessonFeedback').textContent='Modelo alterado. Crie o menu no editor e execute para testar.';});$('#lessonFramework').onchange=e=>{saveLessonDraft();lessonFW=e.target.value;renderLesson()};$('#lessonRun').onclick=runLesson;$('#lessonCheck').onclick=()=>{runLesson();validateLesson()};$('#lessonHint').onclick=()=>{const tip=$('#lessonTip');tip.innerHTML=lessonHintHtml(lessonIdx,lessonFW);tip.classList.toggle('hidden')};$('#lessonReset').onclick=()=>{if(!confirm('Restaurar o código inicial deste exercício?'))return;$('#lessonCode').value=lessonHtml(lessonFW,lessonIdx,false);saveLessonDraft();$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';runLesson()};$('#lessonNext').onclick=()=>{const report=computeDiagnostics($('#lessonCode').value,lessonChecks($('#lessonCode').value));if(report.errors.some(e=>/repete integralmente|c[oó]pia|exemplo apresentado/i.test(e))){validateLesson();notify('Altere o código: não é permitido avançar com cópia do exemplo.');return;}saveLessonDraft();lessonIdx=(lessonIdx+1)%lessonCatalog.length;renderLesson();document.querySelector('.practice-challenge')?.scrollIntoView({behavior:'smooth',block:'start'})};$('#lessonCode').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();let t=e.target,a=t.selectionStart,b=t.selectionEnd;t.setRangeText('  ',a,b,'end');t.dispatchEvent(new Event('input',{bubbles:true}))}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runLesson()}});$('#lessonCode').oninput=()=>{saveLessonDraft();syncLessonSyntax()};$('#lessonCode').addEventListener('scroll',syncLessonSyntax);$('#lessonCode').addEventListener('keyup',syncLessonSyntax);
+$$('[data-nav-variant]').forEach(b=>b.onclick=()=>{if(lessonNavVariant===b.dataset.navVariant)return;saveLessonDraft();lessonNavVariant=b.dataset.navVariant;renderLesson();$('#lessonFeedback').textContent='Modelo alterado. Crie o menu no editor e execute para testar.';});$('#lessonFramework').onchange=e=>{saveLessonDraft();lessonFW=e.target.value;renderLesson()};$('#lessonRun').onclick=runLesson;$('#lessonCheck').onclick=()=>{runLesson();validateLesson()};$('#lessonHint').onclick=()=>{const tip=$('#lessonTip');tip.innerHTML=lessonHintHtml(lessonIdx,lessonFW);tip.classList.toggle('hidden')};$('#lessonReset').onclick=()=>{if(!confirm('Restaurar o código inicial deste exercício?'))return;$('#lessonCode').value=lessonHtml(lessonFW,lessonIdx,false);saveLessonDraft();$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';runLesson()};$('#lessonNext').onclick=()=>{if(!solvedLessons.has(currentLessonKey())){faRefuseSkip();return}const report=computeDiagnostics($('#lessonCode').value,lessonChecks($('#lessonCode').value));if(report.errors.some(e=>/repete integralmente|c[oó]pia|exemplo apresentado/i.test(e))){validateLesson();notify('Altere o código: não é permitido avançar com cópia do exemplo.');return;}saveLessonDraft();lessonIdx=(lessonIdx+1)%lessonCatalog.length;faSaveDraftState();renderLesson();document.querySelector('.practice-challenge')?.scrollIntoView({behavior:'smooth',block:'start'})};$('#lessonCode').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();let t=e.target,a=t.selectionStart,b=t.selectionEnd;t.setRangeText('  ',a,b,'end');t.dispatchEvent(new Event('input',{bubbles:true}))}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runLesson()}});$('#lessonCode').oninput=()=>{saveLessonDraft();syncLessonSyntax()};$('#lessonCode').addEventListener('scroll',syncLessonSyntax);$('#lessonCode').addEventListener('keyup',syncLessonSyntax);
 let currentLessonDevice='desktop';
 function syncLessonDevice(device){currentLessonDevice=device;$('#lessonFrameWrap').dataset.device=device;$('#lessonFullFrameWrap').dataset.device=device;$$('[data-lesson-device]').forEach(b=>b.classList.toggle('active',b.dataset.lessonDevice===device));$$('[data-full-device]').forEach(b=>b.classList.toggle('active',b.dataset.fullDevice===device));}
 $$('[data-lesson-device]').forEach(b=>b.addEventListener('click',()=>syncLessonDevice(b.dataset.lessonDevice)));
@@ -1000,6 +1006,8 @@ function enterPractice(student,progress){
  document.getElementById('studentGate').hidden=true;
  document.getElementById('studentPracticeBody').hidden=false;
  refreshRegisteredProgress(progress);
+ faLoadDraftState();
+ if(!faCanOpenExercise(lessonIdx))lessonIdx=faUnlockedExercise(lessonFW);
  renderLesson();
 }
 document.getElementById('studentRegisterForm').addEventListener('submit',async e=>{
@@ -1011,6 +1019,7 @@ document.getElementById('studentRegisterForm').addEventListener('submit',async e
 api('/api/student/me').then(r=>enterPractice(r.student,r.progress)).catch(()=>{});
 // Após a correção local, validar novamente no servidor para evitar pontos locais fictícios.
 validateLesson = async function(){
+ if(window.__faCodeMirror)window.__faCodeMirror.save();
  const src=document.getElementById('lessonCode').value;
  const checks=lessonChecks(src), report=computeDiagnostics(src,checks);
  document.getElementById('lessonChecks').innerHTML=checks.map(x=>'<div class="lesson-check '+(x.ok?'pass':'fail')+'">'+(x.ok?'✓':'○')+' '+esc(x.label)+'</div>').join('');
@@ -1057,6 +1066,12 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
     console.warn('CodeMirror indisponível. Mantido o editor anterior; confira o acesso à internet.');
     return;
   }
+  // Bloqueia colagem, cópia, recorte e arrastar/soltar no editor de atividades.
+  const denyClipboard=function(e){e.preventDefault();e.stopPropagation();if(typeof notify==='function')notify('Digite o código no editor: copiar e colar estão desativados.')};
+  ['paste','copy','cut','drop'].forEach(type=>original.addEventListener(type,denyClipboard,true));
+  original.addEventListener('beforeinput',function(e){if(['insertFromPaste','insertFromDrop','insertFromYank'].includes(e.inputType))denyClipboard(e)},true);
+  const copyButton=document.getElementById('lessonCopyExample');
+  if(copyButton){copyButton.disabled=true;copyButton.title='Exemplo apenas para leitura e estudo';copyButton.textContent='Exemplo para leitura'}
   const cm = window.CodeMirror.fromTextArea(original, {
     mode: 'htmlmixed',
     theme: 'material-darker',
@@ -1084,6 +1099,11 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
     }
   });
   window.__faCodeMirror = cm;
+  const cmWrapper=cm.getWrapperElement();
+  ['paste','copy','cut','drop'].forEach(type=>cmWrapper.addEventListener(type,denyClipboard,true));
+  cm.on('beforeChange',function(editor,change){
+    if(['paste','drop','+paste'].includes(change.origin)){change.cancel();if(typeof notify==='function')notify('Colagem bloqueada. Digite sua solução.')}
+  });
   cm.on('change', function(editor) {
     // A API e a avaliação já leem #lessonCode.value; mantemos a integração intacta.
     editor.save();
