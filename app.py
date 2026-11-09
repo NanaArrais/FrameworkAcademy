@@ -165,7 +165,7 @@ def register():
 
 def progress_of(student_id):
     awards=Award.query.filter_by(student_id=student_id).all()
-    return {'points':100*len(awards),'completed':[{'framework':a.framework,'exercise':a.exercise} for a in awards]}
+    return {'points':len(awards),'completed':[{'framework':a.framework,'exercise':a.exercise} for a in awards]}
 
 @app.get('/api/student/me')
 @student_only
@@ -183,7 +183,7 @@ def submit():
         return jsonify(error='Dados do exercício inválidos.'),400
     passed,missing=check_submission(code,fw,ex,variant)
     feedback='Concluído' if passed else 'Pendências: '+', '.join(missing)
-    obj=Submission(student_id=session['student_id'],framework=fw,exercise=ex,variant=variant,code=code,passed=passed,score=100 if passed else 0,feedback=feedback)
+    obj=Submission(student_id=session['student_id'],framework=fw,exercise=ex,variant=variant,code=code,passed=passed,score=1 if passed else 0,feedback=feedback)
     db.session.add(obj)
     if passed and not Award.query.filter_by(student_id=session['student_id'],framework=fw,exercise=ex).first():
         db.session.add(Award(student_id=session['student_id'],framework=fw,exercise=ex))
