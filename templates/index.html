@@ -1066,6 +1066,34 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
   if (typeof window.CodeMirror !== 'function') {
     console.warn('CodeMirror indisponível. Mantido o editor anterior; confira o acesso à internet.');
   }
+  // Guardas em CAPTURA, antes de o CodeMirror processar eventos.
+  // Escopo exclusivo ao editor e à referência didática; formulários de cadastro não são afetados.
+  const protectedArea=function(target){
+    return target instanceof Element && !!target.closest('.lesson-code-editor, .lesson-target-stage');
+  };
+  const blockAction=function(event){
+    if(!protectedArea(event.target))return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if(typeof notify==='function')notify('Digite o código manualmente. Copiar, recortar e colar estão bloqueados nesta atividade.');
+  };
+  ['copy','cut','paste','drop','dragstart'].forEach(function(type){
+    document.addEventListener(type,blockAction,true);
+  });
+  document.addEventListener('beforeinput',function(event){
+    if(['insertFromPaste','insertFromDrop','insertFromYank','deleteByCut'].includes(event.inputType))blockAction(event);
+  },true);
+  document.addEventListener('keydown',function(event){
+    if(!protectedArea(event.target))return;
+    const key=(event.key||'').toLowerCase();
+    const shortcut=(event.ctrlKey||event.metaKey)&&['c','x','v','insert'].includes(key);
+    const shiftPaste=event.shiftKey&&key==='insert';
+    if(shortcut||shiftPaste)blockAction(event);
+  },true);
+  document.addEventListener('contextmenu',function(event){
+    if(protectedArea(event.target))blockAction(event);
+  },true);
+  // Impede o botão de exemplo de inserir código no clipboard.
   // Bloqueia colagem, cópia, recorte e arrastar/soltar no editor de atividades.
   const denyClipboard=function(e){e.preventDefault();e.stopPropagation();if(typeof notify==='function')notify('Digite o código no editor: copiar e colar estão desativados.')};
   ['paste','copy','cut','drop'].forEach(type=>original.addEventListener(type,denyClipboard,true));
@@ -1105,7 +1133,7 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
   const cmWrapper=cm.getWrapperElement();
   ['paste','copy','cut','drop'].forEach(type=>cmWrapper.addEventListener(type,denyClipboard,true));
   cm.on('beforeChange',function(editor,change){
-    if(['paste','drop','+paste'].includes(change.origin)){change.cancel();if(typeof notify==='function')notify('Colagem bloqueada. Digite sua solução.')}
+    if(['paste','drop','+paste','cut'].includes(change.origin)){change.cancel();if(typeof notify==='function')notify('Colagem bloqueada. Digite sua solução.')}
   });
   cm.on('change', function(editor) {
     // A API e a avaliação já leem #lessonCode.value; mantemos a integração intacta.
