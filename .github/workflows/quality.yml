@@ -1,0 +1,41 @@
+name: Framework Academy - Qualidade
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt
+      - name: Testar as 42 combinacoes de exercicio/framework
+        run: python -m unittest discover -s tests -v
+      - name: Validar sintaxe de JavaScript incorporado
+        run: |
+          python - <<'PY'
+          import re
+          import subprocess
+          import tempfile
+          from pathlib import Path
+          source = Path('templates/index.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script(?:\\s[^>]*)?>([\\s\\S]*?)</script>', source, flags=re.I)
+          checked = 0
+          with tempfile.TemporaryDirectory() as tmp:
+              for i, body in enumerate(scripts):
+                  if not body.strip():
+                      continue
+                  filename = Path(tmp) / f'inline_{i}.js'
+                  filename.write_text(body, encoding='utf-8')
+                  subprocess.run(['node', '--check', str(filename)], check=True)
+                  checked += 1
+          assert checked >= 2, f'Esperados scripts inline, encontrados: {checked}'
+          print(f'{checked} scripts com sintaxe válida')
+          PY
