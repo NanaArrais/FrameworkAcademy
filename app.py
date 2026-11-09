@@ -109,9 +109,9 @@ def check_submission(source, fw, exercise, variant):
     elif exercise==4:
         criteria=[(regex(r'\bcard\b|\bshadow\b'),'Criar card'),(any(t in tags for t in ['h2','h3','h4','h5']),'Adicionar título'),(has('p'),'Adicionar descrição')]
     elif exercise==5:
-        criteria=[(has('form'),'Criar formulário'),(sum(t=='input' for t in tags)>=2,'Incluir dois campos'),(any(t=='button' and d.get('type')=='submit' for t,d in a),'Adicionar envio')]
+        criteria=[(has('form'),'Criar formulário'),(any(t=='input' and d.get('type')=='text' for t,d in a) and any(t=='input' and d.get('type')=='email' for t,d in a),'Incluir nome e e-mail'),(any(t=='button' and d.get('type')=='submit' for t,d in a),'Adicionar envio')]
     elif exercise==6:
-        criteria=[(any(t in tags for t in ['h1','h2','h3']),'Adicionar título'),(has('p'),'Adicionar parágrafo'),(regex(r'flow-text|text-|fs-|fw-|font-'),'Estilizar tipografia')]
+        criteria=[(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']),'Adicionar título'),(has('p'),'Adicionar parágrafo'),(regex(r'flow-text|text-|fs-|fw-|font-|center-align'),'Estilizar tipografia')]
     elif exercise==7:
         criteria=[(has('section'),'Criar seção'),(any(t in tags for t in ['h1','h2','h3','h4']),'Adicionar título'),(regex(r'\b(p-|m-|py-|px-|my-|mx-|section|container)'),'Aplicar espaçamento')]
     elif exercise==8:
@@ -123,7 +123,7 @@ def check_submission(source, fw, exercise, variant):
     elif exercise==11:
         criteria=[(has('table'),'Criar tabela'),(has('thead') and has('th'),'Adicionar cabeçalho'),(tags.count('tr')>=3,'Adicionar duas linhas'),(regex(r'table|striped|highlight|border'),'Estilizar tabela')]
     elif exercise==12:
-        criteria=[(any(t in tags for t in ['h1','h2','h3']),'Adicionar título'),(regex(r'text-center|center-align|justify-center'),'Alinhar conteúdo'),(tags.count('span')>=2 or tags.count('div')>=2,'Criar dois elementos')]
+        criteria=[(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']),'Adicionar título'),(regex(r'text-center|center-align|justify-center|valign-wrapper'),'Alinhar conteúdo'),(tags.count('span')>=2 or tags.count('div')>=2,'Criar dois elementos')]
     else:
         criteria=[(has('footer'),'Criar rodapé'),('©' in source or 'copyright' in text,'Adicionar copyright'),(has('a'),'Incluir link'),(regex(r'page-footer|bg-|p-|text-'),'Aplicar estilo')]
     misses=[label for ok,label in criteria if not ok]
