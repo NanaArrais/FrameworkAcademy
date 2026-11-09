@@ -231,13 +231,19 @@ body.preview-lock{overflow:hidden}
 .lesson-reference-expanded #lessonExampleCode{font-size:15px;line-height:1.85}
 .lesson-reference-expanded .lesson-target-header,.lesson-reference-expanded .lesson-target-footer{flex-shrink:0}
 .lesson-workspace-expanded{position:fixed!important;inset:12px!important;z-index:10010!important;background:#f5f6fc!important;border:1px solid #dedff0;border-radius:15px;box-shadow:0 20px 80px #110c3550;padding:10px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px!important;height:auto!important;min-height:0!important;max-height:none!important}
-.lesson-workspace-expanded>.practice-editor,.lesson-workspace-expanded>.practice-result{height:100%;min-height:0;max-height:none;overflow:hidden}
+.lesson-workspace-expanded{grid-template-rows:minmax(130px,34%) minmax(0,1fr)!important}
+.lesson-workspace-expanded>.lesson-target{grid-column:1/-1;grid-row:1;margin:0!important;min-height:0;max-height:none;display:flex;flex-direction:column;overflow:hidden}
+.lesson-workspace-expanded>.lesson-target .lesson-target-stage{max-height:none;min-height:0;flex:1;overflow:auto}
+.lesson-workspace-expanded>.lesson-target .lesson-target-header{padding:8px 14px}
+.lesson-workspace-expanded>.lesson-target .lesson-target-header p{display:none}
+.lesson-workspace-expanded>.lesson-target .lesson-target-footer{padding:5px 12px}
+.lesson-workspace-expanded>.practice-editor,.lesson-workspace-expanded>.practice-result{grid-row:2;height:100%;min-height:0;max-height:none;overflow:hidden}
 .lesson-workspace-expanded .lesson-code-editor{min-height:0;flex:1}
 .lesson-workspace-expanded .lesson-code-editor .CodeMirror,.lesson-workspace-expanded .lesson-code-editor .CodeMirror-scroll{height:100%!important;min-height:0!important}
 .lesson-workspace-expanded .preview-viewport{min-height:0;flex:1}
 .lesson-workspace-expanded .preview-frame-wrap{min-height:0;height:100%}
 .lesson-workspace-expanded #lessonFrame{min-height:0;height:100%}
-@media(max-width:760px){.lesson-workspace-expanded{grid-template-columns:1fr!important;grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important}.lesson-workspace-expanded .practice-editor,.lesson-workspace-expanded .practice-result{min-height:0!important}.lesson-reference-expanded{inset:8px!important}#lessonExampleCode{font-size:12px}}
+@media(max-width:760px){.lesson-workspace-expanded{grid-template-columns:1fr!important;grid-template-rows:minmax(110px,28%) minmax(0,1fr) minmax(0,1fr)!important}.lesson-workspace-expanded>.lesson-target{grid-row:1!important}.lesson-workspace-expanded>.practice-editor{grid-row:2!important}.lesson-workspace-expanded>.practice-result{grid-row:3!important}.lesson-workspace-expanded .practice-editor,.lesson-workspace-expanded .practice-result{min-height:0!important}.lesson-reference-expanded{inset:8px!important}#lessonExampleCode{font-size:12px}}
 /* FA_EDITOR_V17: gutter e editor do mesmo tamanho do campo anterior */
 .lesson-code-editor .CodeMirror {height: 100%;min-height: 560px;width:100%;font: 13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;background:#171d31;color:#e1e8fd}
 .lesson-code-editor .CodeMirror-gutters {background:#12192b;border-right:1px solid #38425b}
@@ -280,7 +286,7 @@ body.preview-lock{overflow:hidden}
           <div class="lesson-target-footer"><span>Exemplo didático; a atividade é realizada no editor abaixo.</span><span class="example-notice">Exemplo para estudo · produza sua própria solução</span></div>
         </section>
       </div>
-      <div class="practice-editor-grid" id="lessonWorkspace"><section class="panel practice-editor"><div class="practice-editor-head"><strong>✎ Seu código HTML</strong><div class="inline"><button type="button" class="btn" id="lessonMaxWorkspace" aria-expanded="false">⛶ Ampliar área</button><button class="btn" id="lessonReset">Restaurar</button><button class="btn primary" id="lessonRun">▶ Executar</button></div></div><div class="lesson-code-editor"><pre id="lessonCodeHighlight" aria-hidden="true"></pre><textarea spellcheck="false" id="lessonCode" aria-label="Editor de HTML do exercício" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div><div class="practice-editor-foot">Edite HTML e classes CSS. Você pode copiar, recortar e colar trechos <b>dentro deste editor e da mesma atividade</b>. Colagens externas são bloqueadas. <b>Ctrl + Enter</b> executa o código.</div></section><section class="panel practice-result"><div class="practice-editor-head"><strong>◉ Resultado da sua página</strong><div class="preview-tools"><button type="button" class="preview-device active" data-lesson-device="desktop">▣ Desktop</button><button type="button" class="preview-device" data-lesson-device="tablet">▯ Tablet</button><button type="button" class="preview-device" data-lesson-device="mobile">▯ Celular</button><button class="btn primary" id="lessonMaxPreview">⛶ Tela cheia</button></div></div><div class="preview-viewport" id="lessonPreviewViewport"><div class="preview-frame-wrap" id="lessonFrameWrap" data-device="desktop"><iframe id="lessonFrame" title="Resultado do exercício" sandbox="allow-scripts allow-modals"></iframe></div></div><div class="practice-editor-foot">Veja a página inteira em <b>Tela cheia</b> e alterne entre desktop, tablet e celular. Role a página dentro da prévia.</div></section></div>
+      <div class="practice-editor-grid" id="lessonWorkspace"><section class="panel practice-editor"><div class="practice-editor-head"><strong>✎ Seu código HTML</strong><div class="inline"><button type="button" class="btn" id="lessonMaxWorkspace" aria-expanded="false">⛶ Ampliar área</button><button class="btn" id="lessonReset">Restaurar</button><button class="btn primary" id="lessonRun">▶ Executar</button></div></div><div class="lesson-code-editor"><pre id="lessonCodeHighlight" aria-hidden="true"></pre><textarea spellcheck="false" id="lessonCode" aria-label="Editor de HTML do exercício" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div><div class="practice-editor-foot">Edite HTML e classes CSS. Você pode copiar e colar trechos deste editor e da <b>Biblioteca de Classes</b>. Outras colagens são bloqueadas. <b>Ctrl + Enter</b> executa o código.</div></section><section class="panel practice-result"><div class="practice-editor-head"><strong>◉ Resultado da sua página</strong><div class="preview-tools"><button type="button" class="preview-device active" data-lesson-device="desktop">▣ Desktop</button><button type="button" class="preview-device" data-lesson-device="tablet">▯ Tablet</button><button type="button" class="preview-device" data-lesson-device="mobile">▯ Celular</button><button class="btn primary" id="lessonMaxPreview">⛶ Tela cheia</button></div></div><div class="preview-viewport" id="lessonPreviewViewport"><div class="preview-frame-wrap" id="lessonFrameWrap" data-device="desktop"><iframe id="lessonFrame" title="Resultado do exercício" sandbox="allow-scripts allow-modals"></iframe></div></div><div class="practice-editor-foot">Veja a página inteira em <b>Tela cheia</b> e alterne entre desktop, tablet e celular. Role a página dentro da prévia.</div></section></div>
       <div class="panel practice-feedback"><div><h3>Verifique seu exercício</h3><p id="lessonFeedback" class="muted">Execute e clique em Verificar para analisar os requisitos.</p></div><div class="inline"><button class="btn primary" id="lessonCheck">✓ Verificar resposta</button><button class="btn" id="lessonNext">Próximo exercício →</button></div><div id="lessonChecks" class="lesson-checks"></div><div id="lessonDiagnostics" class="lesson-diagnostics" aria-live="polite"></div></div>
     </div>
   </div>
@@ -509,7 +515,7 @@ function syncLessonSyntax(){
 function studentKey(){return 'fa_progress_v12:'+studentName.trim().toLocaleLowerCase('pt-BR')}
 function loadStudentProgress(){solvedLessons.clear()}
 function persistStudentProgress(){}
-function updateStudentScore(){const total=solvedLessons.size,score=total*100;const done=document.querySelector('#practiceDone'), points=document.querySelector('#studentScore');if(done)done.textContent=total+'/'+lessonCatalog.length*3;if(points)points.textContent=score+' pontos';}
+function updateStudentScore(){const total=solvedLessons.size,score=total;const done=document.querySelector('#practiceDone'), points=document.querySelector('#studentScore');if(done)done.textContent=total+'/'+lessonCatalog.length*3;if(points)points.textContent=score+' pontos';}
 function normalizeSolution(source){const doc=new DOMParser().parseFromString(source,'text/html');const normalizeNode=n=>{if(n.nodeType===3)return n.textContent.replace(/\s+/g,' ').trim();if(n.nodeType!==1)return '';const tag=n.tagName.toLowerCase();if(['script','style','meta','link','title'].includes(tag))return '';const attrs=[...n.attributes].filter(x=>!['nonce'].includes(x.name)).sort((a,b)=>a.name.localeCompare(b.name)).map(a=>a.name+'='+ (a.name==='class'?a.value.split(/\s+/).sort().join(' '):a.value.trim())).join('|');return '<'+tag+'|'+attrs+'>'+[...n.childNodes].map(normalizeNode).join('')+'</'+tag+'>';};return [...doc.body.childNodes].map(normalizeNode).join('');}
 function detectCopy(source){const doc=new DOMParser().parseFromString(source,'text/html');const sample=lessonCodeExamples[lessonFW][lessonIdx];const clean=x=>x.replace(/<!--[\s\S]*?-->/g,'').replace(/\s+/g,' ').trim().toLowerCase();const body=clean(doc.body.innerHTML);const example=clean(sample);const sameMarkup=normalizeSolution(sample)===normalizeSolution(source);return {sameMarkup, pastedExample:example.length>65&&body.includes(example)};}
 function analyzeSyntax(source){const errors=[];const voids=new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);const opens=[];const re=/<(\/?)([a-z][\w:-]*)([^<>]*)>/gi;const stripped=source.replace(/<!--[\s\S]*?-->/g,match=>' '.repeat(match.length)).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,match=>' '.repeat(match.length)).replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,match=>' '.repeat(match.length));let m;const loc=offset=>stripped.slice(0,offset).split('\n').length;while((m=re.exec(stripped))){const closing=!!m[1],tag=m[2].toLowerCase(),line=loc(m.index);if(voids.has(tag))continue;if(!closing){if(!m[3].trim().endsWith('/'))opens.push({tag,line})}else{if(!opens.length){errors.push('Linha '+line+': fechamento </'+tag+'> sem abertura correspondente.');continue}let top=opens[opens.length-1];if(top.tag!==tag){errors.push('Linha '+line+': esperado </'+top.tag+'> (aberto na linha '+top.line+'), mas encontrado </'+tag+'>.');let pos=opens.map(x=>x.tag).lastIndexOf(tag);if(pos>=0)opens.splice(pos);else continue}else opens.pop()}}opens.filter(x=>!['html','head','body'].includes(x.tag)).slice(-6).forEach(x=>errors.push('Linha '+x.line+': falta fechar <'+x.tag+'>.'));if(/class\s*=\s*["'][^"']*$/.test(source))errors.push('Atributo class sem aspas de fechamento.');return [...new Set(errors)].slice(0,8);}
@@ -861,7 +867,7 @@ function validateLesson(){
  $('#lessonDiagnostics').innerHTML=report.errors.length?'<strong>Diagnóstico do código</strong><ul>'+report.errors.map(msg=>'<li>'+esc(msg)+'</li>').join('')+'</ul>':'<div class="diag-ok">Nenhum erro estrutural básico detectado.</div>';
  if(!studentName.trim()){$('#lessonFeedback').textContent='Informe seu nome no topo para registrar pontos. '+n+' de '+checks.length+' critérios atendidos.';return;}
  const success=n===checks.length&&!report.blocked;const already=solvedLessons.has(currentLessonKey());
- $('#lessonFeedback').textContent=success?(already?'Exercício validado! Pontuação já registrada.':'Exercício validado! +100 pontos.'):report.blocked?'A solução precisa ser autoral e não conter erros estruturais.':'Você atendeu '+n+' de '+checks.length+' critérios. Confira o diagnóstico abaixo.';
+ $('#lessonFeedback').textContent=success?(already?'Exercício validado! Pontuação já registrada.':'Exercício validado! +1 ponto.'):report.blocked?'A solução precisa ser autoral e não conter erros estruturais.':'Você atendeu '+n+' de '+checks.length+' critérios. Confira o diagnóstico abaixo.';
  if(success){solvedLessons.add(currentLessonKey());persistStudentProgress();updateStudentScore();renderLessonListOnly();}
 }
 function renderLessonListOnly(){$$('[data-lesson]').forEach(b=>{let id=Number(b.dataset.lesson),done=solvedLessons.has(lessonFW+'|'+id);b.classList.toggle('done',done);b.querySelector('.lesson-index').textContent=done?'✓':String(id+1).padStart(2,'0')})}
@@ -920,7 +926,23 @@ function faRefreshEditor(){requestAnimationFrame(()=>{if(window.__faCodeMirror)w
 function faOverlayLock(){document.body.classList.toggle('preview-lock',!!document.querySelector('.lesson-reference-expanded,.lesson-workspace-expanded')||!$('#lessonFullPreview').classList.contains('hidden'))}
 function faToggleWorkspace(force){
   const section=$('#lessonWorkspace'),expanded=typeof force==='boolean'?force:!section.classList.contains('lesson-workspace-expanded');
+  const reference=$('.lesson-target');
+  if(expanded && reference?.classList.contains('lesson-reference-expanded'))faToggleReference(false);
+  if(expanded && reference && reference.dataset.workspaceHome!=='moved'){
+    const marker=document.createComment('posicao-original-do-exemplo');
+    reference.parentNode.insertBefore(marker,reference);
+    window.__faReferenceMarker=marker;
+    reference.dataset.workspaceHome='moved';
+    section.insertBefore(reference,section.firstChild);
+  }
   section.classList.toggle('lesson-workspace-expanded',expanded);
+  if(!expanded && reference?.dataset.workspaceHome==='moved'){
+    const marker=window.__faReferenceMarker;
+    if(marker?.parentNode)marker.parentNode.insertBefore(reference,marker);
+    marker?.remove();
+    delete reference.dataset.workspaceHome;
+    window.__faReferenceMarker=null;
+  }
   $('#lessonMaxWorkspace').textContent=expanded?'↙ Voltar ao tamanho normal':'⛶ Ampliar área';
   $('#lessonMaxWorkspace').setAttribute('aria-expanded',String(expanded));
   faOverlayLock();faRefreshEditor();
@@ -1044,7 +1066,7 @@ function renderClassGuide(){const data=guideTab==='colors'?guideColors():guideTa
  const items=g.items?`<div class="guide-swatches">${filtered.map(x=>`<button type="button" class="guide-swatch" data-copy-class="${attr(x.code)}"><span class="guide-swatch-chip" style="background:${x.hex}"></span><code>${esc(x.code)}</code><small>${esc(x.desc||'Copiar classe')}</small></button>`).join('')}</div>`:`<div class="guide-classes">${filtered.map(x=>classChip(x[0],x[1])).join('')}</div>`;
  return `<section class="guide-group"><h3>${esc(g.name)}</h3>${items}</section>`}).join('');
  $('#classGuideContent').innerHTML='<div class="guide-intro">'+data.intro+'</div>'+(html||'<p>Nenhuma classe encontrada para este filtro.</p>');
- $$('[data-copy-class]',$('#classGuideContent')).forEach(b=>b.addEventListener('click',async()=>{await copyText(b.dataset.copyClass);notify('Copiado: '+b.dataset.copyClass)}));
+ $('[data-copy-class]',$('#classGuideContent')).forEach(b=>b.addEventListener('click',async()=>{window.__faAllowClassClipboard?.(b.dataset.copyClass);await copyText(b.dataset.copyClass);notify('Classe pronta para colar no editor: '+b.dataset.copyClass)}));
 }
 function closeClassGuide(){$('#classGuideOverlay').classList.add('hidden');document.body.classList.remove('preview-lock')}
 $('#lessonClassGuide').onclick=()=>{guideTab='colors';guideQuery='';$('#classGuideSearch').value='';renderClassGuide();$('#classGuideOverlay').classList.remove('hidden');document.body.classList.add('preview-lock')};
@@ -1153,6 +1175,7 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
   // O aluno pode copiar, recortar e colar apenas conteúdo copiado no próprio editor.
   // Conteúdo vindo de outras páginas, do exemplo e de outros aplicativos é recusado.
   let internalClipboard = null;
+  window.__faAllowClassClipboard = value => {internalClipboard={text:String(value),exercise:lessonIdx,framework:lessonFW,variant:lessonNavVariant,source:'library'};};
   const editorArea = document.querySelector('.lesson-code-editor');
   const referenceArea = document.querySelector('.lesson-target-stage');
   const feedback = text => { if (typeof notify === 'function') notify(text); };
@@ -1191,7 +1214,7 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
       // A comparação impede colar dados de uma origem externa que não tenham
       // sido copiados no editor durante esta sessão.
       if(!internalClipboard || pasted!==internalClipboard.text || internalClipboard.exercise!==lessonIdx || internalClipboard.framework!==lessonFW || internalClipboard.variant!==lessonNavVariant){
-        feedback('Colagem externa bloqueada. Copie apenas trechos do seu próprio código HTML.');
+        feedback('Colagem externa bloqueada. Copie trechos do editor ou da Biblioteca de Classes.');
         return;
       }
       replaceCodeSelection(internalClipboard.text);
