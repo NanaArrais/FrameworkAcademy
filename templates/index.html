@@ -659,7 +659,7 @@ function renderLesson(){const l=lessonCatalog[lessonIdx];$('#lessonList').innerH
  $('#lessonRequirements').innerHTML=(lessonIdx===0&&lessonNavVariant==='side'?['Criar navegação e botão de abertura','Incluir marca e menu lateral']:l.requirements.map(k=>lessonRequirementsText[k])).map(label=>'<span>○ '+esc(label)+'</span>').join('');$('#lessonDocs').href=lessonIdx===0&&lessonNavVariant==='side'?(lessonFW==='bootstrap'?'https://getbootstrap.com/docs/5.3/components/offcanvas/':lessonFW==='materialize'?'https://materializecss.com/sidenav.html':'https://tailwindcss.com/docs/translate'):docs[lessonFW]+l.doc[lessonFW];const savedDraft=lessonDrafts[lessonDraftKey()];$('#lessonCode').value=typeof savedDraft==='string'&&savedDraft.trim()?savedDraft:lessonHtml(lessonFW,lessonIdx,false);
  syncLessonSyntax();$('#lessonTip').classList.add('hidden');$('#lessonFeedback').textContent='Execute e clique em Verificar para analisar os requisitos.';$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';
  updateStudentScore();
- $$('[data-lesson]').forEach(b=>b.onclick=()=>{saveLessonDraft();const nextIdx=Number(b.dataset.lesson);lessonIdx=nextIdx;renderLesson();document.querySelector('.practice-challenge')?.scrollIntoView({behavior:'smooth',block:'start'})});runLesson();}
+ runLesson();}
 
 // Referências curtas, comentadas e específicas de cada framework.
 // Não substituem a solução do desafio; mostram a sintaxe que o aluno irá utilizar.
@@ -852,7 +852,26 @@ $('#studentName').value=studentName;loadStudentProgress();updateStudentScore();
 $$('[data-nav-variant]').forEach(b=>b.onclick=()=>{if(lessonNavVariant===b.dataset.navVariant)return;saveLessonDraft();lessonNavVariant=b.dataset.navVariant;renderLesson();$('#lessonFeedback').textContent='Modelo alterado. Crie o menu no editor e execute para testar.';});$('#lessonFramework').onchange=e=>{saveLessonDraft();lessonFW=e.target.value;renderLesson()};$('#lessonRun').onclick=runLesson;$('#lessonCheck').onclick=()=>{runLesson();validateLesson()};$('#lessonHint').onclick=()=>{const tip=$('#lessonTip');tip.innerHTML=lessonHintHtml(lessonIdx,lessonFW);tip.classList.toggle('hidden')};$('#lessonReset').onclick=()=>{if(!confirm('Restaurar o código inicial deste exercício?'))return;$('#lessonCode').value=lessonHtml(lessonFW,lessonIdx,false);saveLessonDraft();$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';runLesson()};$('#lessonNext').onclick=()=>{saveLessonDraft();lessonIdx=(lessonIdx+1)%lessonCatalog.length;faSaveDraftState();renderLesson();document.querySelector('.practice-challenge')?.scrollIntoView({behavior:'smooth',block:'start'})};$('#lessonCode').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();let t=e.target,a=t.selectionStart,b=t.selectionEnd;t.setRangeText('  ',a,b,'end');t.dispatchEvent(new Event('input',{bubbles:true}))}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runLesson()}});$('#lessonCode').oninput=()=>{saveLessonDraft();syncLessonSyntax()};$('#lessonCode').addEventListener('scroll',syncLessonSyntax);$('#lessonCode').addEventListener('keyup',syncLessonSyntax);
 let currentLessonDevice='desktop';
 function syncLessonDevice(device){currentLessonDevice=device;$('#lessonFrameWrap').dataset.device=device;$('#lessonFullFrameWrap').dataset.device=device;document.querySelectorAll('[data-lesson-device]').forEach(b=>b.classList.toggle('active',b.dataset.lessonDevice===device));$$('[data-full-device]').forEach(b=>b.classList.toggle('active',b.dataset.fullDevice===device));}
-document.querySelectorAll('[data-framework-choice]').forEach(button=>button.addEventListener('click',()=>{if(button.dataset.frameworkChoice===lessonFW)return;$('#lessonFramework').value=button.dataset.frameworkChoice;$('#lessonFramework').dispatchEvent(new Event('change',{bubbles:true}));}));
+// Delegação de eventos: funciona mesmo após reconstruir a lista de atividades.
+$('#lessonList').addEventListener('click',event=>{
+  const button=event.target.closest('[data-lesson]');
+  if(!button)return;
+  const index=Number(button.dataset.lesson);
+  if(!Number.isInteger(index)||index<0||index>=lessonCatalog.length||index===lessonIdx)return;
+  saveLessonDraft();
+  lessonIdx=index;
+  renderLesson();
+  document.querySelector('.practice-challenge')?.scrollIntoView({behavior:'smooth',block:'start'});
+});
+// Seleção única, independente de reconstruções de botões e classes visuais.
+document.querySelector('.framework-options').addEventListener('click',event=>{
+  const button=event.target.closest('[data-framework-choice]');
+  if(!button)return;
+  const framework=button.dataset.frameworkChoice;
+  if(!frameworks.includes(framework)||framework===lessonFW)return;
+  $('#lessonFramework').value=framework;
+  $('#lessonFramework').dispatchEvent(new Event('change',{bubbles:true}));
+});
  document.querySelectorAll('[data-lesson-device]').forEach(b=>b.addEventListener('click',()=>syncLessonDevice(b.dataset.lessonDevice)));
 $$('[data-full-device]').forEach(b=>b.addEventListener('click',()=>syncLessonDevice(b.dataset.fullDevice)));
 // PATCH_FA_V16: reutilizar o iframe que já exibe o exercício no editor.
