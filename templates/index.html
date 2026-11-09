@@ -1109,42 +1109,67 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
   if (typeof window.CodeMirror !== 'function') {
     console.warn('CodeMirror indisponível. Mantido o editor anterior; confira o acesso à internet.');
   }
-  // Guardas em CAPTURA, antes de o CodeMirror processar eventos.
-  // Escopo exclusivo ao editor e à referência didática; formulários de cadastro não são afetados.
-  const protectedArea=function(target){
-    return target instanceof Element && !!target.closest('.lesson-code-editor, .lesson-target-stage');
-  };
-  const blockAction=function(event){
-    if(!protectedArea(event.target))return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    if(typeof notify==='function')notify('Digite o código manualmente. Copiar, recortar e colar estão bloqueados nesta atividade.');
-  };
-  ['copy','cut','paste','drop','dragstart'].forEach(function(type){
-    document.addEventListener(type,blockAction,true);
-  });
-  document.addEventListener('beforeinput',function(event){
-    if(['insertFromPaste','insertFromDrop','insertFromYank','deleteByCut'].includes(event.inputType))blockAction(event);
+  // Área de transferência interna do laboratório.
+  // O aluno pode copiar, recortar e colar apenas conteúdo copiado no próprio editor.
+  // Conteúdo vindo de outras páginas, do exemplo e de outros aplicativos é recusado.
+  let internalClipboard = null;
+  const editorArea = document.querySelector('.lesson-code-editor');
+  const referenceArea = document.querySelector('.lesson-target-stage');
+  const feedback = text => { if (typeof notify === 'function') notify(text); };
+  const activeEditor = () => window.__faCodeMirror || null;
+  const insideEditor = target => target instanceof Element && !!target.closest('.lesson-code-editor');
+  const insideReference = target => target instanceof Element && !!target.closest('.lesson-target-stage');
+  function selectedCode(){
+    const cm = activeEditor();
+    if(cm)return cm.getSelection();
+    return original.value.substring(original.selectionStart,original.selectionEnd);
+  }
+  function replaceCodeSelection(value){
+    const cm = activeEditor();
+    if(cm){cm.replaceSelection(value,'around','+input');cm.save();}
+    else {
+      original.setRangeText(value,original.selectionStart,original.selectionEnd,'end');
+      original.dispatchEvent(new Event('input',{bubbles:true}));
+    }
+  }
+  function processEditorClipboard(event){
+    if(insideReference(event.target)){
+      if(['copy','cut','paste'].includes(event.type)){event.preventDefault();event.stopImmediatePropagation();feedback('O exemplo é apenas para consulta. Digite sua própria solução.');}
+      return;
+    }
+    if(!insideEditor(event.target))return;
+    if(event.type==='copy'||event.type==='cut'){
+      const selected=selectedCode();
+      event.preventDefault();event.stopImmediatePropagation();
+      if(!selected)return;
+      internalClipboard={text:selected};
+      if(event.clipboardData){event.clipboardData.setData('text/plain',selected);}
+      if(event.type==='cut')replaceCodeSelection('');
+    }else if(event.type==='paste'){
+      event.preventDefault();event.stopImmediatePropagation();
+      const pasted=event.clipboardData?.getData('text/plain');
+      // A comparação impede colar dados de uma origem externa que não tenham
+      // sido copiados no editor durante esta sessão.
+      if(!internalClipboard || pasted!==internalClipboard.text){
+        feedback('Colagem externa bloqueada. Copie apenas trechos do seu próprio código HTML.');
+        return;
+      }
+      replaceCodeSelection(internalClipboard.text);
+    }
+  }
+  ['copy','cut','paste'].forEach(type=>document.addEventListener(type,processEditorClipboard,true));
+  document.addEventListener('beforeinput',event=>{
+    if(!insideEditor(event.target))return;
+    if(['insertFromPaste','insertFromDrop','insertFromYank'].includes(event.inputType)){
+      event.preventDefault();event.stopImmediatePropagation();
+    }
   },true);
-  document.addEventListener('keydown',function(event){
-    if(!protectedArea(event.target))return;
-    const key=(event.key||'').toLowerCase();
-    const shortcut=(event.ctrlKey||event.metaKey)&&['c','x','v','insert'].includes(key);
-    const shiftPaste=event.shiftKey&&key==='insert';
-    if(shortcut||shiftPaste)blockAction(event);
+  document.addEventListener('drop',event=>{
+    if(insideEditor(event.target)){event.preventDefault();event.stopImmediatePropagation();feedback('Arrastar texto de fora não é permitido.');}
   },true);
-  document.addEventListener('contextmenu',function(event){
-    if(protectedArea(event.target))blockAction(event);
-  },true);
-  // Impede o botão de exemplo de inserir código no clipboard.
-  // Bloqueia colagem, cópia, recorte e arrastar/soltar no editor de atividades.
-  const denyClipboard=function(e){e.preventDefault();e.stopPropagation();if(typeof notify==='function')notify('Digite o código no editor: copiar e colar estão desativados.')};
-  ['paste','copy','cut','drop'].forEach(type=>original.addEventListener(type,denyClipboard,true));
-  original.addEventListener('beforeinput',function(e){if(['insertFromPaste','insertFromDrop','insertFromYank'].includes(e.inputType))denyClipboard(e)},true);
+  if(referenceArea)referenceArea.addEventListener('contextmenu',event=>event.preventDefault());
   const copyButton=document.getElementById('lessonCopyExample');
-  if(copyButton){copyButton.disabled=true;copyButton.title='Exemplo apenas para leitura e estudo';copyButton.textContent='Exemplo para leitura'}
-  const exampleCode=document.getElementById('lessonExampleCode');
-  if(exampleCode)exampleCode.addEventListener('copy',denyClipboard,true);
+  if(copyButton){copyButton.disabled=true;copyButton.textContent='Exemplo para leitura';copyButton.title='Exemplo apenas para estudo';}
   if(typeof window.CodeMirror !== 'function')return;
   const cm = window.CodeMirror.fromTextArea(original, {
     mode: 'htmlmixed',
@@ -1173,10 +1198,13 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',loadTea
     }
   });
   window.__faCodeMirror = cm;
-  const cmWrapper=cm.getWrapperElement();
-  ['paste','copy','cut','drop'].forEach(type=>cmWrapper.addEventListener(type,denyClipboard,true));
+  // Bloqueia a via alternativa de colagem do CodeMirror que não emite evento DOM.
+  // Inserções internas feitas por replaceSelection usam origem +input e permanecem válidas.
   cm.on('beforeChange',function(editor,change){
-    if(['paste','drop','+paste','cut'].includes(change.origin)){change.cancel();if(typeof notify==='function')notify('Colagem bloqueada. Digite sua solução.')}
+    if(['paste','drop','+paste'].includes(change.origin)){
+      change.cancel();
+      feedback('Colagem externa bloqueada. Copie trechos dentro do próprio editor.');
+    }
   });
   // A sincronização programática não pode salvar o rascunho anterior
   // no exercício recém-selecionado.
