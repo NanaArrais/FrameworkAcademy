@@ -297,29 +297,17 @@ def results():
                      'last_attempt':iso_utc(attempts[0].submitted_at) if attempts else None})
     return jsonify(students=data)
 
-# Ranking por dia civil de Fortaleza. Não modifica Award nem a pontuação acumulada.
-# Uma aprovação por aluno / framework / exercício conta uma vez por dia;
-# uma aprovação da mesma atividade em outro dia pode pontuar novamente.
+# Classificação do dia civil de Fortaleza; a pontuação acumulada permanece intacta.
+# Cada aluno pontua uma vez por framework/exercício aprovado no dia.
 RANKING_TIMEZONE = ZoneInfo('America/Fortaleza')
 
-@app.get('/api/teacher/ranking/daily')
-@teacher_only
-def teacher_daily_ranking():
-    selected = request.args.get('date', '').strip()
-    if not selected:
-        day = datetime.now(RANKING_TIMEZONE).date()
-    else:
-        try:
-            day = date.fromisoformat(selected)
-            if selected != day.isoformat():
-                raise ValueError('Formato inválido')
-        except ValueError:
-            return jsonify(error='Informe uma data válida no formato AAAA-MM-DD.'), 400
-
+@app.get('/api/ranking/today')
+@student_only
+def student_daily_ranking():
+    day = datetime.now(RANKING_TIMEZONE).date()
     beginning = datetime.combine(day, time.min, tzinfo=RANKING_TIMEZONE).astimezone(timezone.utc)
     ending = datetime.combine(day + timedelta(days=1), time.min, tzinfo=RANKING_TIMEZONE).astimezone(timezone.utc)
 
-    # GROUP BY evita contar reenvios do mesmo exercício no dia selecionado.
     approved = (db.session.query(Submission.student_id, Submission.framework, Submission.exercise)
                 .filter(Submission.passed.is_(True),
                         Submission.submitted_at >= beginning,
@@ -336,12 +324,11 @@ def teacher_daily_ranking():
     last_score = None
     for index, student in enumerate(students, 1):
         points = scores[student.id]
-        if last_score != points:
+        if points != last_score:
             position = index
         entries.append({'position': position, 'student_id': student.id,
                         'name': student.name, 'course': student.course, 'points': points})
         last_score = points
-
     return jsonify(date=day.isoformat(), timezone='America/Fortaleza', ranking=entries)
 
 @app.get('/api/teacher/student/<int:student_id>')
