@@ -739,7 +739,7 @@ function exercisePreviewHTML(src){
  return src;
 }
 function renderLesson(){const l=lessonCatalog[lessonIdx];$('#lessonList').innerHTML=lessonCatalog.map((x,i)=>`<button class="lesson-choice ${i===lessonIdx?'active':''} ${solvedLessons.has(lessonFW+'|'+i)?'done':''}" data-lesson="${i}"><span class="lesson-index">${solvedLessons.has(lessonFW+'|'+i)?'✓':String(i+1).padStart(2,'0')}</span><span>${esc(x.name)}</span></button>`).join('');
- $('#lessonNavOptions').style.display=lessonIdx===0?'flex':'none';$$('[data-nav-variant]').forEach(b=>b.classList.toggle('active',b.dataset.navVariant===lessonNavVariant));$('#lessonTargetFramework').textContent=names[lessonFW];renderLessonTarget();
+ $('#lessonNavOptions').style.display=lessonIdx===0?'flex':'none';$$('[data-nav-variant]').forEach(b=>b.classList.toggle('active',b.dataset.navVariant===lessonNavVariant));$('#lessonTargetFramework').textContent=names[lessonFW];renderLessonTarget();if(!$('#lessonLibraryDock').hidden)faRenderDockLibrary();
  $('#lessonFramework').value=lessonFW;document.querySelectorAll('[data-framework-choice]').forEach(b=>{const selected=b.dataset.frameworkChoice===lessonFW;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected))});$('#lessonNumber').textContent='Exercício '+String(lessonIdx+1).padStart(2,'0')+' de '+lessonCatalog.length;$('#lessonTitle').textContent=l.name;$('#lessonBrief').textContent=lessonIdx===0?(lessonNavVariant==='side'?'Construa um menu lateral: um botão ☰ abre o painel com a identidade do site.':'Construa uma barra superior responsiva: em telas menores, o botão ☰ deve abrir o menu.'):l.description;
  $('#lessonRequirements').innerHTML=(lessonIdx===0&&lessonNavVariant==='side'?['Criar navegação e botão de abertura','Incluir marca e menu lateral']:l.requirements.map(k=>lessonRequirementsText[k])).map(label=>'<span>○ '+esc(label)+'</span>').join('');$('#lessonDocs').href=lessonIdx===0&&lessonNavVariant==='side'?(lessonFW==='bootstrap'?'https://getbootstrap.com/docs/5.3/components/offcanvas/':lessonFW==='materialize'?'https://materializecss.com/sidenav.html':'https://tailwindcss.com/docs/translate'):docs[lessonFW]+l.doc[lessonFW];const savedDraft=lessonDrafts[lessonDraftKey()];$('#lessonCode').value=typeof savedDraft==='string'&&savedDraft.trim()?savedDraft:lessonHtml(lessonFW,lessonIdx,false);
  syncLessonSyntax();$('#lessonTip').classList.add('hidden');$('#lessonFeedback').textContent='Execute e clique em Verificar para analisar os requisitos.';$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';
@@ -1135,6 +1135,48 @@ function guideSpacing(){let groups=[],intro='As escalas de espaçamento variam c
  }
  return {intro,groups};
 }
+let faDockTab='colors';
+function faRenderDockLibrary(){
+  const dock=$('#lessonLibraryDock');
+  if(!dock||dock.hidden)return;
+  const data=faDockTab==='colors'?guideColors():faDockTab==='type'?guideType():guideSpacing();
+  const query=$('#lessonDockSearch').value.trim().toLocaleLowerCase('pt-BR');
+  document.querySelectorAll('[data-dock-tab]').forEach(button=>{
+    const active=button.dataset.dockTab===faDockTab;
+    button.classList.toggle('active',active);
+    button.setAttribute('aria-selected',String(active));
+  });
+  const markup=data.groups.map(group=>{
+    const items=(group.items||group.codes||[]).filter(item=>{
+      const name=String(item.code??item[0]??'');
+      const description=String(item.desc??item[1]??'');
+      return (name+' '+description+' '+group.name).toLocaleLowerCase('pt-BR').includes(query);
+    });
+    if(!items.length)return '';
+    return '<section><h4>'+esc(group.name)+'</h4><div class="lesson-dock-group">'+items.map(item=>{
+      const code=String(item.code??item[0]??'');
+      const hex=item.hex;
+      return '<button type="button" class="lesson-dock-class" data-dock-copy="'+attr(code)+'" title="Copiar '+attr(code)+'">'+
+        (hex?'<span class="lesson-dock-swatch" style="background:'+attr(hex)+'"></span>':'')+
+        '<span>'+esc(code)+'</span></button>';
+    }).join('')+'</div></section>';
+  }).join('');
+  $('#lessonDockResults').innerHTML=markup||'<p class="muted">Nenhuma classe encontrada.</p>';
+}
+document.querySelectorAll('[data-dock-tab]').forEach(button=>button.addEventListener('click',()=>{
+  faDockTab=button.dataset.dockTab;
+  faRenderDockLibrary();
+}));
+$('#lessonDockSearch').addEventListener('input',faRenderDockLibrary);
+$('#lessonDockResults').addEventListener('click',async event=>{
+  const button=event.target.closest('[data-dock-copy]');
+  if(!button)return;
+  const code=button.dataset.dockCopy;
+  // Marca apenas classes da biblioteca como conteúdo válido para colagem.
+  window.__faAllowClassClipboard?.(code);
+  try{await copyText(code);notify('Classe copiada: '+code)}
+  catch(e){notify('Não foi possível copiar automaticamente.')}
+});
 function renderClassGuide(){const data=guideTab==='colors'?guideColors():guideTab==='type'?guideType():guideSpacing();const query=guideQuery.trim().toLowerCase();
  $('#guideFrameworkLabel').textContent=names[lessonFW];$('#guideOfficial').href=guideTab==='colors'?(lessonFW==='materialize'?'https://materializecss.com/color.html':lessonFW==='tailwind'?'https://tailwindcss.com/docs/colors':'https://getbootstrap.com/docs/5.3/utilities/colors/'):guideTab==='type'?(lessonFW==='materialize'?'https://materializecss.com/typography.html':lessonFW==='tailwind'?'https://tailwindcss.com/docs/font-size':'https://getbootstrap.com/docs/5.3/utilities/text/'):(lessonFW==='materialize'?'https://materializecss.com/helpers.html':lessonFW==='tailwind'?'https://tailwindcss.com/docs/padding':'https://getbootstrap.com/docs/5.3/utilities/spacing/');
  $$('.classguide-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.guideTab===guideTab));
