@@ -64,6 +64,12 @@ class PracticeRun(db.Model):
     last_approved_at = db.Column(db.DateTime(timezone=True), nullable=True, index=True)
     ended_at = db.Column(db.DateTime(timezone=True), nullable=True)
 
+class PracticeEditStart(db.Model):
+    """Início efetivo do trabalho. Tabela separada preserva bases já implantadas."""
+    id = db.Column(db.Integer, primary_key=True)
+    run_id = db.Column(db.Integer, db.ForeignKey('practice_run.id'), nullable=False, unique=True, index=True)
+    edited_at = db.Column(db.DateTime(timezone=True), nullable=False)
+
 class StudentAccess(db.Model):
     """Registro de abertura do laboratório. Horários UTC; a interface converte para Fortaleza."""
     id = db.Column(db.Integer, primary_key=True)
@@ -99,6 +105,19 @@ def ensure_practice_run(student_id):
     session['practice_run_record_id'] = run.id
     session['practice_started_at'] = iso_utc(started)
     return run
+
+def edit_started_at(run):
+    event = PracticeEditStart.query.filter_by(run_id=run.id).first()
+    return event.edited_at if event else None
+
+def mark_first_edit(run):
+    started = edit_started_at(run)
+    if started is not None:
+        return started
+    started = datetime.now(timezone.utc)
+    db.session.add(PracticeEditStart(run_id=run.id, edited_at=started))
+    db.session.commit()
+    return started
 
 def duration_clock(seconds):
     seconds = max(0, int(seconds))
@@ -286,7 +305,15 @@ def progress_of(student_id):
                .distinct().all())
     return {'points':len(completed),
             'completed':[{'framework':fw,'exercise':exercise} for fw,exercise in completed],
-            'run_id':started_iso, 'timer_started_at':started_iso}
+            'run_id':started_iso, 'timer_started_at':iso_utc(edit_started_at(ensure_practice_run(student_id)))}
+
+@app.post('/api/student/first-edit')
+@student_only
+def student_first_edit():
+    """A chamada é feita na primeira digitação, não no login ou abertura da questão."""
+    run = ensure_practice_run(session['student_id'])
+    started = mark_first_edit(run)
+    return jsonify(timer_started_at=iso_utc(started))
 
 @app.post('/api/student/logout')
 @student_only
@@ -394,7 +421,10 @@ def student_daily_ranking():
                                      PracticeRun.last_approved_at < ending).all()
             if scores else [])
     for run in runs:
-        started = run.started_at.replace(tzinfo=timezone.utc) if run.started_at.tzinfo is None else run.started_at
+        started_value = edit_started_at(run)
+        if started_value is None:
+            continue
+        started = started_value.replace(tzinfo=timezone.utc) if started_value.tzinfo is None else started_value
         approved_at = (run.last_approved_at.replace(tzinfo=timezone.utc)
                        if run.last_approved_at.tzinfo is None else run.last_approved_at)
         seconds = max(0, int((min(approved_at, ending) - max(started, beginning)).total_seconds()))
