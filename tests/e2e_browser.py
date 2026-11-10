@@ -70,16 +70,48 @@ with sync_playwright() as p:
             checked += 1
     assert checked == 42
 
-    # The expanded workspace should keep the reference and class library available.
+    # The expanded workspace opens focused, without the example or library
+    # covering the editor, yet both panels remain available on demand.
+    expect(page.locator("#studentAvatar")).to_have_text("E")
+    expect(page.locator("#studentCourse")).to_contain_text("E2E000007")
     page.locator("#lessonMaxWorkspace").click()
+    expect(page.locator("#faExpandedBar")).to_be_visible()
     assert "lesson-workspace-expanded" in page.locator("#lessonWorkspace").get_attribute("class").split()
     assert page.locator("#lessonWorkspace .lesson-target").count() == 1
+    expect(page.locator("#lessonWorkspace .lesson-target")).to_be_hidden()
+    expect(page.locator("#lessonLibraryDock")).to_be_hidden()
+    page.locator("#faExpandedExample").click()
+    expect(page.locator("#lessonWorkspace .lesson-target")).to_be_visible()
+    page.locator("#faExpandedExample").click()
+    expect(page.locator("#lessonWorkspace .lesson-target")).to_be_hidden()
+    page.locator("#faExpandedClasses").click()
     expect(page.locator("#lessonLibraryDock")).to_be_visible()
     for tab in ("colors", "type", "spacing"):
         page.locator(f'[data-dock-tab="{tab}"]').click()
         expect(page.locator(f'[data-dock-tab="{tab}"]')).to_have_class("active")
         assert page.locator("#lessonDockResults").inner_text().strip()
-    page.locator("#lessonMaxWorkspace").click()
+    page.locator("#faExpandedClasses").click()
+    expect(page.locator("#lessonLibraryDock")).to_be_hidden()
+
+    # Failed validation must leave the learner on the current question.
+    page.locator('[data-framework-choice="materialize"]').click()
+    page.locator('[data-lesson="1"]').click()
+    page.locator("#faExpandedValidateNext").click()
+    expect(page.locator("#lessonTitle")).to_have_text("Cores e fundo")
+    expect(page.locator("#faExpandedStatus")).to_contain_text("Tentativa registrada", timeout=15000)
+
+    # A correct solution must validate and open the following question
+    # without closing the expanded workspace.
+    good_code = ('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">'
+                 '<title>Exercício autoral</title></head><body>'
+                 '<section class="blue"><h4>Portal de Aprendizagem</h4></section>'
+                 '</body></html>')
+    page.evaluate("(code) => {window.__faCodeMirror.setValue(code);window.__faCodeMirror.save();}", good_code)
+    page.locator("#faExpandedValidateNext").click()
+    expect(page.locator("#lessonTitle")).to_have_text("Grid responsivo", timeout=15000)
+    expect(page.locator("#faExpandedStatus")).to_contain_text("Próxima questão aberta")
+    expect(page.locator("#faExpandedBar")).to_be_visible()
+    page.locator("#faExpandedExit").click()
     assert "lesson-workspace-expanded" not in page.locator("#lessonWorkspace").get_attribute("class").split()
     # Alternância de contas: o aluno anterior sai, o cadastro volta vazio,
     # o ranking é ocultado e uma nova matrícula recebe progresso isolado.
