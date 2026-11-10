@@ -169,6 +169,20 @@ class ValidationTests(unittest.TestCase):
             self.assertEqual(Student.query.count(),1)
             self.assertEqual(Award.query.count(),0)
 
+    def test_teacher_dashboard_filters_and_layout(self):
+        html=(ROOT/"templates"/"index.html").read_text(encoding="utf-8")
+        for element_id in (
+            "teacherFilterCourse","teacherFilterFramework","teacherFilterStatus",
+            "teacherFilterSince","teacherFilterSort","teacherClearFilters",
+            "teacherResultCount","teacherSearch","teacherRows"
+        ):
+            self.assertEqual(html.count('id="'+element_id+'"'),1,element_id)
+        self.assertIn('class="teacher-panel-toolbar"',html)
+        self.assertIn('class="teacher-filter-panel"',html)
+        self.assertIn("filters.sort==='recent'",html)
+        self.assertIn("faMatchesTeacher(student,filters)",html)
+        self.assertIn('class="teacher-progress"',html)
+
     def test_interface_wiring(self):
         html = (ROOT/"templates"/"index.html").read_text(encoding="utf-8")
         for marker in (
