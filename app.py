@@ -401,7 +401,8 @@ def student_daily_ranking():
         elapsed[run.student_id] = elapsed.get(run.student_id, 0) + seconds
 
     students = Student.query.filter(Student.id.in_(scores.keys())).all() if scores else []
-    students.sort(key=lambda student: (-scores[student.id], elapsed.get(student.id, 0),
+    students.sort(key=lambda student: (-scores[student.id],
+                                        elapsed.get(student.id, float('inf')),
                                         student.name.casefold(), student.id))
     entries = []
     position = 0
@@ -412,8 +413,9 @@ def student_daily_ranking():
             position = index
         entries.append({'position': position, 'student_id': student.id,
                         'name': student.name, 'course': student.course, 'points': points,
-                        'duration_seconds': elapsed.get(student.id, 0),
-                        'duration': duration_clock(elapsed.get(student.id, 0))})
+                        'duration_seconds': elapsed.get(student.id),
+                        'duration': duration_clock(elapsed[student.id])
+                                    if student.id in elapsed else '—'})
         last_score = points
     return jsonify(date=day.isoformat(), timezone='America/Fortaleza', ranking=entries)
 
