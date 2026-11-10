@@ -79,10 +79,22 @@ class Inspector(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.tags=[]; self.classes=[]; self.links=[]; self.attrs=[]; self.texts=[]
         self._link=False
+        self.nodes=[]; self._stack=[]
+        self._voids={'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}
     def handle_starttag(self, tag, attrs):
-        a=dict(attrs); self.tags.append(tag); self.attrs.append((tag,a)); self.classes.extend(a.get('class','').split());
+        a=dict(attrs)
+        self.tags.append(tag)
+        self.attrs.append((tag,a))
+        self.classes.extend((a.get('class') or '').split())
+        node={'tag':tag,'attrs':a,'parent':self._stack[-1] if self._stack else None}
+        self.nodes.append(node)
+        if tag not in self._voids: self._stack.append(node)
         if tag=='a': self._link=True
     def handle_endtag(self, tag):
+        for index in range(len(self._stack)-1,-1,-1):
+            if self._stack[index]['tag']==tag:
+                del self._stack[index:]
+                break
         if tag=='a': self._link=False
     def handle_data(self, data):
         self.texts.append(data)
