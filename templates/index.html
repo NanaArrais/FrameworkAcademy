@@ -322,66 +322,6 @@ body{background:var(--bg)}
 .lesson-workspace-expanded[data-space-mode="preview"]:has(>.lesson-library-dock[hidden]){grid-template-columns:minmax(0,.7fr) minmax(0,1.5fr)!important}
 @media(max-width:1020px){.lesson-workspace-expanded[data-space-mode="code"],.lesson-workspace-expanded[data-space-mode="preview"]{grid-template-columns:minmax(180px,215px) minmax(0,1fr)!important}.lesson-workspace-expanded[data-space-mode="code"]:has(>.lesson-library-dock[hidden]),.lesson-workspace-expanded[data-space-mode="preview"]:has(>.lesson-library-dock[hidden]){grid-template-columns:1fr!important}}
 @media(max-width:650px){.lesson-workspace-expanded .lesson-space-modes{display:none}.lesson-workspace-expanded[data-space-mode="code"],.lesson-workspace-expanded[data-space-mode="preview"]{grid-template-columns:1fr!important}}
-
-/* UX do ambiente de trabalho: hierarquia clara, ferramentas separadas dos painéis */
-#lessonWorkspace>.lesson-workspace-toolbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px 12px;min-height:49px;min-width:0}
-.lesson-toolbar-identity{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
-.lesson-toolbar-identity strong{font-size:12px;color:var(--navy)}
-.lesson-toolbar-identity span{font-size:10px;color:var(--muted)}
-.lesson-toolbar-controls{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
-.lesson-toolbar-controls>.btn{min-height:32px;padding:6px 10px;font-size:11px}
-.lesson-workspace-toolbar .lesson-space-modes{gap:2px}
-.lesson-workspace-toolbar .lesson-space-modes button{min-height:28px;padding:5px 10px}
-#lessonWorkspace:not(.lesson-workspace-expanded)>.lesson-workspace-toolbar{grid-row:1}
-#lessonWorkspace:not(.lesson-workspace-expanded)>.practice-editor,
-#lessonWorkspace:not(.lesson-workspace-expanded)>.practice-result{grid-row:2}
-#lessonWorkspace>.practice-editor>.practice-editor-head,
-#lessonWorkspace>.practice-result>.practice-editor-head{min-height:48px;padding:8px 12px}
-#lessonWorkspace .practice-editor-head .inline{gap:6px;flex-wrap:nowrap}
-#lessonWorkspace .preview-tools{gap:3px;flex-wrap:wrap}
-#lessonWorkspace .preview-device{min-height:29px}
-#lessonWorkspace #lessonMaxPreview{background:#fff!important;border:1px solid var(--border)!important;color:#514583!important}
-#lessonWorkspace .practice-editor-head .btn.primary{background:#57419b!important;color:white!important}
-#lessonWorkspace.lesson-workspace-expanded{grid-template-rows:49px minmax(105px,25%) minmax(0,1fr)!important;padding:9px!important;gap:9px!important}
-#lessonWorkspace.lesson-workspace-expanded>.lesson-workspace-toolbar{grid-row:1;grid-column:1/-1;min-height:0;padding:6px 10px}
-#lessonWorkspace.lesson-workspace-expanded>.lesson-target{grid-row:2!important;grid-column:1/-1!important;min-height:0!important}
-#lessonWorkspace.lesson-workspace-expanded>.lesson-library-dock:not([hidden]){grid-row:3!important;grid-column:1!important}
-#lessonWorkspace.lesson-workspace-expanded>.practice-editor{grid-row:3!important;grid-column:2!important}
-#lessonWorkspace.lesson-workspace-expanded>.practice-result{grid-row:3!important;grid-column:3!important}
-#lessonWorkspace.lesson-workspace-expanded:has(>.lesson-library-dock[hidden])>.practice-editor{grid-row:3!important;grid-column:1!important}
-#lessonWorkspace.lesson-workspace-expanded:has(>.lesson-library-dock[hidden])>.practice-result{grid-row:3!important;grid-column:2!important}
-#lessonWorkspace.lesson-workspace-expanded .lesson-target .lesson-target-stage{overflow:auto;max-height:none!important;flex:1;min-height:0}
-#lessonWorkspace.lesson-workspace-expanded .lesson-target-header{padding:7px 12px;min-height:34px}
-#lessonWorkspace.lesson-workspace-expanded .lesson-target-header #lessonCompactReference,
-#lessonWorkspace.lesson-workspace-expanded .lesson-target-header #lessonExpandReference{display:none}
-#lessonWorkspace.lesson-workspace-expanded .lesson-code-editor{min-height:0!important;overflow:hidden}
-#lessonWorkspace.lesson-workspace-expanded .CodeMirror{min-height:0!important;height:100%!important}
-#lessonWorkspace.lesson-workspace-expanded .CodeMirror-scroll{min-height:0!important;height:100%!important}
-#lessonWorkspace.lesson-workspace-expanded .preview-viewport{min-height:0}
-#lessonWorkspace.lesson-workspace-expanded .preview-frame-wrap{min-height:0}
-#lessonWorkspace.lesson-workspace-expanded #lessonFrame{min-height:0}
-@media(max-width:1100px){
-  #lessonWorkspace.lesson-workspace-expanded{grid-template-rows:49px minmax(95px,22%) minmax(0,1fr) minmax(0,1fr)!important}
-  #lessonWorkspace.lesson-workspace-expanded>.lesson-library-dock:not([hidden]){grid-row:3/5!important;grid-column:1!important}
-  #lessonWorkspace.lesson-workspace-expanded>.practice-editor{grid-row:3!important;grid-column:2!important}
-  #lessonWorkspace.lesson-workspace-expanded>.practice-result{grid-row:4!important;grid-column:2!important}
-  #lessonWorkspace.lesson-workspace-expanded:has(>.lesson-library-dock[hidden])>.practice-editor{grid-row:3!important;grid-column:1!important}
-  #lessonWorkspace.lesson-workspace-expanded:has(>.lesson-library-dock[hidden])>.practice-result{grid-row:4!important;grid-column:1!important}
-}
-@media(max-width:650px){
-  #lessonWorkspace>.lesson-workspace-toolbar{flex-wrap:wrap}
-  .lesson-toolbar-identity span{display:none}
-  .lesson-toolbar-controls{width:100%;justify-content:flex-start}
-  #lessonWorkspace.lesson-workspace-expanded{grid-template-rows:auto 130px 175px minmax(300px,1fr) minmax(300px,1fr)!important;overflow-y:auto}
-  #lessonWorkspace.lesson-workspace-expanded>.lesson-workspace-toolbar{grid-row:1!important}
-  #lessonWorkspace.lesson-workspace-expanded>.lesson-target{grid-row:2!important}
-  #lessonWorkspace.lesson-workspace-expanded>.lesson-library-dock:not([hidden]){grid-row:3!important;grid-column:1!important}
-  #lessonWorkspace.lesson-workspace-expanded>.practice-editor{grid-row:4!important;grid-column:1!important}
-  #lessonWorkspace.lesson-workspace-expanded>.practice-result{grid-row:5!important;grid-column:1!important}
-  #lessonWorkspace.lesson-workspace-expanded:has(>.lesson-library-dock[hidden]){grid-template-rows:auto 130px minmax(300px,1fr) minmax(300px,1fr)!important}
-  #lessonWorkspace.lesson-workspace-expanded:has(>.lesson-library-dock[hidden])>.practice-editor{grid-row:3!important}
-  #lessonWorkspace.lesson-workspace-expanded:has(>.lesson-library-dock[hidden])>.practice-result{grid-row:4!important}
-}
 </style>
 </head>
 <body>
@@ -415,24 +355,16 @@ body{background:var(--bg)}
         </section>
       </div>
       <div class="practice-editor-grid" id="lessonWorkspace">
-<div class="lesson-workspace-toolbar" role="toolbar" aria-label="Ferramentas do laboratório">
-  <div class="lesson-toolbar-identity"><strong>Área de trabalho</strong><span>HTML e prévia</span></div>
-  <div class="lesson-toolbar-controls">
-    <button type="button" class="btn lesson-dock-toggle" id="lessonDockToggle" aria-pressed="false">Ocultar classes</button>
-    <div class="lesson-space-modes" role="group" aria-label="Distribuição do espaço de trabalho">
-      <button type="button" data-space-mode="code" title="Dar mais espaço para o código">Código</button>
-      <button type="button" data-space-mode="balanced" class="active" title="Dividir o espaço igualmente">Dividido</button>
-      <button type="button" data-space-mode="preview" title="Dar mais espaço para a prévia">Prévia</button>
-    </div>
-    <button type="button" class="btn" id="lessonMaxWorkspace" aria-expanded="false">Ampliar área</button>
-  </div>
-</div>
 <aside class="lesson-library-dock" id="lessonLibraryDock" hidden aria-label="Biblioteca de classes">
 <div class="lesson-library-head"><strong>Biblioteca de classes</strong><button type="button" class="btn" id="lessonDockClose">Ocultar</button></div>
 <div class="lesson-dock-tabs" role="tablist"><button type="button" data-dock-tab="colors" class="active">Cores</button><button type="button" data-dock-tab="type">Textos</button><button type="button" data-dock-tab="spacing">Espaços</button></div>
 <input id="lessonDockSearch" type="search" placeholder="Buscar classe..." aria-label="Buscar classe">
 <div id="lessonDockResults" class="lesson-dock-results"></div><p class="lesson-dock-foot">Clique na classe para copiar.</p>
-</aside><section class="panel practice-editor"><div class="practice-editor-head"><strong>Seu código HTML</strong><div class="inline"><button class="btn" id="lessonReset" title="Restaurar o código inicial do exercício">Restaurar</button><button class="btn primary" id="lessonRun">Executar</button></div></div></div><div class="lesson-code-editor"><pre id="lessonCodeHighlight" aria-hidden="true"></pre><textarea spellcheck="false" id="lessonCode" aria-label="Editor de HTML do exercício" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div><div class="practice-editor-foot"><span>Ctrl + Enter para executar</span><span id="draftStatus" role="status">Rascunho salvo automaticamente</span></div></section><section class="panel practice-result"><div class="practice-editor-head"><strong>Prévia</strong><div class="preview-tools"><button type="button" class="preview-device active" data-lesson-device="desktop">Desktop</button><button type="button" class="preview-device" data-lesson-device="tablet">Tablet</button><button type="button" class="preview-device" data-lesson-device="mobile">Celular</button><button class="btn primary" id="lessonMaxPreview">⛶ Tela cheia</button></div></div><div class="preview-viewport" id="lessonPreviewViewport"><div class="preview-frame-wrap" id="lessonFrameWrap" data-device="desktop"><iframe id="lessonFrame" title="Resultado do exercício" sandbox="allow-scripts allow-modals"></iframe></div></div></section></div>
+</aside><section class="panel practice-editor"><div class="practice-editor-head"><strong>Seu código HTML</strong><div class="inline"><div class="lesson-space-modes" role="group" aria-label="Distribuição do espaço de trabalho">
+<button type="button" data-space-mode="code" title="Dar mais espaço para o código">Código +</button>
+<button type="button" data-space-mode="balanced" class="active" title="Dividir o espaço igualmente">Equilibrado</button>
+<button type="button" data-space-mode="preview" title="Dar mais espaço para a prévia">Prévia +</button>
+</div><button type="button" class="btn lesson-dock-toggle" id="lessonDockToggle" aria-pressed="false">Classes</button><button type="button" class="btn" id="lessonMaxWorkspace" aria-expanded="false">Ampliar área</button><button class="btn" id="lessonReset">Restaurar</button><button class="btn primary" id="lessonRun">Executar</button></div></div><div class="lesson-code-editor"><pre id="lessonCodeHighlight" aria-hidden="true"></pre><textarea spellcheck="false" id="lessonCode" aria-label="Editor de HTML do exercício" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea></div><div class="practice-editor-foot"><span>Ctrl + Enter para executar</span><span id="draftStatus" role="status">Rascunho salvo automaticamente</span></div></section><section class="panel practice-result"><div class="practice-editor-head"><strong>Prévia</strong><div class="preview-tools"><button type="button" class="preview-device active" data-lesson-device="desktop">Desktop</button><button type="button" class="preview-device" data-lesson-device="tablet">Tablet</button><button type="button" class="preview-device" data-lesson-device="mobile">Celular</button><button class="btn primary" id="lessonMaxPreview">⛶ Tela cheia</button></div></div><div class="preview-viewport" id="lessonPreviewViewport"><div class="preview-frame-wrap" id="lessonFrameWrap" data-device="desktop"><iframe id="lessonFrame" title="Resultado do exercício" sandbox="allow-scripts allow-modals"></iframe></div></div></section></div>
       <div class="panel practice-feedback"><div><h3>Validação</h3><p id="lessonFeedback" class="muted">Execute e clique em Verificar para analisar os requisitos.</p></div><div class="inline"><button class="btn primary" id="lessonCheck">Verificar resposta</button><button class="btn" id="lessonNext">Próxima atividade</button></div><div id="lessonChecks" class="lesson-checks"></div><div id="lessonDiagnostics" class="lesson-diagnostics" aria-live="polite"></div></div>
     </div>
   </div>
@@ -1079,13 +1011,12 @@ function faToggleWorkspace(force){
     reference.parentNode.insertBefore(marker,reference);
     window.__faReferenceMarker=marker;
     reference.dataset.workspaceHome='moved';
-    section.insertBefore(reference,section.querySelector('.lesson-library-dock'));
+    section.insertBefore(reference,section.firstChild);
   }
   section.classList.toggle('lesson-workspace-expanded',expanded);
   const dock=$('#lessonLibraryDock');
   dock.hidden=!expanded;
   $('#lessonDockToggle').setAttribute('aria-pressed',String(expanded));
-  $('#lessonDockToggle').textContent=expanded?'Ocultar classes':'Mostrar classes';
   if(expanded)faRenderDockLibrary();
   if(!expanded && reference?.dataset.workspaceHome==='moved'){
     const marker=window.__faReferenceMarker;
@@ -1094,7 +1025,7 @@ function faToggleWorkspace(force){
     delete reference.dataset.workspaceHome;
     window.__faReferenceMarker=null;
   }
-  $('#lessonMaxWorkspace').textContent=expanded?'Sair da tela ampliada':'Ampliar área';
+  $('#lessonMaxWorkspace').textContent=expanded?'↙ Voltar ao tamanho normal':'⛶ Ampliar área';
   $('#lessonMaxWorkspace').setAttribute('aria-expanded',String(expanded));
   faOverlayLock();faRefreshEditor();
 }
@@ -1103,7 +1034,6 @@ function faToggleDock(){
  if(!$('#lessonWorkspace').classList.contains('lesson-workspace-expanded')){faToggleWorkspace(true);return}
  dock.hidden=!dock.hidden;
  $('#lessonDockToggle').setAttribute('aria-pressed',String(!dock.hidden));
-  $('#lessonDockToggle').textContent=dock.hidden?'Mostrar classes':'Ocultar classes';
  if(!dock.hidden)faRenderDockLibrary();
  faRefreshEditor();
 }
