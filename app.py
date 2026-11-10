@@ -232,19 +232,35 @@ def register():
             return jsonify(error='Matrícula já cadastrada com outros dados. Procure o professor.'),409
     else:
         student=Student(name=name,enrollment=enrollment,course=course);db.session.add(student);db.session.commit()
+    # Cada identificação inicia uma rodada limpa, sem excluir o histórico anterior.
+    session.pop('teacher', None)
     session['student_id']=student.id
+    session['practice_started_at']=datetime.now(timezone.utc).isoformat()
     register_student_access(student.id)
     return jsonify(student={'name':student.name,'enrollment':student.enrollment,'course':student.course}, progress=progress_of(student.id))
 
 def progress_of(student_id):
-    awards=Award.query.filter_by(student_id=student_id).all()
-    return {'points':len(awards),'completed':[{'framework':a.framework,'exercise':a.exercise} for a in awards]}
+    """Progresso da rodada de login atual. Histórico de Award permanece preservado."""
+    started_iso=session.get('practice_started_at')
+    if not started_iso:
+        session['practice_started_at']=datetime.now(timezone.utc).isoformat()
+        started_iso=session['practice_started_at']
+    started=datetime.fromisoformat(started_iso)
+    completed=(db.session.query(Submission.framework, Submission.exercise)
+               .filter(Submission.student_id == student_id,
+                       Submission.passed.is_(True),
+                       Submission.submitted_at >= started)
+               .distinct().all())
+    return {'points':len(completed),
+            'completed':[{'framework':fw,'exercise':exercise} for fw,exercise in completed],
+            'run_id':started_iso}
 
 @app.post('/api/student/logout')
 @student_only
 def student_logout():
     # Encerra somente a identificação do aluno. Os resultados permanecem no banco.
     session.pop('student_id', None)
+    session.pop('practice_started_at', None)
     return jsonify(ok=True)
 
 @app.get('/api/student/me')
@@ -252,6 +268,8 @@ def student_logout():
 def me():
     student=db.session.get(Student,session['student_id'])
     if not student:return jsonify(error='Aluno não encontrado.'),404
+    if not session.get('practice_started_at'):
+        session['practice_started_at']=datetime.now(timezone.utc).isoformat()
     register_student_access(student.id)
     return jsonify(student={'name':student.name,'enrollment':student.enrollment,'course':student.course},progress=progress_of(student.id))
 

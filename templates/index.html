@@ -510,7 +510,7 @@ body{background:var(--bg)}
   </section>
 <div id="studentGate" class="student-gate panel" hidden>
   <div class="gate-icon">🎓</div><h2>Identificação do aluno</h2>
-  <p>Informe seus dados para iniciar. As tentativas e pontuações serão registradas no banco PostgreSQL.</p>
+
   <form id="studentRegisterForm" class="gate-form">
     <label>Nome completo<input id="registerName" name="name" required minlength="3" maxlength="120" placeholder="Seu nome completo"></label>
     <label>Matrícula<input id="registerEnrollment" name="enrollment" required minlength="3" maxlength="48" placeholder="Sua matrícula"></label>
@@ -806,7 +806,8 @@ function analyzeSyntax(source){const errors=[];const voids=new Set(['area','base
 function computeDiagnostics(src,checks){const errors=analyzeSyntax(src),copy=detectCopy(src);if(copy.sameMarkup||copy.pastedExample)errors.unshift('O código repete integralmente o exemplo apresentado. Personalize a estrutura, o conteúdo ou a implementação para que sua solução seja autoral.');for(const chk of checks){if(!chk.ok){let detail='Revise o requisito: '+chk.label+'.';if(chk.key==='nav')detail=lessonIdx===0&&lessonNavVariant==='side'?'Inclua o painel lateral e seu botão de abertura, com identificadores correspondentes (data-target, data-bs-target ou aria-controls).':'Inclua a tag semântica <nav> ao redor do menu.';if(chk.key==='responsive')detail='Confira as classes responsivas: Bootstrap col-md-*, Materialize col m*, Tailwind md:grid-cols-*.';if(chk.key==='background')detail='Aplique uma classe de fundo do '+names[lessonFW]+' à seção.';if(chk.key==='imageResponsive')detail='Use img-fluid (Bootstrap), responsive-img (Materialize) ou w-full/max-w-full (Tailwind).';errors.push(detail)}}return {errors,blocked:copy.sameMarkup||copy.pastedExample||analyzeSyntax(src).length>0};}
 function currentLessonKey(){return lessonFW+'|'+lessonIdx}
 function lessonDraftKey(){return (studentName.trim().toLocaleLowerCase('pt-BR')||'sem-nome')+'|'+currentLessonKey()+(lessonIdx===0?'|'+lessonNavVariant:'')}
-function faDraftStorageKey(){return 'fa_drafts_v18:'+(loggedStudent?.enrollment||studentName.trim().toLocaleLowerCase('pt-BR')||'guest')}
+let faCurrentPracticeRunId='';
+function faDraftStorageKey(){return 'fa_drafts_v19:'+(loggedStudent?.enrollment||'guest')+':'+faCurrentPracticeRunId}
 function faSaveDraftState(){try{localStorage.setItem(faDraftStorageKey(),JSON.stringify({drafts:lessonDrafts,selected:{exercise:lessonIdx,framework:lessonFW,variant:lessonNavVariant},savedAt:new Date().toISOString()}))}catch(e){console.warn('Armazenamento local indisponível:',e)}}
 function faLoadDraftState(){try{const data=JSON.parse(localStorage.getItem(faDraftStorageKey())||'null');if(!data)return;Object.assign(lessonDrafts,data.drafts||{});if(data.selected&&Number.isInteger(data.selected.exercise)&&data.selected.exercise>=0&&data.selected.exercise<lessonCatalog.length){lessonIdx=data.selected.exercise;lessonFW=['bootstrap','tailwind','materialize'].includes(data.selected.framework)?data.selected.framework:'bootstrap';lessonNavVariant=data.selected.variant==='side'?'side':'top'}}catch(e){console.warn('Falha ao restaurar rascunhos:',e)}}
 function saveLessonDraft(){let ed=$('#lessonCode');if(ed){lessonDrafts[lessonDraftKey()]=ed.value;faSaveDraftState()}}
@@ -1515,7 +1516,14 @@ async function loadStudentRanking(){
 document.getElementById('rankingNav').addEventListener('click',loadStudentRanking);
 document.getElementById('rankingRefresh').addEventListener('click',loadStudentRanking);
 function enterPractice(student,progress){
+ // Novos logins têm rodada e rascunhos isolados; refresh conserva a rodada atual.
+ const previousRun=faCurrentPracticeRunId;
  loggedStudent=student;studentName=student.name;
+ faCurrentPracticeRunId=progress.run_id||'';
+ if(previousRun!==faCurrentPracticeRunId){
+  Object.keys(lessonDrafts).forEach(key=>delete lessonDrafts[key]);
+  lessonIdx=0;lessonNavVariant='top';
+ }
  document.getElementById('studentSessionMenu').hidden=false;
  document.getElementById('sessionStudentName').textContent=student.name;
  document.getElementById('rankingNav').hidden=false;
@@ -1697,7 +1705,15 @@ document.getElementById('teacherSearch').oninput=showTeacherRows;
 $('#teacherClearFilters').onclick=()=>{['teacherSearch','teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince'].forEach(key=>$('#'+key).value='');$('#teacherFilterSort').value='name';showTeacherRows()};
 document.getElementById('teacherRefresh').onclick=loadTeacherResults;
 document.getElementById('teacherLogout').onclick=async()=>{await api('/api/teacher/logout',{method:'POST'});teacherData.hidden=true;teacherAuth.hidden=false};
-document.querySelector('[data-view="teacher"]').addEventListener('click',loadTeacherResults);
+// Toda entrada no painel exige nova autenticação, inclusive em sessões anteriores.
+document.querySelector('[data-view="teacher"]').addEventListener('click',async()=>{
+ teacherData.hidden=true;
+ teacherAuth.hidden=false;
+ document.getElementById('teacherPassword').value='';
+ document.getElementById('teacherLoginMessage').textContent='';
+ try{await api('/api/teacher/logout',{method:'POST'});}
+ catch(error){document.getElementById('teacherLoginMessage').textContent='Não foi possível reiniciar a autenticação: '+error.message;}
+});
 // Sem identificador visual desnecessário de edição livre.
 </script>
 <!-- FA_EDITOR_V17: integração CodeMirror com o laboratório existente -->
