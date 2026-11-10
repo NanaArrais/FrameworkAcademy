@@ -126,6 +126,21 @@ def check_submission(source, fw, exercise, variant, return_details=False):
         return (False,error,[]) if return_details else (False,error)
     tags=doc.tags; classes=set(doc.classes); a=doc.attrs
     html_class=lambda item: set(item.get('class','').split())
+    def valid_grid_items():
+        grids=[node for node in doc.nodes
+               if node['tag'] in ('div','main','section')
+               and ('grid' if fw=='tailwind' else 'row') in (node['attrs'].get('class') or '').split()]
+        for grid in grids:
+            columns=0
+            for node in doc.nodes:
+                if node['parent'] is not grid or node['tag'] not in ('div','article'):
+                    continue
+                cl=set((node['attrs'].get('class') or '').split())
+                if fw=='tailwind' or (fw=='bootstrap' and any(x.startswith('col-') or x=='col' for x in cl)) or (fw=='materialize' and 'col' in cl):
+                    columns+=1
+            if columns>=3:
+                return True
+        return False
     text=' '.join(doc.texts).lower()
     has=lambda tag:tag in tags
     regex=lambda pattern:bool(re.search(pattern, ' '.join(doc.classes), re.I))
@@ -139,9 +154,9 @@ def check_submission(source, fw, exercise, variant, return_details=False):
     elif exercise==1:
         criteria=[(has('section'),'Criar seção'),(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']),'Adicionar título'),(regex(r'\b(bg-|red|pink|purple|deep-purple|indigo|blue|teal|green|amber|orange|grey|cyan|brown)'),'Aplicar classe de cor')]
     elif exercise==2:
-        criteria=[(regex(r'\b(grid|row)\b'),'Criar grid'),(sum(t in ('article','div') and any(c in ('card','card-panel') or c.startswith('shadow') for c in html_class(d)) for t,d in a)>=3
-                    or sum(t=='div' and any(c.startswith('col-') or c=='col' for c in html_class(d)) for t,d in a)>=3
-                    or (fw=='tailwind' and sum(t=='div' and 'grid' in html_class(d) for t,d in a)>=1 and tags.count('div')>=4),'Incluir três cards/colunas'),(regex(r'(?:sm:|md:|lg:|xl:|col-(?:sm|md|lg|xl|xxl)-|\bm\d+\b|\bl\d+\b)'),'Aplicar responsividade')]
+        criteria=[(regex(r'\b(grid|row)\b'),'Criar grid'),
+                  (valid_grid_items(),'Criar pelo menos três colunas lado a lado'),
+                  (regex(r'(?:sm:|md:|lg:|xl:|col-(?:sm|md|lg|xl|xxl)-|\bm\d+\b|\bl\d+\b)'),'Aplicar responsividade')]
     elif exercise==3:
         criteria=[(has('button'),'Criar botão'),(regex(r'\bbtn\b|\bbg-[\w-]+\b'),'Aplicar classe de botão/cor'),(any(len(re.sub(r'<[^>]+>', '', button).strip()) > 2 for button in re.findall(r'<button\b[^>]*>(.*?)</button\s*>', source, re.I | re.S)),'Adicionar texto de ação')]
     elif exercise==4:
