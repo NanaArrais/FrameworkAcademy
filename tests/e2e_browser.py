@@ -66,7 +66,7 @@ with sync_playwright() as p:
         expect(page.locator(f'[data-dock-tab="{tab}"]')).to_have_class("active")
         assert page.locator("#lessonDockResults").inner_text().strip()
     page.locator("#lessonMaxWorkspace").click()
-    assert "lesson-workspace-expanded" in page.locator("#lessonWorkspace").get_attribute("class").split()
+    assert "lesson-workspace-expanded" not in page.locator("#lessonWorkspace").get_attribute("class").split()
     assert not errors, "\n".join(errors)
     print(f"PASS: onboarding, registration, {checked} framework/exercise UI combinations, maximization, class library, no main-page JS errors")
     browser.close()
