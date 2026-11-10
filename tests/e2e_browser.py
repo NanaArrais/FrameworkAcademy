@@ -114,9 +114,9 @@ with sync_playwright() as p:
                  '</body></html>')
     page.evaluate("(code) => {window.__faCodeMirror.setValue(code);window.__faCodeMirror.save();}", good_code)
     # A real user key event starts time, not the code loaded by the exercise.
-    page.locator(".CodeMirror textarea").press("End")
-    page.locator(".CodeMirror textarea").type(" ")
-    expect.poll(lambda: page.evaluate("window.faTimerStartedAt > 0")).to_be_truthy(timeout=12000)
+    page.evaluate("() => { const cm = window.__faCodeMirror; cm.setCursor(cm.lineCount()-1, cm.getLine(cm.lineCount()-1).length); cm.focus(); }")
+    page.keyboard.type(" ")
+    page.wait_for_function("faTimerStartedAt > 0", timeout=12000)
     page.locator("#faExpandedValidateNext").click()
     expect(page.locator("#lessonTitle")).to_have_text("Grid responsivo", timeout=15000)
     expect(page.locator("#faExpandedStatus")).to_contain_text("Próxima questão aberta")
