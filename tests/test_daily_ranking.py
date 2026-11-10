@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT))
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 os.environ["COOKIE_SECURE"] = "false"
 
-from app import app, db, Student, Submission, Award, PracticeRun, duration_clock
+from app import app, db, Student, Submission, Award, PracticeRun, PracticeEditStart, duration_clock
 
 
 class DailyRankingTests(unittest.TestCase):
@@ -97,8 +97,13 @@ class DailyRankingTests(unittest.TestCase):
         response = self.client.post("/api/student/register", json={
             "name": "Ana Aluna", "enrollment": "DAILY001", "course": "ADS"})
         self.assertEqual(response.status_code, 200)
-        started = response.get_json()["progress"]["timer_started_at"]
+        self.assertIsNone(response.get_json()["progress"]["timer_started_at"])
+        self.assertIsNone(self.client.get("/api/student/me").get_json()["progress"]["timer_started_at"])
+        started_response = self.client.post("/api/student/first-edit")
+        self.assertEqual(started_response.status_code, 200)
+        started = started_response.get_json()["timer_started_at"]
         self.assertIsNotNone(started)
+        self.assertEqual(self.client.post("/api/student/first-edit").get_json()["timer_started_at"], started)
         self.assertEqual(self.client.get("/api/student/me").get_json()["progress"]["timer_started_at"], started)
         with app.app_context():
             run = PracticeRun.query.filter_by(student_id=self.ids[0]).one()
@@ -110,9 +115,10 @@ class DailyRankingTests(unittest.TestCase):
         next_session = self.client.post("/api/student/register", json={
             "name": "Ana Aluna", "enrollment": "DAILY001", "course": "ADS"})
         self.assertEqual(next_session.status_code, 200)
-        self.assertNotEqual(next_session.get_json()["progress"]["timer_started_at"], started)
+        self.assertIsNone(next_session.get_json()["progress"]["timer_started_at"])
         with app.app_context():
             self.assertEqual(PracticeRun.query.count(), 2)
+            self.assertEqual(PracticeEditStart.query.count(), 1)
 
     def test_ranking_includes_measured_time_and_sums_daily_sessions(self):
         # Cria uma sessão por aluno, com duração conhecida e mesma pontuação.
@@ -126,6 +132,9 @@ class DailyRankingTests(unittest.TestCase):
                 PracticeRun(student_id=self.ids[1], started_at=start,
                             last_approved_at=start + timedelta(minutes=5))
             ])
+            db.session.flush()
+            for run in PracticeRun.query.all():
+                db.session.add(PracticeEditStart(run_id=run.id, edited_at=run.started_at))
             db.session.commit()
         self.login_student()
         ranked = self.client.get("/api/ranking/today").get_json()["ranking"]
@@ -134,9 +143,12 @@ class DailyRankingTests(unittest.TestCase):
         self.assertEqual([item["duration"] for item in ranked], ["00:05:00", "00:09:00"])
         self.assertEqual([item["duration_seconds"] for item in ranked], [300, 540])
         with app.app_context():
-            db.session.add(PracticeRun(student_id=self.ids[0],
-                                       started_at=start + timedelta(hours=1),
-                                       last_approved_at=start + timedelta(hours=1, minutes=3)))
+            run = PracticeRun(student_id=self.ids[0],
+                              started_at=start + timedelta(hours=1),
+                              last_approved_at=start + timedelta(hours=1, minutes=3))
+            db.session.add(run)
+            db.session.flush()
+            db.session.add(PracticeEditStart(run_id=run.id, edited_at=run.started_at))
             db.session.commit()
         ranked = self.client.get("/api/ranking/today").get_json()["ranking"]
         ana = next(item for item in ranked if item["student_id"] == self.ids[0])

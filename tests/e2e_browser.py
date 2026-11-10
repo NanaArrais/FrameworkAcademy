@@ -41,7 +41,8 @@ with sync_playwright() as p:
     page.locator('#studentRegisterForm button[type="submit"]').click()
     expect(page.locator("#studentPracticeBody")).to_be_visible(timeout=15000)
     expect(page.locator("#practiceTimer")).to_be_visible()
-    assert page.locator("#practiceTimer").inner_text().count(":") == 2
+    assert page.locator("#practiceTimer").inner_text() == "00:00:00"
+    # Alternating exercises or viewing examples does not start the clock.
 
     expect(page.locator("#rankingNav")).to_be_visible()
     page.locator("#rankingNav").click()
@@ -75,20 +76,19 @@ with sync_playwright() as p:
     page.locator('[data-lesson="1"]').click()
     expect(page.locator("#lessonTitle")).to_have_text("Cores e fundo")
 
-    # The expanded workspace opens focused, without the example or library
-    # covering the editor, yet both panels remain available on demand.
+    # Example remains above the editor, and can be hidden when desired.
     expect(page.locator("#studentAvatar")).to_have_text("E")
     expect(page.locator("#studentCourse")).to_contain_text("E2E000007")
     page.locator("#lessonMaxWorkspace").click()
     expect(page.locator("#faExpandedBar")).to_be_visible()
     assert "lesson-workspace-expanded" in page.locator("#lessonWorkspace").get_attribute("class").split()
     assert page.locator("#lessonWorkspace .lesson-target").count() == 1
-    expect(page.locator("#lessonWorkspace .lesson-target")).to_be_hidden()
+    expect(page.locator("#lessonWorkspace .lesson-target")).to_be_visible()
     expect(page.locator("#lessonLibraryDock")).to_be_hidden()
     page.locator("#faExpandedExample").click()
-    expect(page.locator("#lessonWorkspace .lesson-target")).to_be_visible()
-    page.locator("#faExpandedExample").click()
     expect(page.locator("#lessonWorkspace .lesson-target")).to_be_hidden()
+    page.locator("#faExpandedExample").click()
+    expect(page.locator("#lessonWorkspace .lesson-target")).to_be_visible()
     page.locator("#faExpandedClasses").click()
     expect(page.locator("#lessonLibraryDock")).to_be_visible()
     for tab in ("colors", "type", "spacing"):
@@ -102,6 +102,9 @@ with sync_playwright() as p:
     page.locator("#faExpandedValidateNext").click()
     expect(page.locator("#lessonTitle")).to_have_text("Cores e fundo")
     expect(page.locator("#faExpandedStatus")).to_contain_text("Tentativa registrada", timeout=15000)
+    expect(page.locator("#faExpandedAlerts")).to_be_visible()
+    expect(page.locator("#faExpandedAlerts")).to_contain_text("pendentes")
+    assert page.locator("#practiceTimer").inner_text() == "00:00:00"
 
     # A correct solution must validate and open the following question
     # without closing the expanded workspace.
@@ -110,9 +113,15 @@ with sync_playwright() as p:
                  '<section class="blue"><h4>Portal de Aprendizagem</h4></section>'
                  '</body></html>')
     page.evaluate("(code) => {window.__faCodeMirror.setValue(code);window.__faCodeMirror.save();}", good_code)
+    # A real user key event starts time, not the code loaded by the exercise.
+    page.evaluate("() => { const cm = window.__faCodeMirror; cm.setCursor(cm.lineCount()-1, cm.getLine(cm.lineCount()-1).length); cm.focus(); }")
+    page.keyboard.type(" ")
+    page.wait_for_function("faTimerStartedAt > 0", timeout=12000)
     page.locator("#faExpandedValidateNext").click()
     expect(page.locator("#lessonTitle")).to_have_text("Grid responsivo", timeout=15000)
     expect(page.locator("#faExpandedStatus")).to_contain_text("Próxima questão aberta")
+    expect(page.locator("#faExpandedAlerts")).to_be_visible()
+    expect(page.locator("#faExpandedAlerts")).to_contain_text("Atividade concluída")
     expect(page.locator("#faExpandedBar")).to_be_visible()
     page.locator("#faExpandedExit").click()
     assert "lesson-workspace-expanded" not in page.locator("#lessonWorkspace").get_attribute("class").split()
