@@ -512,6 +512,27 @@ body{background:var(--bg)}
 }
 
 </style>
+<style>
+
+#studentPracticeBody .lesson-workspace-expanded{grid-template-rows:auto minmax(130px,24vh) minmax(0,1fr)!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-content:stretch!important}
+#studentPracticeBody .lesson-workspace-expanded>.fa-expanded-bar{grid-row:1!important;grid-column:1/-1!important;display:flex;flex-wrap:wrap;min-height:58px;height:auto!important}
+#studentPracticeBody .lesson-workspace-expanded>.lesson-target,#studentPracticeBody .lesson-workspace-expanded.fa-show-reference>.lesson-target{grid-row:2!important;grid-column:1/-1!important;display:flex!important;position:static!important;right:auto!important;top:auto!important;bottom:auto!important;width:auto!important;height:100%!important;margin:0!important;min-height:0!important;box-shadow:none!important}
+#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference{grid-template-rows:auto minmax(0,1fr)!important}
+#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.lesson-target{display:none!important}
+#studentPracticeBody .lesson-workspace-expanded>.practice-editor,#studentPracticeBody .lesson-workspace-expanded>.practice-result{grid-row:3!important;height:100%;min-height:0!important}
+#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.practice-editor,#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.practice-result{grid-row:2!important}
+#studentPracticeBody .lesson-workspace-expanded .lesson-target-stage{max-height:none!important;flex:1;min-height:0;overflow:auto}
+.fa-expanded-alerts{flex:1 1 100%;padding:9px 12px;border:1px solid #e8c6b8;border-radius:8px;background:#fff6f1;color:#873c2d;white-space:pre-line;font-size:12px;line-height:1.45}
+.fa-expanded-alerts[hidden]{display:none!important}.fa-expanded-alerts.fa-valid{background:#eaf8f0;border-color:#b8dec9;color:#146d45}
+@media(max-width:760px){ #studentPracticeBody .lesson-workspace-expanded{grid-template-columns:1fr!important;grid-template-rows:auto minmax(100px,19vh) minmax(0,1fr) minmax(0,1fr)!important}
+#studentPracticeBody .lesson-workspace-expanded>.lesson-target{grid-row:2!important}
+#studentPracticeBody .lesson-workspace-expanded>.practice-editor{grid-row:3!important}
+#studentPracticeBody .lesson-workspace-expanded>.practice-result{grid-row:4!important}
+#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference{grid-template-rows:auto minmax(0,1fr) minmax(0,1fr)!important}
+#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.practice-editor{grid-row:2!important}
+#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.practice-result{grid-row:3!important}}
+
+</style>
 </head>
 <body>
 <header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Laboratório de front-end</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">Aprender</button><button data-view="practice">Praticar</button><button data-view="ranking" id="rankingNav" hidden>Ranking diário</button><button data-view="teacher">Resultados da turma</button></nav><div class="headright"><span class="head-credit">Ana Arrais · 2026</span><div id="studentSessionMenu" class="student-session" hidden><span id="sessionStudentName" class="session-student-name"></span><button id="studentLogoutHeader" type="button" class="session-signout" aria-label="Sair e trocar de aluno">Sair da conta</button></div></div></header>
@@ -603,7 +624,7 @@ body{background:var(--bg)}
     <button class="btn primary" type="button" id="faExpandedValidateNext">Validar e avançar →</button>
     <button class="btn" type="button" id="faExpandedExit">Fechar ampliação</button>
   </div>
-  <span id="faExpandedStatus" role="status" aria-live="polite"></span>
+  <span id="faExpandedStatus" role="status" aria-live="polite"></span><div id="faExpandedAlerts" class="fa-expanded-alerts" role="alert" aria-live="assertive" hidden></div>
 </div>
 <aside class="lesson-library-dock" id="lessonLibraryDock" hidden aria-label="Biblioteca de classes">
 <div class="lesson-library-head"><strong>Biblioteca de classes</strong><button type="button" class="btn" id="lessonDockClose">Ocultar</button></div>
@@ -1246,7 +1267,7 @@ function validateLesson(){
 }
 function renderLessonListOnly(){$$('[data-lesson]').forEach(b=>{let id=Number(b.dataset.lesson),done=solvedLessons.has(lessonFW+'|'+id);b.classList.toggle('done',done);b.querySelector('.lesson-index').textContent=done?'✓':String(id+1).padStart(2,'0')})}
 $('#studentName').value=studentName;loadStudentProgress();updateStudentScore();
-$$('[data-nav-variant]').forEach(b=>b.onclick=()=>{if(lessonNavVariant===b.dataset.navVariant)return;saveLessonDraft();lessonNavVariant=b.dataset.navVariant;renderLesson();$('#lessonFeedback').textContent='Modelo alterado. Crie o menu no editor e execute para testar.';});$('#lessonFramework').onchange=e=>{saveLessonDraft();lessonFW=e.target.value;renderLesson()};$('#lessonRun').onclick=runLesson;$('#lessonCheck').onclick=()=>{runLesson();validateLesson()};$('#lessonHint').onclick=()=>{const tip=$('#lessonTip');tip.innerHTML=lessonHintHtml(lessonIdx,lessonFW);tip.classList.toggle('hidden')};$('#lessonReset').onclick=()=>{if(!confirm('Restaurar o código inicial deste exercício?'))return;$('#lessonCode').value=lessonHtml(lessonFW,lessonIdx,false);saveLessonDraft();$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';runLesson()};$('#lessonNext').onclick=()=>{saveLessonDraft();lessonIdx=(lessonIdx+1)%lessonCatalog.length;faSaveDraftState();renderLesson();document.querySelector('.practice-challenge')?.scrollIntoView({behavior:'smooth',block:'start'})};$('#lessonCode').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();let t=e.target,a=t.selectionStart,b=t.selectionEnd;t.setRangeText('  ',a,b,'end');t.dispatchEvent(new Event('input',{bubbles:true}))}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runLesson()}});$('#lessonCode').oninput=()=>{saveLessonDraft();syncLessonSyntax()};$('#lessonCode').addEventListener('scroll',syncLessonSyntax);$('#lessonCode').addEventListener('keyup',syncLessonSyntax);
+$$('[data-nav-variant]').forEach(b=>b.onclick=()=>{if(lessonNavVariant===b.dataset.navVariant)return;saveLessonDraft();lessonNavVariant=b.dataset.navVariant;renderLesson();$('#lessonFeedback').textContent='Modelo alterado. Crie o menu no editor e execute para testar.';});$('#lessonFramework').onchange=e=>{saveLessonDraft();lessonFW=e.target.value;renderLesson()};$('#lessonRun').onclick=runLesson;$('#lessonCheck').onclick=()=>{runLesson();validateLesson()};$('#lessonHint').onclick=()=>{const tip=$('#lessonTip');tip.innerHTML=lessonHintHtml(lessonIdx,lessonFW);tip.classList.toggle('hidden')};$('#lessonReset').onclick=()=>{if(!confirm('Restaurar o código inicial deste exercício?'))return;$('#lessonCode').value=lessonHtml(lessonFW,lessonIdx,false);saveLessonDraft();$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';runLesson()};$('#lessonNext').onclick=()=>{saveLessonDraft();lessonIdx=(lessonIdx+1)%lessonCatalog.length;faSaveDraftState();renderLesson();document.querySelector('.practice-challenge')?.scrollIntoView({behavior:'smooth',block:'start'})};$('#lessonCode').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();let t=e.target,a=t.selectionStart,b=t.selectionEnd;t.setRangeText('  ',a,b,'end');t.dispatchEvent(new Event('input',{bubbles:true}))}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runLesson()}});$('#lessonCode').oninput=()=>{if(!window.__faCodeMirror)faHandleFirstRealEdit();saveLessonDraft();syncLessonSyntax()};$('#lessonCode').addEventListener('scroll',syncLessonSyntax);$('#lessonCode').addEventListener('keyup',syncLessonSyntax);
 let currentLessonDevice='desktop';
 function syncLessonDevice(device){currentLessonDevice=device;$('#lessonFrameWrap').dataset.device=device;$('#lessonFullFrameWrap').dataset.device=device;document.querySelectorAll('[data-lesson-device]').forEach(b=>b.classList.toggle('active',b.dataset.lessonDevice===device));$$('[data-full-device]').forEach(b=>b.classList.toggle('active',b.dataset.fullDevice===device));}
 // Delegação de eventos: funciona mesmo após reconstruir a lista de atividades.
@@ -1316,8 +1337,10 @@ function faToggleWorkspace(force){
   section.classList.toggle('lesson-workspace-expanded',expanded);
   const dock=$('#lessonLibraryDock');
   dock.hidden=true; // Biblioteca opcional, não cobre o editor por padrão.
-  section.classList.remove('fa-show-reference');
-  $('#faExpandedExample').setAttribute('aria-pressed','false');
+  section.classList.remove('fa-show-reference','fa-hide-reference');
+  $('#faExpandedExample').textContent='Ocultar exemplo';
+  $('#faExpandedExample').setAttribute('aria-pressed','true');
+  $('#faExpandedAlerts').hidden=true;
   $('#faExpandedClasses').setAttribute('aria-pressed','false');
   $('#lessonDockToggle').setAttribute('aria-pressed','false');
   if(!expanded && reference?.dataset.workspaceHome==='moved'){
@@ -1368,8 +1391,9 @@ function faUpdateExpandedStatus(message,success){
 }
 $('#faExpandedExample').onclick=()=>{
  const workspace=$('#lessonWorkspace');
- const show=workspace.classList.toggle('fa-show-reference');
- $('#faExpandedExample').setAttribute('aria-pressed',String(show));
+ const hidden=workspace.classList.toggle('fa-hide-reference');
+ $('#faExpandedExample').textContent=hidden?'Ver exemplo':'Ocultar exemplo';
+ $('#faExpandedExample').setAttribute('aria-pressed',String(!hidden));
  faRefreshEditor();
 };
 $('#faExpandedClasses').onclick=()=>{
@@ -1388,11 +1412,17 @@ async function faValidateExpanded(advance){
  $('#faExpandedValidate').disabled=true;
  $('#faExpandedValidateNext').disabled=true;
  faUpdateExpandedStatus('Validando resposta…',false);
+ $('#faExpandedAlerts').hidden=true;
  try{
   runLesson();
   const approved=await validateLesson();
+  const alertBox=$('#faExpandedAlerts');
+  const diagnostic=$('#lessonDiagnostics').innerText.trim();
+  alertBox.textContent=$('#lessonFeedback').textContent+(diagnostic?'\n'+diagnostic:'');
+  alertBox.classList.toggle('fa-valid',Boolean(approved));
+  alertBox.hidden=false;
   if(approved){
-   faUpdateExpandedStatus('Resposta aprovada! +1 ponto.',true);
+   faUpdateExpandedStatus('Resposta aprovada!',true);
    if(advance){
     if(lessonIdx<lessonCatalog.length-1){
      $('#lessonNext').click();
@@ -1407,6 +1437,8 @@ async function faValidateExpanded(advance){
   }
  }catch(error){
   faUpdateExpandedStatus('Falha na validação: '+error.message,false);
+  $('#faExpandedAlerts').textContent='Erro na validação: '+error.message;
+  $('#faExpandedAlerts').hidden=false;
  }finally{
   faExpandedIsValidating=false;
   $('#faExpandedValidate').disabled=false;
@@ -1666,12 +1698,20 @@ function faUpdatePracticeTimer(){
  if(clock)clock.textContent=faTimerStartedAt&&loggedStudent?faFormatElapsed((Date.now()-faTimerStartedAt)/1000):'00:00:00';
 }
 setInterval(faUpdatePracticeTimer,1000);
+let faFirstEditPending=null;
+function faHandleFirstRealEdit(){
+ if(!loggedStudent||faTimerStartedAt||faFirstEditPending)return;
+ faFirstEditPending=api('/api/student/first-edit',{method:'POST'})
+  .then(data=>{faTimerStartedAt=Date.parse(data.timer_started_at)||0;faUpdatePracticeTimer();})
+  .catch(error=>notify('Falha ao iniciar o cronômetro: '+error.message,'warning'))
+  .finally(()=>{faFirstEditPending=null});
+}
 function enterPractice(student,progress){
  // Novos logins têm rodada e rascunhos isolados; refresh conserva a rodada atual.
  const previousRun=faCurrentPracticeRunId;
  loggedStudent=student;studentName=student.name;
  faCurrentPracticeRunId=progress.run_id||'';
- faTimerStartedAt=Date.parse(progress.timer_started_at||progress.run_id||'')||0;
+ faTimerStartedAt=Date.parse(progress.timer_started_at||'')||0;
  faUpdatePracticeTimer();
  if(previousRun!==faCurrentPracticeRunId){
   Object.keys(lessonDrafts).forEach(key=>delete lessonDrafts[key]);
@@ -1986,8 +2026,9 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',async()
   // A sincronização programática não pode salvar o rascunho anterior
   // no exercício recém-selecionado.
   let syncingLesson = false;
-  cm.on('change', function(editor) {
+  cm.on('change', function(editor,change) {
     editor.save();
+    if(!syncingLesson && change.origin!=='setValue')faHandleFirstRealEdit();
     if (!syncingLesson) original.dispatchEvent(new Event('input', { bubbles: true }));
   });
   if (typeof renderLesson === 'function') {
