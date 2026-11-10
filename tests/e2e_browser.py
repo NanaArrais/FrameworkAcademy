@@ -40,6 +40,10 @@ with sync_playwright() as p:
     page.locator("#registerCourse").fill("ADS")
     page.locator('#studentRegisterForm button[type="submit"]').click()
     expect(page.locator("#studentPracticeBody")).to_be_visible(timeout=15000)
+    # O exemplo comentado deve abrir automaticamente em cada questão.
+    expect(page.locator("#lessonCompactReference")).to_have_text("Ocultar exemplo")
+    expect(page.locator(".practice-challenge")).not_to_have_class("practice-reference-compact")
+
     expect(page.locator("#practiceTimer")).to_be_visible()
     assert page.locator("#practiceTimer").inner_text() == "00:00:00"
     # Alternating exercises or viewing examples does not start the clock.
@@ -66,6 +70,9 @@ with sync_playwright() as p:
             page.locator(f'[data-lesson="{number}"]').click()
             expect(page.locator("#lessonTitle")).to_have_text(title)
             expect(page.locator("#lessonReferenceContext")).to_contain_text(f"Questão {number + 1:02d}")
+            expect(page.locator("#lessonCompactReference")).to_have_attribute("aria-expanded","true")
+            expect(page.locator(".practice-challenge .lesson-target-stage")).to_be_visible()
+
             assert page.locator("#lessonCode").input_value().strip().startswith("<!DOCTYPE html>")
             assert page.locator("#lessonExampleCode").inner_text().strip(), (framework, number)
             checked += 1
