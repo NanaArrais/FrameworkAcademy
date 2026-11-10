@@ -428,12 +428,38 @@ body{background:var(--bg)}
 .practice-welcome-actions button:hover{background:#503393}
 @media(max-width:980px){.practice-welcome{padding:30px 28px}.practice-welcome-intro{gap:20px}.practice-welcome-visual{flex-basis:165px}.practice-welcome-heading h1{font-size:32px}.practice-welcome-choices{gap:9px}.practice-welcome-choice{padding:12px;gap:9px}.practice-welcome-choice strong{font-size:14px}.practice-welcome-logo{width:36px;height:36px;font-size:19px}}
 @media(max-width:690px){.practice-welcome{margin:12px auto;padding:22px 18px}.practice-welcome-intro{flex-direction:column;text-align:center;gap:3px}.practice-welcome-visual{flex:0 0 125px;width:200px;height:125px;transform:scale(.78);margin:-10px}.practice-welcome-heading h1{font-size:29px}.practice-welcome-heading p{font-size:14px}.practice-welcome-choices,.practice-welcome-score{grid-template-columns:1fr}.practice-welcome-choice{min-height:72px}.practice-welcome-score{padding:10px}.practice-welcome-score>div{padding:7px 8px}.practice-welcome-score>div+div{border-left:0;border-top:1px solid #e4ddeb}.practice-welcome-rule{text-align:left}}
+/* Melhoria contida na home e nos controles de sessão, sem alterar o laboratório. */
+#view-learn .intro{max-width:1240px;padding:30px 22px 48px}
+#view-learn .introhero{position:relative;overflow:hidden;border-radius:22px;padding:42px 44px;background:linear-gradient(120deg,#f1e9ff 0%,#f9f6ff 72%,#eef0ff 100%);border:1px solid #e5d7ff;box-shadow:0 6px 24px #2e205908}
+#view-learn .introhero:after{content:"</>";position:absolute;right:48px;top:56px;font-size:86px;font-weight:900;letter-spacing:-9px;opacity:.11;color:#6634c4;pointer-events:none}
+#view-learn .introhero h1{max-width:820px;font-size:clamp(28px,3.1vw,42px);letter-spacing:-.035em;line-height:1.17;position:relative;z-index:1}
+#view-learn .introhero>p:not(.intro-quick-note){max-width:790px;position:relative;z-index:1}
+#view-learn .introhero .btn.primary{border-radius:11px;padding:13px 20px;box-shadow:0 4px 12px #6a38b326}
+#view-learn .intro-quick-note{color:#6d5e89;font-size:11px;margin:12px 0 0;font-weight:650}
+#view-learn .introgrid{gap:16px;margin-top:20px;align-items:stretch}
+#view-learn .introcard{display:flex;flex-direction:column;border-radius:17px;padding:26px;box-shadow:0 7px 26px #2522450c;transition:transform .18s ease,box-shadow .18s ease}
+#view-learn .introcard:hover{transform:translateY(-3px);box-shadow:0 12px 28px #25224516}
+#view-learn .introcard .logo{font-size:25px;display:flex;align-items:center;gap:6px}
+#view-learn .introcard h2{margin:19px 0 5px;color:#27314e;font-size:17px}
+#view-learn .introcard p{min-height:0;line-height:1.7}
+#view-learn .introcard .meta{margin-top:auto;padding-top:13px;border-top:1px solid #edeaf3}
+#view-learn .introcard p:last-child{margin:15px 0 0}
+#view-learn .introcard p:last-child a{display:block;border:1px solid #d9c8f6;border-radius:9px;background:#faf7ff;color:#5d32a7;text-decoration:none;text-align:center;font-weight:750;padding:10px}
+#view-learn .introcard p:last-child a:hover{background:#f1e9ff}
+.headright{display:flex;align-items:center;gap:16px;justify-content:flex-end;flex-wrap:wrap}
+.student-session{display:flex;gap:9px;align-items:center;border-left:1px solid #dadce8;padding-left:14px}
+.student-session[hidden]{display:none!important}
+.session-student-name{font-weight:700;color:#3f326c;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.session-signout{font-size:12px;padding:8px 12px;border:1px solid #d9c8f6;background:#fff;border-radius:9px;color:#583299;font-weight:750}
+.session-signout:hover{background:#f4edff}
+.session-switch-btn{margin-top:9px;font-size:11px;padding:7px 10px}
+@media(max-width:850px){ #view-learn .introhero{padding:27px 23px}#view-learn .introhero:after{display:none}#view-learn .introgrid{grid-template-columns:1fr}.headright{gap:8px}.student-session{border-left:0;padding-left:0}}
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Laboratório de front-end</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">Aprender</button><button data-view="practice">Praticar</button><button data-view="ranking" id="rankingNav" hidden>Ranking diário</button><button data-view="teacher">Resultados da turma</button></nav><div class="headright">Ana Arrais · 2026</div></header>
+<header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Laboratório de front-end</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">Aprender</button><button data-view="practice">Praticar</button><button data-view="ranking" id="rankingNav" hidden>Ranking diário</button><button data-view="teacher">Resultados da turma</button></nav><div class="headright"><span class="head-credit">Ana Arrais · 2026</span><div id="studentSessionMenu" class="student-session" hidden><span id="sessionStudentName" class="session-student-name"></span><button id="studentLogoutHeader" type="button" class="session-signout" aria-label="Sair e trocar de aluno">Sair da conta</button></div></div></header>
 <main class="app">
-<section id="view-learn" class="view active"><div class="intro"><div class="introhero"><span class="pill">APRENDA • PRATIQUE • EVOLUA</span><h1>Entenda o framework.<br>Depois, resolva desafios.</h1><p>Conheça três abordagens para construir interfaces: componentes prontos no Bootstrap, linguagem Material Design no Materialize e estilização por utilitários no Tailwind. Aplique os conceitos em exercícios interativos e acompanhe sua pontuação.</p><button class="btn primary" data-view="practice">Começar os exercícios →</button></div><div class="introgrid"><article class="introcard"><div class="logo" style="color:#7952b3"><span class="fw-logo bs-logo">B</span> Bootstrap</div><h2>Componentes prontos</h2><p>Framework com grid, formulários, navegação e componentes estilizados. Útil quando é importante desenvolver rapidamente uma interface consistente.</p><div class="meta"><b>Vantagem:</b> ecossistema abrangente.<br><b>Atenção:</b> personalizações exigem cuidado com os padrões do tema.</div><p><a href="https://getbootstrap.com/docs/5.3/" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article><article class="introcard"><div class="logo" style="color:#0ea5ae"><span class="fw-logo tw-logo">〰</span> Tailwind CSS</div><h2>Utility-first</h2><p>Classes pequenas compõem diretamente a aparência da interface. É flexível para produtos com identidade visual própria.</p><div class="meta"><b>Vantagem:</b> controle granular.<br><b>Atenção:</b> não oferece todos os componentes interativos prontos.</div><p><a href="https://tailwindcss.com/docs" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article><article class="introcard"><div class="logo" style="color:#f06275"><span class="fw-logo mz-logo">M</span> Materialize</div><h2>Baseado em Material Design</h2><p>Oferece grid, cores, botões, cards e componentes com estética inspirada nas diretrizes de Material Design.</p><div class="meta"><b>Vantagem:</b> experiência visual consistente.<br><b>Atenção:</b> a linguagem visual pode exigir ajustes para produtos muito personalizados.</div><p><a href="https://materializecss.com/" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article></div></div></section>
+<section id="view-learn" class="view active"><div class="intro"><div class="introhero"><span class="pill">APRENDA • PRATIQUE • EVOLUA</span><h1>Aprenda frameworks.<br>Coloque seu conhecimento em prática.</h1><p>Conheça três abordagens para construir interfaces: componentes prontos no Bootstrap, linguagem Material Design no Materialize e estilização por utilitários no Tailwind. Aplique os conceitos em exercícios interativos e acompanhe sua pontuação.</p><button class="btn primary" data-view="practice">Começar a praticar →</button><p class="intro-quick-note">Exercícios interativos · 1 ponto por questão · Ranking diário</p></div><div class="introgrid"><article class="introcard"><div class="logo" style="color:#7952b3"><span class="fw-logo bs-logo">B</span> Bootstrap</div><h2>Componentes prontos</h2><p>Framework com grid, formulários, navegação e componentes estilizados. Útil quando é importante desenvolver rapidamente uma interface consistente.</p><div class="meta"><b>Vantagem:</b> ecossistema abrangente.<br><b>Atenção:</b> personalizações exigem cuidado com os padrões do tema.</div><p><a href="https://getbootstrap.com/docs/5.3/" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article><article class="introcard"><div class="logo" style="color:#0ea5ae"><span class="fw-logo tw-logo">〰</span> Tailwind CSS</div><h2>Utility-first</h2><p>Classes pequenas compõem diretamente a aparência da interface. É flexível para produtos com identidade visual própria.</p><div class="meta"><b>Vantagem:</b> controle granular.<br><b>Atenção:</b> não oferece todos os componentes interativos prontos.</div><p><a href="https://tailwindcss.com/docs" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article><article class="introcard"><div class="logo" style="color:#f06275"><span class="fw-logo mz-logo">M</span> Materialize</div><h2>Baseado em Material Design</h2><p>Oferece grid, cores, botões, cards e componentes com estética inspirada nas diretrizes de Material Design.</p><div class="meta"><b>Vantagem:</b> experiência visual consistente.<br><b>Atenção:</b> a linguagem visual pode exigir ajustes para produtos muito personalizados.</div><p><a href="https://materializecss.com/" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article></div></div></section>
 <section id="view-create" class="view"><div class="pagehead"><div><h1>Criar página <span id="fwPill" class="pill">Bootstrap</span></h1><p>Monte sua interface visualmente. Selecione os componentes para editar e compreender o código.</p></div><div class="toolbar"><button class="btn" id="undoBtn">↶ Desfazer</button><button class="btn" id="redoBtn">↷ Refazer</button><button class="btn" id="clearBtn">♲ Limpar</button><button class="btn" id="exportBtn">↓ Exportar HTML</button><button class="btn primary" id="saveBtn">▣ Salvar</button></div></div><div id="workspaceMount"></div></section>
 <section id="view-practice" class="view">
 <div class="practice-v7">
@@ -493,7 +519,7 @@ body{background:var(--bg)}
   </form><p id="registrationMessage" class="gate-message" role="status"></p>
 </div>
 <div id="studentPracticeBody" hidden>
-  <div class="practice-intro"><div><h1>Laboratório prático</h1></div><div class="student-profile"><div><strong id="studentIdentity">Aluno</strong><br><small id="studentCourse"></small></div><input id="studentName" type="hidden"><div class="student-score"><strong id="practiceDone">0/42</strong><span>concluídas</span><strong id="studentScore">0 pontos</strong></div><small id="overallCompletion">Progresso geral</small></div></div>
+  <div class="practice-intro"><div><h1>Laboratório prático</h1></div><div class="student-profile"><div><strong id="studentIdentity">Aluno</strong><br><small id="studentCourse"></small></div><button id="studentSwitchPractice" class="btn session-switch-btn" type="button">Trocar aluno</button><input id="studentName" type="hidden"><div class="student-score"><strong id="practiceDone">0/42</strong><span>concluídas</span><strong id="studentScore">0 pontos</strong></div><small id="overallCompletion">Progresso geral</small></div></div>
   <div class="practice-shell">
     <aside class="panel practice-lessons"><h3>Atividades</h3><div id="lessonList"></div></aside>
     <div class="practice-main">
@@ -1490,6 +1516,8 @@ document.getElementById('rankingNav').addEventListener('click',loadStudentRankin
 document.getElementById('rankingRefresh').addEventListener('click',loadStudentRanking);
 function enterPractice(student,progress){
  loggedStudent=student;studentName=student.name;
+ document.getElementById('studentSessionMenu').hidden=false;
+ document.getElementById('sessionStudentName').textContent=student.name;
  document.getElementById('rankingNav').hidden=false;
  document.getElementById('studentName').value=student.name;
  document.getElementById('studentIdentity').textContent=student.name+' • '+student.enrollment;
@@ -1509,6 +1537,29 @@ document.getElementById('studentRegisterForm').addEventListener('submit',async e
  catch(err){message.textContent=err.message}
 });
 api('/api/student/me').then(r=>enterPractice(r.student,r.progress)).catch(()=>{});
+// A troca de aluno encerra a sessão no servidor e recarrega a aplicação,
+ // limpando estado em memória (respostas, editor e pontuação do usuário anterior).
+async function faSwitchStudent(){
+ const buttons=[document.getElementById('studentLogoutHeader'),document.getElementById('studentSwitchPractice')];
+ buttons.forEach(btn=>btn.disabled=true);
+ try{
+  await api('/api/student/logout',{method:'POST'});
+  // Os rascunhos são isolados por matrícula em armazenamento local, não apagados.
+  window.location.assign('/?trocar-aluno=1');
+ }catch(error){
+  buttons.forEach(btn=>btn.disabled=false);
+  notify('Não foi possível sair da conta: '+error.message,'warning');
+ }
+}
+document.getElementById('studentLogoutHeader').addEventListener('click',faSwitchStudent);
+document.getElementById('studentSwitchPractice').addEventListener('click',faSwitchStudent);
+
+if(new URLSearchParams(window.location.search).get('trocar-aluno')==='1'){
+ window.history.replaceState(null,'','/');
+ setView('practice');
+ document.getElementById('practiceWelcomeStart').click();
+}
+
 // Após a correção local, validar novamente no servidor para evitar pontos locais fictícios.
 validateLesson = async function(){
  if(window.__faCodeMirror)window.__faCodeMirror.save();

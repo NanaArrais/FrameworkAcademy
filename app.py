@@ -240,6 +240,13 @@ def progress_of(student_id):
     awards=Award.query.filter_by(student_id=student_id).all()
     return {'points':len(awards),'completed':[{'framework':a.framework,'exercise':a.exercise} for a in awards]}
 
+@app.post('/api/student/logout')
+@student_only
+def student_logout():
+    # Encerra somente a identificação do aluno. Os resultados permanecem no banco.
+    session.pop('student_id', None)
+    return jsonify(ok=True)
+
 @app.get('/api/student/me')
 @student_only
 def me():

@@ -50,7 +50,7 @@ jobs:
           SECRET_KEY: chave-temporaria-apenas-para-ci
           COOKIE_SECURE: 'false'
         run: |
-          gunicorn app:app -w 1 --bind 127.0.0.1:5300 --daemon
+          gunicorn app:app -w 1 --bind 127.0.0.1:5300 --daemon --error-logfile /tmp/fa-gunicorn.log --access-logfile /tmp/fa-access.log
           python - <<'PY'
           import time, urllib.request
           for attempt in range(30):
@@ -61,6 +61,9 @@ jobs:
               except Exception:
                   time.sleep(1)
           else:
+              from pathlib import Path
+              for path in ('/tmp/fa-gunicorn.log','/tmp/fa-access.log'):
+                  print(path, Path(path).read_text() if Path(path).exists() else 'Log indisponível')
               raise RuntimeError('Flask não iniciou para testes')
           PY
       - name: Testar onboarding, navegação das 42 questões e biblioteca no navegador
