@@ -144,6 +144,13 @@ def check_submission(source, fw, exercise, variant, return_details=False):
     text=' '.join(doc.texts).lower()
     has=lambda tag:tag in tags
     regex=lambda pattern:bool(re.search(pattern, ' '.join(doc.classes), re.I))
+    palette={'red','pink','purple','deep-purple','indigo','blue','light-blue','cyan','teal','green','light-green','lime','yellow','amber','orange','deep-orange','brown','grey','blue-grey'}
+    background_valid=(regex(r'\bbg-(?:primary|secondary|success|danger|warning|info|light|dark|body)\b') if fw=='bootstrap'
+                     else bool(classes & palette) if fw=='materialize'
+                     else regex(r'\bbg-(?:white|black|transparent|[a-z]+-(?:50|[1-9]00|950))\b'))
+    button_valid=(('btn' in classes and any(x.startswith('btn-') for x in classes)) if fw=='bootstrap'
+                  else ('btn' in classes or 'btn-large' in classes) if fw=='materialize'
+                  else regex(r'\bbg-[\w-]+\b') and regex(r'\bpx-[\w-]+\b'))
     criteria=[]
     if exercise==0:
         criteria=[(has('nav') or has('header'),'Incluir <nav> ou <header>'),
@@ -152,13 +159,13 @@ def check_submission(source, fw, exercise, variant, return_details=False):
             criteria += [(any('sidenav' in c or 'offcanvas' in c for c in classes) or has('aside'),'Criar painel lateral'),
                          (any('data-target' in x[1] or 'data-bs-target' in x[1] or 'aria-controls' in x[1] for x in a),'Associar botão ao menu lateral')]
     elif exercise==1:
-        criteria=[(has('section'),'Criar seção'),(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']),'Adicionar título'),(regex(r'\b(bg-|red|pink|purple|deep-purple|indigo|blue|teal|green|amber|orange|grey|cyan|brown)'),'Aplicar classe de cor')]
+        criteria=[(has('section'),'Criar seção'),(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']),'Adicionar título'),(background_valid,'Aplicar classe de cor')]
     elif exercise==2:
         criteria=[(regex(r'\b(grid|row)\b'),'Criar grid'),
                   (valid_grid_items(),'Criar pelo menos três colunas lado a lado'),
                   (regex(r'(?:sm:|md:|lg:|xl:|col-(?:sm|md|lg|xl|xxl)-|\bm\d+\b|\bl\d+\b)'),'Aplicar responsividade')]
     elif exercise==3:
-        criteria=[(has('button'),'Criar botão'),(regex(r'\bbtn\b|\bbg-[\w-]+\b'),'Aplicar classe de botão/cor'),(any(len(re.sub(r'<[^>]+>', '', button).strip()) > 2 for button in re.findall(r'<button\b[^>]*>(.*?)</button\s*>', source, re.I | re.S)),'Adicionar texto de ação')]
+        criteria=[(has('button'),'Criar botão'),(button_valid,'Aplicar classe de botão/cor'),(any(len(re.sub(r'<[^>]+>', '', button).strip()) > 2 for button in re.findall(r'<button\b[^>]*>(.*?)</button\s*>', source, re.I | re.S)),'Adicionar texto de ação')]
     elif exercise==4:
         criteria=[(regex(r'\bcard\b|\bcard-panel\b|\bshadow(?:-[\w-]+)?\b'),'Criar card'),(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']) or 'card-title' in classes,'Adicionar título'),(has('p'),'Adicionar descrição')]
     elif exercise==5:
