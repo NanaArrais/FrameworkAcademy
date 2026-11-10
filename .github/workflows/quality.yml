@@ -39,3 +39,31 @@ jobs:
           assert checked >= 2, f'Esperados scripts inline, encontrados: {checked}'
           print(f'{checked} scripts com sintaxe válida')
           PY
+
+      - name: Instalar Chromium para testes de usabilidade
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Iniciar aplicação Flask com base de testes isolada
+        env:
+          DATABASE_URL: sqlite:////tmp/fa_e2e.sqlite
+          SECRET_KEY: chave-temporaria-apenas-para-ci
+          COOKIE_SECURE: 'false'
+        run: |
+          gunicorn app:app -w 1 --bind 127.0.0.1:5300 --daemon
+          python - <<'PY'
+          import time, urllib.request
+          for attempt in range(30):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:5300',timeout=2):
+                      print('Servidor pronto')
+                      break
+              except Exception:
+                  time.sleep(1)
+          else:
+              raise RuntimeError('Flask não iniciou para testes')
+          PY
+      - name: Testar onboarding, navegação das 42 questões e biblioteca no navegador
+        env:
+          FA_TEST_URL: http://127.0.0.1:5300
+        run: python tests/e2e_browser.py
