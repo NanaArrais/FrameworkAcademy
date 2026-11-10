@@ -1315,10 +1315,19 @@ validateLesson = async function(){
  try{
   const result=await api('/api/submissions',{method:'POST',body:JSON.stringify({code:src,framework:lessonFW,exercise:lessonIdx,variant:lessonNavVariant})});
   refreshRegisteredProgress(result.progress);
-  if(result.passed){document.querySelectorAll('#lessonChecks .lesson-check').forEach(el=>{el.classList.remove('fail');el.classList.add('pass');el.textContent='✓ '+el.textContent.replace(/^[✓○]\s*/, '')})}
-  else if(result.missing?.length){const list=document.getElementById('lessonChecks');result.missing.forEach(label=>{const item=document.createElement('div');item.className='lesson-check fail';item.textContent='○ Servidor: '+label;list.appendChild(item)})}
+  // Critérios oficiais sempre apresentados conforme a verificação do servidor.
+  if(Array.isArray(result.criteria)&&result.criteria.length){
+    document.getElementById('lessonChecks').innerHTML=result.criteria.map(item=>
+      '<div class="lesson-check '+(item.ok?'pass':'fail')+'">'+(item.ok?'✓':'○')+' '+esc(item.label)+'</div>'
+    ).join('');
+  }else if(result.passed){
+    document.querySelectorAll('#lessonChecks .lesson-check').forEach(el=>{
+      el.classList.remove('fail');el.classList.add('pass');
+      el.textContent='✓ '+el.textContent.replace(/^[✓○]\\s*/, '');
+    });
+  }
   document.getElementById('lessonFeedback').textContent=result.passed?'Atividade concluída! Sua pontuação foi atualizada.':'Tentativa registrada. Ajuste os requisitos pendentes.';
-  document.getElementById('lessonDiagnostics').innerHTML=result.missing?.length?'<strong>Verificação no servidor</strong><ul>'+result.missing.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<div class="diag-ok">Todos os requisitos conferidos no servidor.</div>';
+  document.getElementById('lessonDiagnostics').innerHTML=result.missing?.length?'<strong>Requisitos pendentes</strong><ul>'+result.missing.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<div class="diag-ok">Todos os requisitos conferidos.</div>';
  }catch(err){document.getElementById('lessonFeedback').textContent='Não foi possível registrar a tentativa: '+err.message}
 };
 // O aluno implementa livremente ambos os modelos de navegação.
