@@ -395,12 +395,24 @@ body{background:var(--bg)}
 <section id="view-teacher" class="view">
   <div class="teacher-page"><div class="teacher-heading"><div><span class="pill">ACESSO DO PROFESSOR</span><h1>Resultados da turma</h1><p>Consulte matrícula, curso, pontuação e histórico de tentativas dos alunos.</p></div></div>
   <div id="teacherAuth" class="panel teacher-login"><h2>Entrar como professor</h2><p>Utilize a senha configurada no servidor.</p><form id="teacherLoginForm"><label>Senha do professor<input id="teacherPassword" type="password" required autocomplete="current-password"></label><button type="submit" class="btn primary">Acessar resultados</button></form><p id="teacherLoginMessage" role="status"></p></div>
-  <div id="teacherData" hidden><div class="teacher-tools"><label class="teacher-filter"><span>Buscar</span><input type="search" id="teacherSearch" placeholder="Nome ou matrícula"></label>
+  <div id="teacherData" hidden>
+<div class="teacher-panel-toolbar">
+  <div><strong>Painel de acompanhamento</strong><span>Atividades, desempenho e histórico de acessos</span></div>
+  <div class="teacher-toolbar-actions"><a class="btn" href="/api/teacher/export.csv">Exportar CSV</a><button class="btn" id="teacherRefresh">Atualizar dados</button><button class="btn" id="teacherLogout">Sair</button></div>
+</div>
+<div class="teacher-filter-panel">
+  <div class="teacher-filter-header"><strong>Filtros</strong><button type="button" class="btn" id="teacherClearFilters">Limpar filtros</button></div>
+  <div class="teacher-tools"><label class="teacher-filter"><span>Buscar</span><input type="search" id="teacherSearch" placeholder="Nome ou matrícula"></label>
 <label class="teacher-filter"><span>Curso</span><select id="teacherFilterCourse"><option value="">Todos os cursos</option></select></label>
 <label class="teacher-filter"><span>Framework</span><select id="teacherFilterFramework"><option value="">Todos</option><option value="bootstrap">Bootstrap</option><option value="tailwind">Tailwind</option><option value="materialize">Materialize</option></select></label>
 <label class="teacher-filter"><span>Situação</span><select id="teacherFilterStatus"><option value="">Todas</option><option value="completed">Concluído</option><option value="started">Em andamento</option><option value="none">Sem tentativas</option></select></label>
 <label class="teacher-filter"><span>Acesso a partir de</span><input type="date" id="teacherFilterSince"></label>
-<button type="button" class="btn" id="teacherClearFilters">Limpar filtros</button><a class="btn" href="/api/teacher/export.csv">↓ Exportar CSV</a><button class="btn" id="teacherRefresh">↻ Atualizar</button><button class="btn" id="teacherLogout">Sair</button></div><div class="teacher-stats" id="teacherSummary"></div><div class="panel teacher-table-wrap"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Frameworks praticados</th><th>Pontos</th><th>Exercícios</th><th>Tentativas</th><th>Último acesso</th><th>Acessos</th><th>Ações</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
+<label class="teacher-filter"><span>Ordenar por</span><select id="teacherFilterSort"><option value="name">Nome (A–Z)</option><option value="recent">Último acesso</option><option value="points">Maior pontuação</option><option value="attempts">Mais tentativas</option></select></label>
+  </div>
+</div>
+<div class="teacher-stats" id="teacherSummary"></div>
+<div class="teacher-results-heading"><div><strong>Alunos</strong><span id="teacherResultCount" role="status">Carregando resultados…</span></div><span class="teacher-results-hint">Deslize a tabela para ver todas as colunas</span></div>
+<div class="panel teacher-table-wrap" tabindex="0" role="region" aria-label="Tabela de resultados da turma"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Progresso por framework</th><th>Pontos</th><th>Concluídas</th><th>Tentativas</th><th>Último acesso</th><th>Acessos</th><th>Detalhes</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
   </div>
 </section>
 </main><footer class="footer">© 2026 Ana Arrais - Uninassau - Frontend Frameworks 2026</footer>
