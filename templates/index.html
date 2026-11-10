@@ -455,6 +455,11 @@ body{background:var(--bg)}
 .session-switch-btn{margin-top:9px;font-size:11px;padding:7px 10px}
 @media(max-width:850px){ #view-learn .introhero{padding:27px 23px}#view-learn .introhero:after{display:none}#view-learn .introgrid{grid-template-columns:1fr}.headright{gap:8px}.student-session{border-left:0;padding-left:0}}
 </style>
+<style>
+.practice-timer{display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px;background:#f2ecff;border:1px solid #e3d5fc;border-radius:11px;color:#4e318a;padding:9px 13px;font-size:12px;font-weight:700}
+.practice-timer strong{font-variant-numeric:tabular-nums;letter-spacing:.06em;font-size:20px;color:#32165e}
+.practice-timer-symbol{font-size:20px}
+</style>
 </head>
 <body>
 <header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Laboratório de front-end</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">Aprender</button><button data-view="practice">Praticar</button><button data-view="ranking" id="rankingNav" hidden>Ranking diário</button><button data-view="teacher">Resultados da turma</button></nav><div class="headright"><span class="head-credit">Ana Arrais · 2026</span><div id="studentSessionMenu" class="student-session" hidden><span id="sessionStudentName" class="session-student-name"></span><button id="studentLogoutHeader" type="button" class="session-signout" aria-label="Sair e trocar de aluno">Sair da conta</button></div></div></header>
@@ -519,7 +524,7 @@ body{background:var(--bg)}
   </form><p id="registrationMessage" class="gate-message" role="status"></p>
 </div>
 <div id="studentPracticeBody" hidden>
-  <div class="practice-intro"><div><h1>Laboratório prático</h1></div><div class="student-profile"><div><strong id="studentIdentity">Aluno</strong><br><small id="studentCourse"></small></div><button id="studentSwitchPractice" class="btn session-switch-btn" type="button">Trocar aluno</button><input id="studentName" type="hidden"><div class="student-score"><strong id="practiceDone">0/42</strong><span>concluídas</span><strong id="studentScore">0 pontos</strong></div><small id="overallCompletion">Progresso geral</small></div></div>
+  <div class="practice-intro"><div><h1>Laboratório prático</h1><div class="practice-timer" aria-label="Tempo da rodada atual"><span class="practice-timer-symbol">◷</span><span>Tempo de implementação</span><strong id="practiceTimer" role="timer" aria-live="off">00:00:00</strong></div></div><div class="student-profile"><div><strong id="studentIdentity">Aluno</strong><br><small id="studentCourse"></small></div><button id="studentSwitchPractice" class="btn session-switch-btn" type="button">Trocar aluno</button><input id="studentName" type="hidden"><div class="student-score"><strong id="practiceDone">0/42</strong><span>concluídas</span><strong id="studentScore">0 pontos</strong></div><small id="overallCompletion">Progresso geral</small></div></div>
   <div class="practice-shell">
     <aside class="panel practice-lessons"><h3>Atividades</h3><div id="lessonList"></div></aside>
     <div class="practice-main">
@@ -553,7 +558,7 @@ body{background:var(--bg)}
       <div class="teacher-results-heading"><div><strong>Classificação de hoje</strong><span id="rankingTodayDate">Horário de Fortaleza (UTC−3)</span></div><button type="button" class="btn" id="rankingRefresh">Atualizar ranking</button></div>
       <p id="rankingTodayMessage" class="muted" role="status" aria-live="polite">Carregando classificação…</p>
       <div class="teacher-table-wrap" role="region" aria-label="Ranking do dia corrente" tabindex="0">
-        <table class="teacher-table" style="min-width:550px"><thead><tr><th>Posição</th><th>Aluno</th><th>Curso</th><th>Pontos de hoje</th></tr></thead><tbody id="rankingTodayRows"></tbody></table>
+        <table class="teacher-table" style="min-width:550px"><thead><tr><th>Posição</th><th>Aluno</th><th>Curso</th><th>Pontos de hoje</th><th>Tempo de implementação</th></tr></thead><tbody id="rankingTodayRows"></tbody></table>
       </div>
     </div>
   </div>
@@ -1505,7 +1510,7 @@ async function loadStudentRanking(){
   if(requestNumber!==studentRankingRequest)return;
   const date=data.date.split('-').reverse().join('/');
   document.getElementById('rankingTodayDate').textContent=date+' · Fortaleza (UTC−3)';
-  rows.innerHTML=(data.ranking||[]).map(item=>'<tr><td>'+item.position+'º</td><td>'+esc(item.name)+'</td><td>'+esc(item.course)+'</td><td><strong>'+item.points+'</strong></td></tr>').join('');
+  rows.innerHTML=(data.ranking||[]).map(item=>'<tr><td>'+item.position+'º</td><td>'+esc(item.name)+'</td><td>'+esc(item.course)+'</td><td><strong>'+item.points+'</strong></td><td><strong>'+esc(item.duration||'00:00:00')+'</strong></td></tr>').join('');
   message.textContent=data.ranking.length?data.ranking.length+' aluno(s) pontuaram hoje.':'Ainda não há questões aprovadas hoje.';
  }catch(error){
   if(requestNumber!==studentRankingRequest)return;
@@ -1515,11 +1520,27 @@ async function loadStudentRanking(){
 }
 document.getElementById('rankingNav').addEventListener('click',loadStudentRanking);
 document.getElementById('rankingRefresh').addEventListener('click',loadStudentRanking);
+// O cronômetro utiliza a hora UTC devolvida pelo servidor e sobrevive ao refresh.
+let faTimerStartedAt=0;
+function faFormatElapsed(secondsTotal){
+ const seconds=Math.max(0,Math.floor(secondsTotal));
+ const h=Math.floor(seconds/3600);
+ const m=Math.floor(seconds%3600/60);
+ const remainder=seconds%60;
+ return [h,m,remainder].map(n=>String(n).padStart(2,'0')).join(':');
+}
+function faUpdatePracticeTimer(){
+ const clock=document.getElementById('practiceTimer');
+ if(clock)clock.textContent=faTimerStartedAt&&loggedStudent?faFormatElapsed((Date.now()-faTimerStartedAt)/1000):'00:00:00';
+}
+setInterval(faUpdatePracticeTimer,1000);
 function enterPractice(student,progress){
  // Novos logins têm rodada e rascunhos isolados; refresh conserva a rodada atual.
  const previousRun=faCurrentPracticeRunId;
  loggedStudent=student;studentName=student.name;
  faCurrentPracticeRunId=progress.run_id||'';
+ faTimerStartedAt=Date.parse(progress.timer_started_at||progress.run_id||'')||0;
+ faUpdatePracticeTimer();
  if(previousRun!==faCurrentPracticeRunId){
   Object.keys(lessonDrafts).forEach(key=>delete lessonDrafts[key]);
   lessonIdx=0;lessonNavVariant='top';
