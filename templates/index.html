@@ -1429,17 +1429,44 @@ function refreshRegisteredProgress(progress){
  const list=document.getElementById('lessonList');
  if(list?.children.length)renderLessonListOnly();
 }
+let faPracticeStarted=false;
+let faWelcomeFramework='materialize';
+function faSelectWelcomeFramework(fw){
+ if(!frameworks.includes(fw))return;
+ faWelcomeFramework=fw;
+ document.querySelectorAll('[data-welcome-framework]').forEach(button=>{
+  const chosen=button.dataset.welcomeFramework===fw;
+  button.classList.toggle('is-selected',chosen);
+  button.setAttribute('aria-pressed',String(chosen));
+ });
+}
+document.querySelectorAll('[data-welcome-framework]').forEach(button=>button.addEventListener('click',()=>faSelectWelcomeFramework(button.dataset.welcomeFramework)));
+$('#practiceWelcomeStart').addEventListener('click',()=>{
+ faPracticeStarted=true;
+ lessonFW=faWelcomeFramework;
+ $('#practiceWelcome').hidden=true;
+ if(loggedStudent){
+  $('#studentGate').hidden=true;
+  $('#studentPracticeBody').hidden=false;
+  renderLesson();
+ }else{
+  $('#studentGate').hidden=false;
+  $('#studentPracticeBody').hidden=true;
+  $('#registerName').focus();
+ }
+});
 function enterPractice(student,progress){
  loggedStudent=student;studentName=student.name;
  document.getElementById('studentName').value=student.name;
  document.getElementById('studentIdentity').textContent=student.name+' • '+student.enrollment;
  document.getElementById('studentCourse').textContent=student.course;
  document.getElementById('studentGate').hidden=true;
- document.getElementById('studentPracticeBody').hidden=false;
  refreshRegisteredProgress(progress);
  faLoadDraftState();
- 
- renderLesson();
+ lessonFW=faWelcomeFramework;
+ document.getElementById('practiceWelcome').hidden=faPracticeStarted;
+ document.getElementById('studentPracticeBody').hidden=!faPracticeStarted;
+ if(faPracticeStarted)renderLesson();
 }
 document.getElementById('studentRegisterForm').addEventListener('submit',async e=>{
  e.preventDefault();const message=document.getElementById('registrationMessage');
