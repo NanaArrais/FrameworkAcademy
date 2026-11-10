@@ -169,6 +169,35 @@ class ValidationTests(unittest.TestCase):
             self.assertEqual(Student.query.count(),1)
             self.assertEqual(Award.query.count(),0)
 
+    def test_submit_api_all_42_awards_one_point_each_and_no_double_count(self):
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+        with app.test_client() as client:
+            registration=client.post("/api/student/register",json={
+                "name":"Aluno de Integração", "enrollment":"INT00001", "course":"ADS"
+            })
+            self.assertEqual(registration.status_code,200,registration.get_json())
+            count=0
+            for fw in ("bootstrap","tailwind","materialize"):
+                for ex in range(14):
+                    payload={"code":solution(ex,fw),"framework":fw,"exercise":ex,"variant":"top"}
+                    result=client.post("/api/submissions",json=payload)
+                    self.assertEqual(result.status_code,200,(fw,ex,result.get_json()))
+                    body=result.get_json()
+                    self.assertTrue(body["passed"],(fw,ex,body["missing"]))
+                    count+=1
+                    self.assertEqual(body["progress"]["points"],count)
+                    self.assertEqual(len(body["progress"]["completed"]),count)
+            repeated=client.post("/api/submissions",json={
+                "code":solution(0,"materialize"),"framework":"materialize","exercise":0,"variant":"top"
+            })
+            self.assertEqual(repeated.status_code,200)
+            self.assertEqual(repeated.get_json()["progress"]["points"],42)
+            self.assertEqual(len(repeated.get_json()["progress"]["completed"]),42)
+            with app.app_context():
+                self.assertEqual(Award.query.count(),42)
+
     def test_teacher_dashboard_filters_and_layout(self):
         html=(ROOT/"templates"/"index.html").read_text(encoding="utf-8")
         for element_id in (
