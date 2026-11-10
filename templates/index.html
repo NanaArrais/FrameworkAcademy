@@ -1324,24 +1324,102 @@ validateLesson = async function(){
 // O aluno implementa livremente ambos os modelos de navegação.
 // Painel do professor
 const teacherAuth=document.getElementById('teacherAuth'), teacherData=document.getElementById('teacherData');
+
+function faAccessDate(iso){
+ if(!iso)return '—';
+ const date=new Date(iso);
+ if(Number.isNaN(date.valueOf()))return '—';
+ return new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Fortaleza',dateStyle:'short',timeStyle:'short'}).format(date);
+}
+function faAccessDay(iso){
+ if(!iso)return '';
+ const date=new Date(iso);
+ if(Number.isNaN(date.valueOf()))return '';
+ return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Fortaleza',year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
+}
+function faTeacherFilters(){
+ return {
+  query:$('#teacherSearch').value.trim().toLocaleLowerCase('pt-BR'),
+  course:$('#teacherFilterCourse').value,
+  framework:$('#teacherFilterFramework').value,
+  status:$('#teacherFilterStatus').value,
+  since:$('#teacherFilterSince').value
+ };
+}
+function faMatchesTeacher(student,filters){
+ const completed=student.completed?.length||0;
+ return (student.name+' '+student.enrollment+' '+student.course).toLocaleLowerCase('pt-BR').includes(filters.query)
+  &&(!filters.course||student.course===filters.course)
+  &&(!filters.framework||(student.frameworks_practiced||[]).includes(filters.framework))
+  &&(!filters.status||(filters.status==='completed'?completed===42:filters.status==='none'?student.attempts===0:student.attempts>0&&completed<42))
+  &&(!filters.since||faAccessDay(student.last_access)>=filters.since);
+}
 function showTeacherRows(){
- const q=document.getElementById('teacherSearch').value.toLowerCase();
- const data=teacherRowsCache.filter(r=>(r.name+' '+r.enrollment+' '+r.course+' '+(r.frameworks_practiced||[]).join(' ')).toLowerCase().includes(q));
- document.getElementById('teacherRows').innerHTML=data.map(s=>'<tr><td>'+esc(s.name)+'</td><td>'+esc(s.enrollment)+'</td><td>'+esc(s.course)+'</td><td>'+(['bootstrap','tailwind','materialize'].map(f=>{const p=(s.framework_progress||{})[f]||{completed:0,attempts:0};return p.attempts?'<span class="teacher-fw-pill">'+esc(names[f])+' · '+p.completed+'/14</span>':''}).filter(Boolean).join('')||'<span class="muted">Não iniciado</span>')+'</td><td><strong>'+s.points+'</strong></td><td>'+s.completed.length+'</td><td>'+s.attempts+'</td><td><button data-student-id="'+s.id+'">Ver tentativas</button></td></tr>').join('')||'<tr><td colspan="8">Nenhum aluno encontrado.</td></tr>';
- document.getElementById('teacherSummary').innerHTML='<div><strong>'+teacherRowsCache.length+'</strong>Alunos cadastrados</div><div><strong>'+teacherRowsCache.reduce((sum,x)=>sum+x.attempts,0)+'</strong>Tentativas</div><div><strong>'+teacherRowsCache.reduce((sum,x)=>sum+x.points,0)+'</strong>Pontos distribuídos</div>';
- document.querySelectorAll('[data-student-id]').forEach(b=>b.onclick=()=>showAttempts(Number(b.dataset.studentId)));
+ const filters=faTeacherFilters();
+ const data=teacherRowsCache.filter(student=>faMatchesTeacher(student,filters));
+ document.getElementById('teacherRows').innerHTML=data.map(student=>{
+  const practiced=['bootstrap','tailwind','materialize'].map(framework=>{
+   const progress=(student.framework_progress||{})[framework]||{completed:0,attempts:0};
+   return progress.attempts?'<span class="teacher-fw-pill">'+esc(names[framework])+' · '+progress.completed+'/14</span>':'';
+  }).filter(Boolean).join('')||'<span class="muted">Não iniciado</span>';
+  return '<tr><td>'+esc(student.name)+'</td><td>'+esc(student.enrollment)+'</td><td>'+esc(student.course)+'</td><td>'+practiced+'</td><td><strong>'+student.points+'</strong></td><td>'+student.completed.length+'/42</td><td>'+student.attempts+'</td><td>'+esc(faAccessDate(student.last_access))+'</td><td>'+Number(student.access_count||0)+'</td><td><button type="button" class="btn" data-student-id="'+student.id+'">Detalhes</button></td></tr>';
+ }).join('')||'<tr><td colspan="10">Nenhum aluno corresponde aos filtros selecionados.</td></tr>';
+ document.getElementById('teacherSummary').innerHTML=
+  '<div><strong>'+data.length+'</strong>Alunos exibidos</div>'+
+  '<div><strong>'+data.reduce((sum,x)=>sum+x.attempts,0)+'</strong>Tentativas</div>'+
+  '<div><strong>'+data.reduce((sum,x)=>sum+x.points,0)+'</strong>Pontos</div>'+
+  '<div><strong>'+data.reduce((sum,x)=>sum+(x.access_count||0),0)+'</strong>Acessos registrados</div>';
+ document.querySelectorAll('[data-student-id]').forEach(button=>button.onclick=()=>showAttempts(Number(button.dataset.studentId)));
 }
 async function loadTeacherResults(){
- try{const data=await api('/api/teacher/results');teacherRowsCache=data.students||[];teacherAuth.hidden=true;teacherData.hidden=false;showTeacherRows()}
- catch(e){teacherAuth.hidden=false;teacherData.hidden=true}
+ try{
+  const data=await api('/api/teacher/results');
+  teacherRowsCache=data.students||[];
+  teacherAuth.hidden=true;
+  teacherData.hidden=false;
+  const courseSelect=$('#teacherFilterCourse'),previous=courseSelect.value;
+  const options=[...new Set(teacherRowsCache.map(student=>student.course))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  courseSelect.innerHTML='<option value="">Todos os cursos</option>'+options.map(name=>'<option value="'+attr(name)+'">'+esc(name)+'</option>').join('');
+  if(options.includes(previous))courseSelect.value=previous;
+  showTeacherRows();
+ }catch(e){
+  teacherAuth.hidden=false;teacherData.hidden=true;
+  $('#teacherLoginMessage').textContent='Não foi possível carregar os resultados: '+e.message;
+ }
 }
 async function showAttempts(id){
- try{const r=await api('/api/teacher/student/'+id);const box=document.getElementById('studentAttempts');box.hidden=false;
- box.innerHTML='<h3>Histórico — '+esc(r.name)+'</h3>'+r.attempts.map(a=>'<article class="attempt-card"><strong>'+esc(names[a.framework]||a.framework)+' • Exercício '+a.exercise+' • '+(a.passed?'Aprovado':'Em desenvolvimento')+'</strong><p>'+esc(a.feedback)+' • '+esc(a.at)+'</p><details><summary>Consultar código enviado</summary><pre>'+esc(a.code)+'</pre></details></article>').join('');box.scrollIntoView({behavior:'smooth',block:'nearest'})}
- catch(e){alert(e.message)}
+ try{
+  const result=await api('/api/teacher/student/'+id),box=$('#studentAttempts');
+  box.hidden=false;
+  const attempts=result.attempts||[];
+  const accessLog=(result.accesses||[]).map(iso=>'<li>'+esc(faAccessDate(iso))+'</li>').join('');
+  box.innerHTML='<h3>Histórico — '+esc(result.name)+'</h3>'+
+   '<p class="muted">Horários apresentados no fuso de Fortaleza (UTC−3).</p>'+
+   '<div class="attempt-filters">'+
+   '<label>Framework<select id="attemptFilterFramework"><option value="">Todos</option><option value="bootstrap">Bootstrap</option><option value="tailwind">Tailwind</option><option value="materialize">Materialize</option></select></label>'+
+   '<label>Situação<select id="attemptFilterStatus"><option value="">Todas</option><option value="passed">Aprovadas</option><option value="failed">Pendentes</option></select></label>'+
+   '<label>Data a partir de<input type="date" id="attemptFilterSince"></label>'+
+   '</div><div id="attemptFilteredResults"></div>'+
+   '<details class="student-access-log"><summary>Histórico de acessos ('+(result.accesses||[]).length+' mais recentes)</summary>'+
+   (accessLog?'<ul>'+accessLog+'</ul>':'<p>Não existem acessos registrados anteriormente a esta atualização.</p>')+'</details>';
+  const renderAttempts=()=>{
+   const framework=$('#attemptFilterFramework').value,status=$('#attemptFilterStatus').value,since=$('#attemptFilterSince').value;
+   const filtered=attempts.filter(a=>
+    (!framework||a.framework===framework)&&
+    (!status||(status==='passed'?a.passed:!a.passed))&&
+    (!since||faAccessDay(a.at)>=since));
+   $('#attemptFilteredResults').innerHTML='<p class="muted">'+filtered.length+' de '+attempts.length+' tentativas exibidas (últimas 200 tentativas disponíveis).</p>'+
+    (filtered.map(a=>'<article class="attempt-card"><strong>'+esc(names[a.framework]||a.framework)+' · Exercício '+a.exercise+' · '+(a.passed?'Aprovado':'Pendente')+'</strong><p>'+esc(a.feedback)+' · '+esc(faAccessDate(a.at))+'</p><details><summary>Consultar código enviado</summary><pre>'+esc(a.code)+'</pre></details></article>').join('')||'<p>Nenhuma tentativa corresponde aos filtros.</p>');
+  };
+  ['attemptFilterFramework','attemptFilterStatus','attemptFilterSince'].forEach(key=>$('#'+key).addEventListener('change',renderAttempts));
+  renderAttempts();
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+ }catch(e){notify('Não foi possível carregar o histórico: '+e.message)}
 }
 document.getElementById('teacherLoginForm').onsubmit=async e=>{e.preventDefault();try{await api('/api/teacher/login',{method:'POST',body:JSON.stringify({password:document.getElementById('teacherPassword').value})});document.getElementById('teacherPassword').value='';loadTeacherResults()}catch(err){document.getElementById('teacherLoginMessage').textContent=err.message}};
 document.getElementById('teacherSearch').oninput=showTeacherRows;
+['teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince'].forEach(key=>$('#'+key).addEventListener('change',showTeacherRows));
+$('#teacherClearFilters').onclick=()=>{['teacherSearch','teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince'].forEach(key=>$('#'+key).value='');showTeacherRows()};
 document.getElementById('teacherRefresh').onclick=loadTeacherResults;
 document.getElementById('teacherLogout').onclick=async()=>{await api('/api/teacher/logout',{method:'POST'});teacherData.hidden=true;teacherAuth.hidden=false};
 document.querySelector('[data-view="teacher"]').addEventListener('click',loadTeacherResults);
