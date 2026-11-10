@@ -788,11 +788,14 @@ const lessonCodeExamples={
 <section class="container bg-primary text-white p-4">
   <h2>Minha seção</h2>
 </section>`,
-`<!-- row: linha do grid; col-md-6: 2 colunas em telas médias -->
-<div class="container"><div class="row g-3">
-  <div class="col-12 col-md-6"><div class="card card-body">Bloco A</div></div>
-  <div class="col-12 col-md-6"><div class="card card-body">Bloco B</div></div>
-</div></div>`,
+`<!-- Grid Bootstrap: três colunas a partir de md -->
+<div class="container">
+  <div class="row g-3">
+    <div class="col-12 col-md-4"><div class="card card-body">Bloco A</div></div>
+    <div class="col-12 col-md-4"><div class="card card-body">Bloco B</div></div>
+    <div class="col-12 col-md-4"><div class="card card-body">Bloco C</div></div>
+  </div>
+</div>`,
 `<!-- btn: base do componente; btn-success: variante verde -->
 <button type="button" class="btn btn-success">Confirmar</button>`,
 `<!-- card: recipiente; card-body: espaço interno -->
@@ -800,20 +803,13 @@ const lessonCodeExamples={
   <h3 class="card-title">Notícia</h3>
   <p class="card-text">Descrição da notícia.</p>
 </div></article>`,
-`<!-- form: agrupa os campos e o botão de envio -->
+`<!-- Formulário Bootstrap: classe form-control nos campos -->
 <form class="container mt-4">
-  <!-- form-label: identifica o campo; form-control: aplica o estilo Bootstrap -->
-  <div class="mb-3">
-    <label for="nome" class="form-label">Nome</label>
-    <input id="nome" type="text" class="form-control" required>
-  </div>
-  <!-- type="email": utiliza a validação nativa de e-mail -->
-  <div class="mb-3">
-    <label for="email" class="form-label">E-mail</label>
-    <input id="email" type="email" class="form-control" required>
-  </div>
-  <!-- btn e btn-primary: estilos nativos do botão Bootstrap -->
-  <button type="submit" class="btn btn-primary">Enviar</button>
+  <label for="nome" class="form-label">Nome</label>
+  <input id="nome" type="text" class="form-control" required>
+  <label for="email" class="form-label">E-mail</label>
+  <input id="email" type="email" class="form-control" required>
+  <button type="submit" class="btn btn-primary mt-3">Enviar</button>
 </form>`,
 `<!-- fs-2: título maior; fw-bold: texto em negrito -->
 <h2 class="fs-2 fw-bold text-primary">Tipografia</h2>
@@ -849,10 +845,11 @@ const lessonCodeExamples={
 <section class="container section blue white-text">
   <h4>Minha seção</h4>
 </section>`,
-`<!-- row: linha de 12 colunas; s12: celular; m6: tablet -->
+`<!-- Grid Materialize: s12 no celular, m4 em telas médias -->
 <div class="row">
-  <div class="col s12 m6"><div class="card-panel">Bloco A</div></div>
-  <div class="col s12 m6"><div class="card-panel">Bloco B</div></div>
+  <div class="col s12 m4"><div class="card-panel">Bloco A</div></div>
+  <div class="col s12 m4"><div class="card-panel">Bloco B</div></div>
+  <div class="col s12 m4"><div class="card-panel">Bloco C</div></div>
 </div>`,
 `<!-- btn: botão do Materialize; waves-effect: efeito ao clicar -->
 <button class="btn waves-effect waves-light green">Confirmar</button>`,
@@ -861,11 +858,18 @@ const lessonCodeExamples={
   <span class="card-title">Notícia</span>
   <p>Descrição da notícia.</p>
 </div></article>`,
-`<!-- input-field: campo com label flutuante -->
-<div class="input-field">
-  <input id="usuario" type="text">
-  <label for="usuario">Usuário</label>
-</div>`,
+`<!-- Formulário Materialize: inputs e botão -->
+<form class="container section">
+  <div class="input-field">
+    <input id="nome" type="text" required>
+    <label for="nome">Nome</label>
+  </div>
+  <div class="input-field">
+    <input id="email" type="email" required>
+    <label for="email">E-mail</label>
+  </div>
+  <button type="submit" class="btn waves-effect">Enviar</button>
+</form>`,
 `<!-- flow-text: texto fluido; purple-text: cor do texto -->
 <h4 class="purple-text">Tipografia</h4><p class="flow-text">Texto fluido.</p>`,
 `<!-- section: espaçamento vertical; container: largura central -->
@@ -895,10 +899,11 @@ const lessonCodeExamples={
 <section class="bg-blue-600 text-white p-6">
   <h2 class="text-2xl font-bold">Minha seção</h2>
 </section>`,
-`<!-- grid-cols-1: celular; md:grid-cols-2: telas médias -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+`<!-- Tailwind: grid responsivo de três colunas -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
   <div class="rounded shadow p-4">Bloco A</div>
   <div class="rounded shadow p-4">Bloco B</div>
+  <div class="rounded shadow p-4">Bloco C</div>
 </div>`,
 `<!-- bg-green-600: cor; px-4 py-2: espaçamento; rounded: cantos -->
 <button class="bg-green-600 text-white px-4 py-2 rounded">Confirmar</button>`,
@@ -907,9 +912,14 @@ const lessonCodeExamples={
   <h3 class="text-xl font-bold">Notícia</h3>
   <p>Descrição da notícia.</p>
 </article>`,
-`<!-- block: label em linha própria; border: borda -->
-<label for="usuario" class="block mb-1">Usuário</label>
-<input id="usuario" type="text" class="border rounded p-2">`,
+`<!-- Formulário Tailwind: classes utilitárias -->
+<form class="max-w-md p-4">
+  <label for="nome" class="block mb-1">Nome</label>
+  <input id="nome" type="text" class="border rounded p-2 w-full" required>
+  <label for="email" class="block mt-3 mb-1">E-mail</label>
+  <input id="email" type="email" class="border rounded p-2 w-full" required>
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 mt-3 rounded">Enviar</button>
+</form>`,
 `<!-- text-2xl: tamanho; font-bold: negrito -->
 <h2 class="text-2xl font-bold text-blue-600">Tipografia</h2><p class="text-gray-600">Texto de apoio.</p>`,
 `<!-- p-6: padding; my-4: margem vertical -->
