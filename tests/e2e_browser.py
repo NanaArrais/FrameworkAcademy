@@ -76,6 +76,23 @@ with sync_playwright() as p:
         assert page.locator("#lessonDockResults").inner_text().strip()
     page.locator("#lessonMaxWorkspace").click()
     assert "lesson-workspace-expanded" not in page.locator("#lessonWorkspace").get_attribute("class").split()
+    # Alternância de contas: o aluno anterior sai, o cadastro volta vazio,
+    # o ranking é ocultado e uma nova matrícula recebe progresso isolado.
+    expect(page.locator("#studentLogoutHeader")).to_be_visible()
+    expect(page.locator("#sessionStudentName")).to_contain_text("Estudante de Testes")
+    page.locator("#studentSwitchPractice").click()
+    expect(page.locator("#studentGate")).to_be_visible(timeout=15000)
+    expect(page.locator("#rankingNav")).to_be_hidden()
+    expect(page.locator("#studentSessionMenu")).to_be_hidden()
+    assert page.locator("#registerEnrollment").input_value() == ""
+    page.locator("#registerName").fill("Outro Estudante")
+    page.locator("#registerEnrollment").fill("E2E000008")
+    page.locator("#registerCourse").fill("Engenharia de Software")
+    page.locator('#studentRegisterForm button[type="submit"]').click()
+    expect(page.locator("#studentPracticeBody")).to_be_visible(timeout=15000)
+    expect(page.locator("#sessionStudentName")).to_contain_text("Outro Estudante")
+    expect(page.locator("#rankingNav")).to_be_visible()
+    expect(page.locator("#practiceDone")).to_have_text("0/42")
     assert not errors, "\n".join(errors)
     print(f"PASS: onboarding, registration, {checked} framework/exercise UI combinations, maximization, class library, no main-page JS errors")
     browser.close()
