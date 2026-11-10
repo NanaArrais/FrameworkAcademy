@@ -78,6 +78,27 @@ with sync_playwright() as p:
             checked += 1
     assert checked == 42
 
+    # HTML class autocomplete follows the selected framework, excluding classes
+    # specific to the other two frameworks and without inserting a ready solution.
+    for framework, prefix, expected, forbidden in (
+        ("materialize", "wav", "waves-effect", "btn-primary"),
+        ("bootstrap", "btn-p", "btn-primary", "waves-effect"),
+        ("tailwind", "bg-blue", "bg-blue-500", "btn-primary"),
+    ):
+        page.locator(f'[data-framework-choice="{framework}"]').click()
+        suggestions = page.evaluate("""(prefix) => {
+          const cm=window.__faCodeMirror;
+          cm.setValue('<div class="' + prefix + '"></div>');
+          cm.setCursor(0, '<div class="'.length+prefix.length);
+          const data=window.faClassCompletion(cm);
+          return data ? data.list : [];
+        }""", prefix)
+        assert expected in suggestions, (framework, suggestions[:20])
+        assert forbidden not in suggestions, (framework, suggestions[:20])
+    # O fluxo de validação abaixo usa uma resposta Materialize.
+    page.locator('[data-framework-choice="materialize"]').click()
+    page.evaluate("() => renderLesson()")
+
     # Select the challenge before expanding: outside controls are intentionally
     # blocked by the fullscreen editor.
     page.locator('[data-lesson="1"]').click()
@@ -91,19 +112,26 @@ with sync_playwright() as p:
     assert "lesson-workspace-expanded" in page.locator("#lessonWorkspace").get_attribute("class").split()
     assert page.locator("#lessonWorkspace .lesson-target").count() == 1
     expect(page.locator("#lessonWorkspace .lesson-target")).to_be_visible()
-    expect(page.locator("#lessonLibraryDock")).to_be_hidden()
+    expect(page.locator("#lessonLibraryDock")).to_be_visible()
+    # Library, editor and preview must be three adjacent non-overlapping columns.
+    bounds = [page.locator("#lessonLibraryDock").bounding_box(),
+              page.locator("#lessonWorkspace .practice-editor").bounding_box(),
+              page.locator("#lessonWorkspace .practice-result").bounding_box()]
+    assert all(box is not None for box in bounds), bounds
+    assert bounds[0]["x"]+bounds[0]["width"] <= bounds[1]["x"]+3, bounds
+    assert bounds[1]["x"]+bounds[1]["width"] <= bounds[2]["x"]+3, bounds
     page.locator("#faExpandedExample").click()
     expect(page.locator("#lessonWorkspace .lesson-target")).to_be_hidden()
     page.locator("#faExpandedExample").click()
     expect(page.locator("#lessonWorkspace .lesson-target")).to_be_visible()
-    page.locator("#faExpandedClasses").click()
-    expect(page.locator("#lessonLibraryDock")).to_be_visible()
     for tab in ("colors", "type", "spacing"):
         page.locator(f'[data-dock-tab="{tab}"]').click()
         expect(page.locator(f'[data-dock-tab="{tab}"]')).to_have_class("active")
         assert page.locator("#lessonDockResults").inner_text().strip()
     page.locator("#faExpandedClasses").click()
     expect(page.locator("#lessonLibraryDock")).to_be_hidden()
+    page.locator("#faExpandedClasses").click()
+    expect(page.locator("#lessonLibraryDock")).to_be_visible()
 
     # Failed validation must leave the learner on the current question.
     page.locator("#faExpandedValidateNext").click()
@@ -125,6 +153,10 @@ with sync_playwright() as p:
     page.keyboard.type(" ")
     page.wait_for_function("faTimerStartedAt > 0", timeout=12000)
     page.locator("#faExpandedValidateNext").click()
+    page.wait_for_timeout(400)
+    print("Expanded validation diagnostic:", page.locator("#faExpandedStatus").inner_text(),
+          page.locator("#lessonFeedback").inner_text(), page.locator("#faExpandedAlerts").inner_text(),
+          "code:", page.locator("#lessonCode").input_value()[:450], flush=True)
     expect(page.locator("#lessonTitle")).to_have_text("Grid responsivo", timeout=15000)
     expect(page.locator("#faExpandedStatus")).to_contain_text("Próxima questão aberta")
     expect(page.locator("#faExpandedAlerts")).to_be_visible()
