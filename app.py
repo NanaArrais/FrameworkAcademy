@@ -6,7 +6,8 @@ import io
 import secrets
 import json
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date, time, timedelta
+from zoneinfo import ZoneInfo
 from difflib import SequenceMatcher
 from functools import wraps
 from html.parser import HTMLParser
@@ -262,6 +263,63 @@ def submit():
         db.session.add(Award(student_id=session['student_id'],framework=fw,exercise=ex))
     db.session.commit()
     return jsonify(passed=passed,missing=missing,criteria=criteria,progress=progress_of(session['student_id']))
+
+# Ranking diário: cada questão aprovada vale 1 ponto no dia, inclusive
+# quando o aluno a refizer em uma data posterior. Repetições no mesmo dia
+# não acrescentam pontos. Todos os limites seguem America/Fortaleza.
+RANKING_TZ = ZoneInfo('America/Fortaleza')
+
+def ranking_for_day(day):
+    start_local = datetime.combine(day, time.min, tzinfo=RANKING_TZ)
+    end_local = start_local + timedelta(days=1)
+    start_utc = start_local.astimezone(timezone.utc)
+    end_utc = end_local.astimezone(timezone.utc)
+    successful = (db.session.query(
+        Submission.student_id, Submission.framework, Submission.exercise,
+        func.min(Submission.submitted_at).label('first_pass')
+    ).filter(
+        Submission.passed.is_(True),
+        Submission.submitted_at >= start_utc,
+        Submission.submitted_at < end_utc
+    ).group_by(
+        Submission.student_id, Submission.framework, Submission.exercise
+    ).all())
+    points = {}
+    first_at = {}
+    for row in successful:
+        points[row.student_id] = points.get(row.student_id, 0) + 1
+        if row.student_id not in first_at or row.first_pass < first_at[row.student_id]:
+            first_at[row.student_id] = row.first_pass
+    students = Student.query.filter(Student.id.in_(list(points))).all() if points else []
+    students.sort(key=lambda student: (-points[student.id], student.name.casefold(), student.id))
+    ranking = []
+    current_rank = 0
+    previous_points = None
+    for index, student in enumerate(students, 1):
+        value = points[student.id]
+        if value != previous_points:
+            current_rank = index
+        ranking.append({
+            'position': current_rank, 'student_id': student.id,
+            'name': student.name, 'course': student.course, 'points': value
+        })
+        previous_points = value
+    return ranking
+
+@app.get('/api/ranking/daily')
+def ranking_daily():
+    value = request.args.get('date', '').strip()
+    if value:
+        try:
+            day = date.fromisoformat(value)
+            if day.isoformat() != value:
+                raise ValueError()
+        except ValueError:
+            return jsonify(error='Data inválida. Utilize AAAA-MM-DD.'), 400
+    else:
+        day = datetime.now(RANKING_TZ).date()
+    return jsonify(date=day.isoformat(), timezone='America/Fortaleza',
+                   ranking=ranking_for_day(day), points_per_exercise=1)
 
 @app.post('/api/teacher/login')
 def teacher_login():
