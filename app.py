@@ -119,6 +119,26 @@ def mark_first_edit(run):
     db.session.commit()
     return started
 
+def ensure_today_practice(student_id):
+    """Uma sessão aberta na aula anterior não pode reutilizar rascunhos nem progresso."""
+    now = datetime.now(timezone.utc)
+    local_day = now.astimezone(ZoneInfo('America/Fortaleza')).date()
+    existing = session.get('practice_started_at')
+    if existing:
+        started = datetime.fromisoformat(existing)
+        if started.tzinfo is None:
+            started = started.replace(tzinfo=timezone.utc)
+        if started.astimezone(ZoneInfo('America/Fortaleza')).date() == local_day:
+            return
+    previous_id = session.pop('practice_run_record_id', None)
+    if isinstance(previous_id, int):
+        previous = db.session.get(PracticeRun, previous_id)
+        if previous and previous.student_id == student_id and previous.ended_at is None:
+            previous.ended_at = now
+            db.session.commit()
+    session['practice_started_at'] = now.isoformat()
+    ensure_practice_run(student_id)
+
 def duration_clock(seconds):
     seconds = max(0, int(seconds))
     hours, remainder = divmod(seconds, 3600)
@@ -292,25 +312,30 @@ def register():
     return jsonify(student={'name':student.name,'enrollment':student.enrollment,'course':student.course}, progress=progress_of(student.id))
 
 def progress_of(student_id):
-    """Progresso da rodada de login atual. Histórico de Award permanece preservado."""
-    started_iso=session.get('practice_started_at')
-    if not started_iso:
-        session['practice_started_at']=datetime.now(timezone.utc).isoformat()
-        started_iso=session['practice_started_at']
-    started=datetime.fromisoformat(started_iso)
-    completed=(db.session.query(Submission.framework, Submission.exercise)
-               .filter(Submission.student_id == student_id,
-                       Submission.passed.is_(True),
-                       Submission.submitted_at >= started)
-               .distinct().all())
+    """Somente aprovações da rodada atual no dia civil de Fortaleza."""
+    run = ensure_practice_run(student_id)
+    started_iso = session['practice_started_at']
+    started = datetime.fromisoformat(started_iso)
+    if started.tzinfo is None:
+        started = started.replace(tzinfo=timezone.utc)
+    today = datetime.now(ZoneInfo('America/Fortaleza')).date()
+    today_start = datetime.combine(today, time.min, tzinfo=ZoneInfo('America/Fortaleza')).astimezone(timezone.utc)
+    effective_start = max(started, today_start)
+    completed = (db.session.query(Submission.framework, Submission.exercise)
+                 .filter(Submission.student_id == student_id,
+                         Submission.passed.is_(True),
+                         Submission.submitted_at >= effective_start)
+                 .distinct().all())
     return {'points':len(completed),
             'completed':[{'framework':fw,'exercise':exercise} for fw,exercise in completed],
-            'run_id':started_iso, 'timer_started_at':iso_utc(edit_started_at(ensure_practice_run(student_id)))}
+            'run_id':started_iso, 'practice_day':today.isoformat(),
+            'timer_started_at':iso_utc(edit_started_at(run))}
 
 @app.post('/api/student/first-edit')
 @student_only
 def student_first_edit():
     """A chamada é feita na primeira digitação, não no login ou abertura da questão."""
+    ensure_today_practice(session['student_id'])
     run = ensure_practice_run(session['student_id'])
     started = mark_first_edit(run)
     return jsonify(timer_started_at=iso_utc(started))
@@ -334,9 +359,7 @@ def student_logout():
 def me():
     student=db.session.get(Student,session['student_id'])
     if not student:return jsonify(error='Aluno não encontrado.'),404
-    if not session.get('practice_started_at'):
-        session['practice_started_at']=datetime.now(timezone.utc).isoformat()
-    ensure_practice_run(student.id)
+    ensure_today_practice(student.id)
     register_student_access(student.id)
     return jsonify(student={'name':student.name,'enrollment':student.enrollment,'course':student.course},progress=progress_of(student.id))
 
@@ -349,6 +372,7 @@ def submit():
         return jsonify(error='Dados do exercício inválidos.'),400
     passed,missing,criteria=check_submission(code,fw,ex,variant,return_details=True)
     feedback='Concluído' if passed else 'Pendências: '+', '.join(missing)
+    ensure_today_practice(session['student_id'])
     run=ensure_practice_run(session['student_id'])
     submitted_now=datetime.now(timezone.utc)
     obj=Submission(student_id=session['student_id'],framework=fw,exercise=ex,variant=variant,code=code,passed=passed,score=1 if passed else 0,feedback=feedback,submitted_at=submitted_now)
