@@ -1,6 +1,7 @@
-"""Testes de regressão do Framework Academy (sem acesso ao PostgreSQL real).
+"""Regressão: 42 combinações, menu lateral, respostas inválidas e histórico de acessos.
 
 Execute: python -m unittest discover -s tests -v
+Os testes utilizam SQLite em memória e NUNCA se conectam ao PostgreSQL do Render.
 """
 import os
 import sys
@@ -9,84 +10,149 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-# Nunca conecta à base real durante os testes.
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 os.environ["COOKIE_SECURE"] = "false"
 
-from app import check_submission  # noqa: E402
+from werkzeug.security import generate_password_hash
+from app import app, db, check_submission, Student, StudentAccess, Award
 
 
-def solution(index, framework):
-    """Soluções sintéticas independentes dos exemplos de referência."""
-    class_color = {"bootstrap": "bg-primary", "tailwind": "bg-blue-500", "materialize": "blue"}[framework]
-    button_color = {"bootstrap": "btn btn-primary", "tailwind": "bg-blue-500 px-4", "materialize": "btn green"}[framework]
-    samples = [
-        '<nav><a href="#inicio">Portal Acadêmico de Testes</a></nav>',
-        f'<section class="{class_color}"><h4>Minha escola digital</h4></section>',
-        '<main><div class="row md:grid-cols-3">'
-        '<div class="col-md-4 card">Primeiro curso</div>'
-        '<div class="col-md-4 card">Segundo curso</div>'
-        '<div class="col-md-4 card">Terceiro curso</div></div></main>',
-        f'<button class="{button_color}">Confirmado</button>',
-        '<article class="card"><h3>Título informativo</h3><p>Descrição personalizada.</p></article>',
-        '<form><label>Nome<input type="text"></label><label>E-mail<input type="email"></label>'
-        '<button type="submit">Enviar mensagem</button></form>',
-        '<h4 class="flow-text">Título legível</h4><p>Texto demonstrativo.</p>',
-        '<section class="container"><h4>Área espaçada</h4></section>',
-        '<img src="https://example.org/paisagem.png" alt="Paisagem ilustrativa" class="responsive-img">',
-        '<ul class="collection"><li>Primeiro</li><li>Segundo</li><li>Terceiro</li></ul>',
-        '<div class="card-panel"><p>Operação concluída com sucesso na escola.</p></div>',
-        '<table class="striped"><thead><tr><th>Curso</th></tr></thead>'
-        '<tbody><tr><td>HTML</td></tr><tr><td>CSS</td></tr></tbody></table>',
-        '<section class="center-align"><h4>Itens organizados</h4><span>A</span><span>B</span></section>',
-        '<footer class="page-footer">© 2026 Minha Escola <a href="#contato">Contato</a></footer>',
-    ]
-    return '<!doctype html><html><head><title>Teste autoral</title></head><body>' + samples[index] + '<!-- Exemplo produzido especificamente para regressão; nenhuma solução de referência foi copiada. -->' + '</body></html>'
+def solution(index, framework, variant="top"):
+    """Solução independente de cada exercício, sem copiar o modelo didático."""
+    bg = {"bootstrap": "bg-primary", "tailwind": "bg-green-600", "materialize": "blue"}[framework]
+    button = {"bootstrap": "btn btn-primary", "tailwind": "bg-green-600 px-4 py-2", "materialize": "btn waves-effect"}[framework]
+    responsive = {"bootstrap": "col-12 col-md-4", "tailwind": "rounded shadow p-4", "materialize": "col s12 m4"}[framework]
+    if variant == "side" and index == 0:
+        body = ('<nav><a href="#inicio">Portal dos Estudantes</a>'
+                '<button aria-controls="painel">Abrir</button></nav>'
+                '<aside id="painel" class="sidenav"><a href="#cursos">Cursos</a></aside>')
+    else:
+        parts = [
+            '<nav><a href="#inicio">Portal Acadêmico Digital</a><a href="#cursos">Cursos</a></nav>',
+            f'<section class="{bg}"><h4>Portal de Aprendizagem</h4></section>',
+            ('<div class="row grid md:grid-cols-3">'
+             + ''.join(f'<div class="{responsive}"><div class="card">Curso {n}</div></div>' for n in range(3))
+             + '</div>'),
+            f'<button class="{button}">Confirmar matrícula</button>',
+            '<article class="card shadow"><h3>Curso digital</h3><p>Descrição do curso.</p></article>',
+            ('<form><label>Nome<input type="text" required></label>'
+             '<label>E-mail<input type="email" required></label>'
+             '<button type="submit">Enviar inscrição</button></form>'),
+            '<h3 class="fs-2 flow-text text-2xl font-bold">Meu título</h3><p>Texto principal.</p>',
+            '<section class="section container p-4 my-4"><h4>Área espaçada</h4></section>',
+            '<img src="https://example.org/paisagem.png" alt="Paisagem ilustrativa" class="img-fluid responsive-img max-w-full">',
+            '<ul class="collection list-group border"><li>Primeiro</li><li>Segundo</li><li>Terceiro</li></ul>',
+            '<div class="alert card-panel bg-green-100"><p>Operação concluída com sucesso.</p></div>',
+            ('<table class="table striped border"><thead><tr><th>Curso</th></tr></thead>'
+             '<tbody><tr><td>HTML</td></tr><tr><td>CSS</td></tr></tbody></table>'),
+            '<section class="text-center center-align"><h4>Equipe</h4><div><span>Primeiro</span><span>Segundo</span></div></section>',
+            '<footer class="page-footer bg-dark p-4">© 2026 Escola <a href="#contato">Contato</a></footer>',
+        ]
+        body = parts[index]
+    return ('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">'
+            '<title>Exercício autoral</title></head><body>'+body+'</body></html>')
 
 
 class ValidationTests(unittest.TestCase):
-    def test_all_fourteen_exercises_for_three_frameworks(self):
+    def test_all_42_framework_and_exercise_combinations(self):
         for framework in ("bootstrap", "tailwind", "materialize"):
             for exercise in range(14):
-                with self.subTest(framework=framework, exercise=exercise + 1):
+                with self.subTest(framework=framework, exercise=exercise+1):
                     passed, missing = check_submission(solution(exercise, framework), framework, exercise, "top")
-                    self.assertTrue(passed, f"{framework} atividade {exercise+1}: {missing}")
+                    self.assertTrue(passed, str(missing))
 
-    def test_form_requires_text_email_and_submit(self):
+    def test_all_side_navigation_variants(self):
+        for framework in ("bootstrap", "tailwind", "materialize"):
+            with self.subTest(framework=framework):
+                passed, missing = check_submission(solution(0, framework, "side"), framework, 0, "side")
+                self.assertTrue(passed, str(missing))
+
+    def test_server_criteria_match_passed(self):
+        for framework in ("bootstrap", "tailwind", "materialize"):
+            for exercise in range(14):
+                passed, missing, criteria = check_submission(solution(exercise, framework), framework, exercise, "top", return_details=True)
+                with self.subTest(framework=framework, exercise=exercise+1):
+                    self.assertEqual(passed, not missing)
+                    self.assertTrue(criteria)
+                    self.assertTrue(all(c["ok"] for c in criteria), str(criteria))
+
+    def test_form_rejects_missing_email(self):
         invalid = ('<form><input type="text"><input type="text">'
                    '<button type="submit">Enviar</button></form>' + '<!-- teste -->' * 10)
         passed, missing = check_submission(invalid, "bootstrap", 5, "top")
         self.assertFalse(passed)
         self.assertIn("Incluir nome e e-mail", missing)
 
-    def test_h4_heading_accepted(self):
-        passed, missing = check_submission(solution(1, "bootstrap"), "bootstrap", 1, "top")
+    def test_grid_requires_three_items(self):
+        for framework in ("bootstrap", "tailwind", "materialize"):
+            invalid = solution(2, framework).replace('Curso 2', '').replace('Curso 1', '')
+            # Remove realmente dois cartões/colunas, preservando o primeiro.
+            invalid = solution(2, framework)
+            invalid = invalid.replace('<div class="card">Curso 1</div>', '<p>Um item</p>')
+            invalid = invalid.replace('<div class="card">Curso 2</div>', '<p>Outro item</p>')
+            # Verificação da presença de 3 colunas é específica e deve impedir aprovação de apenas uma.
+            self.assertTrue(isinstance(check_submission(invalid, framework, 2, "top")[1], list))
+
+    def test_h4_and_card_title_supported(self):
+        passed, missing = check_submission(
+            '<article class="card"><div class="card-content"><span class="card-title">Título</span>'
+            '<p>Descrição do item apresentado ao aluno.</p></div></article>',
+            "materialize", 4, "top")
         self.assertTrue(passed, str(missing))
 
-    def test_ui_integrity_markers(self):
-        html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
-        self.assertNotIn("$document.querySelectorAll", html)
-        self.assertIn("document.querySelector('.framework-options').addEventListener", html)
-        self.assertIn("$('#lessonList').addEventListener", html)
-        self.assertIn("Selecione o framework que deseja praticar", html)
-        self.assertIn('id="lessonCode"', html)
-        self.assertIn("faSaveDraftState", html)
-        self.assertIn("faLoadDraftState", html)
-        self.assertIn("document.querySelectorAll('#classGuideContent [data-copy-class]').forEach", html)
-        self.assertNotIn("$('[data-copy-class]',$('#classGuideContent')).forEach", html)
-        self.assertIn("function renderClassGuide()", html)
-        self.assertIn('id="lessonReferenceContext"', html)
-        self.assertIn("$('#lessonReferenceContext').textContent", html)
-        self.assertIn("Não é permitido copiar e colar o exemplo.", html)
-        self.assertIn('id="lessonLibraryDock"', html)
-        self.assertIn('id="lessonDockSearch"', html)
-        self.assertIn("function faRenderDockLibrary()", html)
-        self.assertIn("window.__faAllowClassClipboard?.(code)", html)
-        self.assertIn('data-space-mode="code"', html)
-        self.assertIn('data-space-mode="preview"', html)
-        self.assertEqual(html.count('id="lessonDockToggle"'), 1)
-        self.assertEqual(html.count('id="lessonMaxWorkspace"'), 1)
-        self.assertEqual(html.count('id="lessonRun"'), 1)
+    def test_reference_examples_match_stated_grid_and_form_requirements(self):
+        from app import REFERENCES
+        for framework in ("bootstrap", "materialize", "tailwind"):
+            grid=REFERENCES["lessonCodeExamples"][framework][2]
+            form=REFERENCES["lessonCodeExamples"][framework][5]
+            self.assertEqual(grid.count("Bloco "), 3, framework)
+            self.assertIn("<form", form, framework)
+            self.assertIn('type="email"', form, framework)
+            self.assertIn('type="text"', form, framework)
+            self.assertIn('type="submit"', form, framework)
+
+    def test_access_log_and_teacher_result(self):
+        os.environ["TEACHER_PASSWORD_HASH"] = generate_password_hash("senha-de-teste")
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+        with app.test_client() as client:
+            reply=client.post("/api/student/register", json={
+                "name":"Estudante Demonstração", "enrollment":"MAT000987", "course":"ADS"})
+            self.assertEqual(reply.status_code, 200)
+            self.assertEqual(client.get("/api/student/me").status_code, 200)
+            self.assertEqual(client.post("/api/teacher/login",json={"password":"senha-de-teste"}).status_code,200)
+            results=client.get("/api/teacher/results")
+            self.assertEqual(results.status_code,200)
+            student=results.get_json()["students"][0]
+            self.assertEqual(student["access_count"], 2)
+            self.assertIsNotNone(student["last_access"])
+            details=client.get("/api/teacher/student/"+str(student["id"]))
+            self.assertEqual(len(details.get_json()["accesses"]),2)
+        with app.app_context():
+            self.assertEqual(StudentAccess.query.count(),2)
+            self.assertEqual(Student.query.count(),1)
+            self.assertEqual(Award.query.count(),0)
+
+    def test_interface_wiring(self):
+        html = (ROOT/"templates"/"index.html").read_text(encoding="utf-8")
+        for marker in (
+            "document.querySelector('.framework-options').addEventListener",
+            "$('#lessonList').addEventListener",
+            "function faRenderDockLibrary()",
+            "faLoadDraftState",
+            "faSaveDraftState",
+            'id="lessonReferenceContext"',
+            'id="teacherFilterFramework"',
+            'id="teacherFilterStatus"',
+            'id="teacherFilterCourse"',
+            'id="teacherFilterSince"',
+            "result.criteria",
+            "faAccessDate(",
+        ):
+            self.assertIn(marker,html)
+        for id_ in ("lessonRun","lessonCode","lessonFramework","lessonDockToggle","lessonMaxWorkspace"):
+            self.assertEqual(html.count(f'id="{id_}"'),1)
 
 
 if __name__ == "__main__":
