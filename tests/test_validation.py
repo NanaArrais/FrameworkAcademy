@@ -81,6 +81,11 @@ class ValidationTests(unittest.TestCase):
         self.assertIn("window.__faAllowClassClipboard?.(code)", html)
         self.assertIn('data-space-mode="code"', html)
         self.assertIn('data-space-mode="preview"', html)
+        self.assertIn('class="lesson-workspace-toolbar"', html)
+        self.assertIn("section.insertBefore(reference,section.querySelector('.lesson-library-dock'))", html)
+        self.assertEqual(html.count('id="lessonDockToggle"'), 1)
+        self.assertEqual(html.count('id="lessonMaxWorkspace"'), 1)
+        self.assertEqual(html.count('id="lessonRun"'), 1)
 
 
 if __name__ == "__main__":
