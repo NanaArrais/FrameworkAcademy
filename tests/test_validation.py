@@ -183,6 +183,13 @@ class ValidationTests(unittest.TestCase):
         self.assertIn("faMatchesTeacher(student,filters)",html)
         self.assertIn('class="teacher-progress"',html)
 
+    def test_copy_blocked_alert_visible_over_fullscreen(self):
+        html=(ROOT/"templates"/"index.html").read_text(encoding="utf-8")
+        self.assertIn('z-index:30050',html)
+        self.assertIn('role="alert" aria-live="assertive"',html)
+        self.assertIn("toast-warning",html)
+        self.assertIn("Não é permitido copiar e colar o exemplo.",html)
+
     def test_interface_wiring(self):
         html = (ROOT/"templates"/"index.html").read_text(encoding="utf-8")
         for marker in (
