@@ -153,11 +153,19 @@ def check_submission(source, fw, exercise, variant, return_details=False):
                   else regex(r'\bbg-[\w-]+\b') and regex(r'\bpx-[\w-]+\b'))
     criteria=[]
     if exercise==0:
-        criteria=[(has('nav') or has('header'),'Incluir <nav> ou <header>'),
-                  (any(x for x in a if x[0]=='a' and x[1].get('href')) and len(text.strip())>5,'Adicionar marca com link')]
+        targets={v.get('id') for t,v in a if v.get('id')}
+        triggers=[v for t,v in a if t in ('button','a') and
+                  any(k in v for k in ('data-target','data-bs-target','aria-controls'))]
+        linked_menu=any((v.get('data-target') or v.get('data-bs-target') or
+                        v.get('aria-controls') or '').lstrip('#') in targets for v in triggers)
+        criteria=[(has('nav') or has('header'),'Criar estrutura de navegação'),
+                  (any(t=='a' and v.get('href') and len(v.get('href'))>0 for t,v in a)
+                   and len(text.strip())>5,'Adicionar marca com link'),
+                  (bool(triggers),'Criar botão de abertura do menu'),
+                  (linked_menu,'Associar botão à área do menu')]
         if variant=='side':
-            criteria += [(any('sidenav' in c or 'offcanvas' in c for c in classes) or has('aside'),'Criar painel lateral'),
-                         (any('data-target' in x[1] or 'data-bs-target' in x[1] or 'aria-controls' in x[1] for x in a),'Associar botão ao menu lateral')]
+            criteria.append((any('sidenav' in c or 'offcanvas' in c for c in classes) or has('aside'),
+                             'Criar painel lateral'))
     elif exercise==1:
         criteria=[(has('section'),'Criar seção'),(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']),'Adicionar título'),(background_valid,'Aplicar classe de cor')]
     elif exercise==2:
