@@ -188,7 +188,9 @@ def check_submission(source, fw, exercise, variant, return_details=False):
         criteria=[(has('footer'),'Criar rodapé'),('©' in source or 'copyright' in text,'Adicionar copyright'),(has('a'),'Incluir link'),(regex(r'page-footer|bg-|p-|text-'),'Aplicar estilo')]
     misses=[label for ok,label in criteria if not ok]
     # Comparison against commented examples is also performed in the client UI.
-    if len(re.sub(r'\s+','',source))<100: misses.append('Código incompleto')
+    if len(re.sub(r'\s+','',source))<100:
+        misses.append('Código incompleto')
+        criteria.append((False,'Código incompleto'))
     details=[{'label':label,'ok':bool(ok)} for ok,label in criteria]
     return (not misses,misses,details) if return_details else (not misses,misses)
 
