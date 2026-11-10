@@ -195,6 +195,13 @@ class ValidationTests(unittest.TestCase):
                 self.assertEqual(Award.query.filter_by(student_id=first_id).count(), 1)
             self.assertEqual(client.post("/api/student/logout").status_code, 200)
 
+    def test_home_template_renders_successfully(self):
+        # Detecta conflitos entre seletores CSS e comentários Jinja.
+        with app.test_client() as client:
+            response = client.get("/")
+            self.assertEqual(response.status_code, 200, response.data[:300])
+            self.assertIn(b"Framework Academy", response.data)
+
     def test_student_switch_controls_and_scoped_home_styling(self):
         html=(ROOT/"templates"/"index.html").read_text(encoding="utf-8")
         for element_id in ("studentSessionMenu","sessionStudentName","studentLogoutHeader","studentSwitchPractice"):
