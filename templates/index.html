@@ -390,6 +390,44 @@ body{background:var(--bg)}
 @media(max-width:1250px){.teacher-filter-panel .teacher-tools{grid-template-columns:repeat(3,minmax(0,1fr))}.teacher-filter-panel .teacher-filter:first-child{grid-column:span 2}}
 @media(max-width:760px){.teacher-page{padding:12px}.teacher-panel-toolbar{align-items:stretch;flex-direction:column}.teacher-toolbar-actions{justify-content:flex-start}.teacher-filter-panel .teacher-tools{grid-template-columns:repeat(2,minmax(0,1fr))}.teacher-filter-panel .teacher-filter:first-child{grid-column:1/-1}.teacher-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.teacher-results-hint{display:none}}
 @media(max-width:440px){.teacher-filter-panel .teacher-tools{grid-template-columns:1fr}.teacher-filter-panel .teacher-filter:first-child{grid-column:auto}.teacher-toolbar-actions .btn{flex:1;text-align:center}}
+
+/* Tela inicial do laboratório: seleção objetiva e regras de pontuação */
+.practice-welcome{max-width:1260px;margin:24px auto 35px;padding:44px 48px 35px;background:#fff;border:1px solid #dedff0;border-radius:18px;box-shadow:0 12px 38px #2d28600c;color:#202b49}
+.practice-welcome[hidden],#studentGate[hidden],#studentPracticeBody[hidden]{display:none!important}
+.practice-welcome-intro{display:flex;align-items:center;gap:45px;margin:0 0 32px}
+.practice-welcome-visual{flex:0 0 230px;height:176px;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(ellipse,#f0eafb 0 56%,transparent 57%)}
+.practice-welcome-screen{width:162px;height:112px;border:10px solid #6240ab;background:linear-gradient(140deg,#a89ae1,#6041a6);border-radius:13px;position:relative;box-shadow:0 11px 0 -5px #422c86}
+.practice-welcome-windowdots{position:absolute;top:4px;left:6px;display:flex;gap:4px}
+.practice-welcome-windowdots i{display:block;width:5px;height:5px;background:#f7f2ff;border-radius:50%}
+.practice-welcome-code{position:absolute;top:24px;left:0;right:0;font-size:44px;font-weight:800;text-align:center;letter-spacing:-3px;color:white}
+.practice-welcome-check{position:absolute;right:30px;bottom:23px;width:45px;height:45px;display:grid;place-items:center;border-radius:50%;color:white;background:#7d54cb;border:4px solid white;font-weight:900;font-size:23px;box-shadow:0 4px 10px #3624692e}
+.practice-welcome-eyebrow{display:inline-flex;background:#eee7fc;color:#5a3699;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:800;letter-spacing:.035em}
+.practice-welcome-heading h1{font-size:40px;letter-spacing:-.035em;line-height:1.2;margin:15px 0 9px;font-weight:800;color:#1b2544}
+.practice-welcome-heading p{color:#59657e;font-size:17px;line-height:1.6;margin:0;max-width:670px}
+.practice-welcome-section h2{font-size:19px;margin:0 0 15px;color:#1c2744;font-weight:750}
+.practice-welcome-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.practice-welcome-choice{font:inherit;display:flex;align-items:center;text-align:left;min-height:108px;gap:16px;background:#fff;border:1.5px solid #dfe1ec;border-radius:12px;padding:17px 18px;color:#26314a;cursor:pointer;transition:border-color .15s,background .15s}
+.practice-welcome-choice:hover{border-color:#a794d6;background:#fcfbff}
+.practice-welcome-choice.is-selected{border:2px solid #6942be;background:#faf8ff;padding:16.5px 17.5px;box-shadow:0 0 0 2px #6942be0e}
+.practice-welcome-choice:focus-visible{outline:3px solid #ad8be7;outline-offset:3px}
+.practice-welcome-choice strong{display:block;font-size:16px;margin-bottom:4px}
+.practice-welcome-choice small{display:block;font-size:12px;color:#768099;line-height:1.4}
+.practice-welcome-logo{flex-shrink:0;width:45px;height:45px;border-radius:11px;color:#fff;font-size:24px;font-weight:800;display:grid;place-items:center}
+.practice-welcome-logo-bootstrap{background:#7952b3}.practice-welcome-logo-tailwind{background:#0ea5cc}.practice-welcome-logo-materialize{background:#e85b79}
+.practice-welcome-selection{margin-left:auto;flex:0 0 21px;width:21px;height:21px;border:2px solid #c5cad9;border-radius:50%;color:transparent;display:grid;place-items:center;font-size:13px}
+.practice-welcome-choice.is-selected .practice-welcome-selection{background:#6d42bf;border-color:#6d42bf;color:white}
+.practice-welcome-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:#f8f6fd;border:1px solid #efebf7;border-radius:12px;padding:20px 14px;gap:8px;margin-top:24px}
+.practice-welcome-score>div{display:flex;align-items:center;gap:13px;padding:7px 18px}
+.practice-welcome-score>div+div{border-left:1px solid #ded8eb}
+.practice-welcome-symbol{height:42px;min-width:42px;border-radius:11px;background:#e9dff9;color:#5b36a4;display:grid;place-items:center;font-size:16px;font-weight:800}
+.practice-welcome-score strong{display:block;color:#1c2744;font-size:17px;font-weight:750}
+.practice-welcome-score small{display:block;color:#707b93;font-size:12px;line-height:1.5;margin-top:2px}
+.practice-welcome-rule{text-align:center;color:#647089;font-size:12px;line-height:1.5;margin:22px auto 17px;max-width:740px}
+.practice-welcome-actions{text-align:center}
+.practice-welcome-actions button{min-width:240px;min-height:47px;border-radius:9px;font-weight:750;font-size:14px;background:#6040ae;box-shadow:none}
+.practice-welcome-actions button:hover{background:#503393}
+@media(max-width:980px){.practice-welcome{padding:30px 28px}.practice-welcome-intro{gap:20px}.practice-welcome-visual{flex-basis:165px}.practice-welcome-heading h1{font-size:32px}.practice-welcome-choices{gap:9px}.practice-welcome-choice{padding:12px;gap:9px}.practice-welcome-choice strong{font-size:14px}.practice-welcome-logo{width:36px;height:36px;font-size:19px}}
+@media(max-width:690px){.practice-welcome{margin:12px auto;padding:22px 18px}.practice-welcome-intro{flex-direction:column;text-align:center;gap:3px}.practice-welcome-visual{flex:0 0 125px;width:200px;height:125px;transform:scale(.78);margin:-10px}.practice-welcome-heading h1{font-size:29px}.practice-welcome-heading p{font-size:14px}.practice-welcome-choices,.practice-welcome-score{grid-template-columns:1fr}.practice-welcome-choice{min-height:72px}.practice-welcome-score{padding:10px}.practice-welcome-score>div{padding:7px 8px}.practice-welcome-score>div+div{border-left:0;border-top:1px solid #e4ddeb}.practice-welcome-rule{text-align:left}}
 </style>
 </head>
 <body>
@@ -399,7 +437,52 @@ body{background:var(--bg)}
 <section id="view-create" class="view"><div class="pagehead"><div><h1>Criar página <span id="fwPill" class="pill">Bootstrap</span></h1><p>Monte sua interface visualmente. Selecione os componentes para editar e compreender o código.</p></div><div class="toolbar"><button class="btn" id="undoBtn">↶ Desfazer</button><button class="btn" id="redoBtn">↷ Refazer</button><button class="btn" id="clearBtn">♲ Limpar</button><button class="btn" id="exportBtn">↓ Exportar HTML</button><button class="btn primary" id="saveBtn">▣ Salvar</button></div></div><div id="workspaceMount"></div></section>
 <section id="view-practice" class="view">
 <div class="practice-v7">
-<div id="studentGate" class="student-gate panel">
+  <section id="practiceWelcome" class="practice-welcome" aria-labelledby="practiceWelcomeTitle">
+    <div class="practice-welcome-intro">
+      <div class="practice-welcome-visual" aria-hidden="true">
+        <div class="practice-welcome-screen">
+          <span class="practice-welcome-windowdots"><i></i><i></i><i></i></span>
+          <span class="practice-welcome-code">&lt;/&gt;</span>
+        </div>
+        <span class="practice-welcome-check">✓</span>
+      </div>
+      <div class="practice-welcome-heading">
+        <span class="practice-welcome-eyebrow">LABORATÓRIO PRÁTICO</span>
+        <h1 id="practiceWelcomeTitle">Vamos praticar?</h1>
+        <p>Escolha um framework, resolva as questões e acompanhe seu desempenho.</p>
+      </div>
+    </div>
+    <div class="practice-welcome-section">
+      <h2>Escolha o framework</h2>
+      <div class="practice-welcome-choices" role="group" aria-label="Framework para praticar">
+        <button type="button" class="practice-welcome-choice" data-welcome-framework="bootstrap" aria-pressed="false">
+          <span class="practice-welcome-logo practice-welcome-logo-bootstrap">B</span>
+          <span><strong>Bootstrap</strong><small>Componentes responsivos</small></span>
+          <span class="practice-welcome-selection" aria-hidden="true">✓</span>
+        </button>
+        <button type="button" class="practice-welcome-choice" data-welcome-framework="tailwind" aria-pressed="false">
+          <span class="practice-welcome-logo practice-welcome-logo-tailwind">T</span>
+          <span><strong>Tailwind CSS</strong><small>Classes utilitárias</small></span>
+          <span class="practice-welcome-selection" aria-hidden="true">✓</span>
+        </button>
+        <button type="button" class="practice-welcome-choice is-selected" data-welcome-framework="materialize" aria-pressed="true">
+          <span class="practice-welcome-logo practice-welcome-logo-materialize">M</span>
+          <span><strong>Materialize CSS</strong><small>Componentes Material Design</small></span>
+          <span class="practice-welcome-selection" aria-hidden="true">✓</span>
+        </button>
+      </div>
+    </div>
+    <div class="practice-welcome-score" aria-label="Como funciona a pontuação">
+      <div><span class="practice-welcome-symbol">01</span><span><strong>14 questões</strong><small>Por framework</small></span></div>
+      <div><span class="practice-welcome-symbol">★</span><span><strong>1 ponto</strong><small>Por questão aprovada</small></span></div>
+      <div><span class="practice-welcome-symbol">42</span><span><strong>42 pontos</strong><small>Máximo nos três frameworks</small></span></div>
+    </div>
+    <p class="practice-welcome-rule">A pontuação é registrada quando todos os critérios da questão são atendidos. Você pode resolver as questões em qualquer ordem.</p>
+    <div class="practice-welcome-actions">
+      <button id="practiceWelcomeStart" class="btn primary" type="button">Iniciar prática <span aria-hidden="true">→</span></button>
+    </div>
+  </section>
+<div id="studentGate" class="student-gate panel" hidden>
   <div class="gate-icon">🎓</div><h2>Identificação do aluno</h2>
   <p>Informe seus dados para iniciar. As tentativas e pontuações serão registradas no banco PostgreSQL.</p>
   <form id="studentRegisterForm" class="gate-form">
