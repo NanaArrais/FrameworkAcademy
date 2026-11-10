@@ -75,6 +75,12 @@ class ValidationTests(unittest.TestCase):
         self.assertIn("document.querySelectorAll('#classGuideContent [data-copy-class]').forEach", html)
         self.assertNotIn("$('[data-copy-class]',$('#classGuideContent')).forEach", html)
         self.assertIn("function renderClassGuide()", html)
+        self.assertIn('id="lessonLibraryDock"', html)
+        self.assertIn('id="lessonDockSearch"', html)
+        self.assertIn("function faRenderDockLibrary()", html)
+        self.assertIn("window.__faAllowClassClipboard?.(code)", html)
+        self.assertIn('data-space-mode="code"', html)
+        self.assertIn('data-space-mode="preview"', html)
 
 
 if __name__ == "__main__":
