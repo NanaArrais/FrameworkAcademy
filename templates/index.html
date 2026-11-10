@@ -585,7 +585,7 @@ body{background:var(--bg)}
   <div class="practice-shell">
     <aside class="panel practice-lessons"><h3>Atividades</h3><div id="lessonList"></div></aside>
     <div class="practice-main">
-      <div class="panel practice-challenge"><div class="practice-challenge-top"><span class="pill" id="lessonNumber">Exercício 01</span><div class="framework-picker" role="group" aria-label="Escolha o framework"><span class="framework-picker-label">Framework</span><div class="framework-options"><button type="button" data-framework-choice="bootstrap" aria-pressed="true"><span class="framework-dot bootstrap-dot">B</span>Bootstrap</button><button type="button" data-framework-choice="tailwind" aria-pressed="false"><span class="framework-dot tailwind-dot">T</span>Tailwind</button><button type="button" data-framework-choice="materialize" aria-pressed="false"><span class="framework-dot materialize-dot">M</span>Materialize</button></div><select id="lessonFramework" aria-label="Framework do exercício" hidden><option value="bootstrap">Bootstrap</option><option value="tailwind">Tailwind CSS</option><option value="materialize">Materialize</option></select></div></div><h2 id="lessonTitle">Menu de navegação</h2><p id="lessonBrief"></p><div id="lessonNavOptions" class="lesson-nav-options"><div><strong>Tipo de navegação</strong><small>Escolha um modelo. No celular, os links podem ficar ocultos: o botão ☰ deve abrir e fechar o menu.</small></div><div class="nav-variant-controls" role="group" aria-label="Tipo de menu"><button type="button" data-nav-variant="top" class="active">☰ Menu superior</button><button type="button" data-nav-variant="side">▤ Menu lateral</button></div></div>
+      <div class="panel practice-challenge practice-reference-compact"><div class="practice-challenge-top"><span class="pill" id="lessonNumber">Exercício 01</span><div class="framework-picker" role="group" aria-label="Escolha o framework"><span class="framework-picker-label">Framework</span><div class="framework-options"><button type="button" data-framework-choice="bootstrap" aria-pressed="true"><span class="framework-dot bootstrap-dot">B</span>Bootstrap</button><button type="button" data-framework-choice="tailwind" aria-pressed="false"><span class="framework-dot tailwind-dot">T</span>Tailwind</button><button type="button" data-framework-choice="materialize" aria-pressed="false"><span class="framework-dot materialize-dot">M</span>Materialize</button></div><select id="lessonFramework" aria-label="Framework do exercício" hidden><option value="bootstrap">Bootstrap</option><option value="tailwind">Tailwind CSS</option><option value="materialize">Materialize</option></select></div></div><h2 id="lessonTitle">Menu de navegação</h2><p id="lessonBrief"></p><div id="lessonNavOptions" class="lesson-nav-options"><div><strong>Tipo de navegação</strong><small>Escolha um modelo. No celular, os links podem ficar ocultos: o botão ☰ deve abrir e fechar o menu.</small></div><div class="nav-variant-controls" role="group" aria-label="Tipo de menu"><button type="button" data-nav-variant="top" class="active">☰ Menu superior</button><button type="button" data-nav-variant="side">▤ Menu lateral</button></div></div>
         <div class="mission-title">Critérios de conclusão</div><div id="lessonRequirements" class="lesson-requirements"></div><div class="lesson-actions"><button class="btn" id="lessonHint">Orientações</button><button class="btn" id="lessonClassGuide">Biblioteca de classes</button><a id="lessonDocs" href="https://getbootstrap.com/docs/5.3/" target="_blank" rel="noopener">Documentação oficial ↗</a></div><div id="lessonTip" class="lesson-tip hidden" aria-live="polite"></div>
         <section class="lesson-target" aria-label="Exemplo de código do framework">
           <div class="lesson-target-header"><div class="lesson-reference-title"><strong>Exemplo comentado</strong><span id="lessonReferenceContext" class="lesson-reference-context">Questão 01 · Menu de navegação</span></div><div class="reference-toolbar"><span class="lesson-target-badge" id="lessonTargetFramework">Materialize</span><button type="button" class="btn" id="lessonCopyExample">Copiar exemplo</button><button type="button" class="btn" id="lessonCompactReference" title="Mostrar ou ocultar código de referência">Ocultar exemplo</button><button type="button" class="btn primary" id="lessonExpandReference" aria-expanded="false">Ampliar</button></div></div>
@@ -1040,7 +1040,9 @@ function exercisePreviewHTML(src){
 }
 function renderLesson(){const l=lessonCatalog[lessonIdx];$('#lessonList').innerHTML=lessonCatalog.map((x,i)=>`<button class="lesson-choice ${i===lessonIdx?'active':''} ${solvedLessons.has(lessonFW+'|'+i)?'done':''}" data-lesson="${i}"><span class="lesson-index">${solvedLessons.has(lessonFW+'|'+i)?'✓':String(i+1).padStart(2,'0')}</span><span>${esc(x.name)}</span></button>`).join('');
  $('#lessonNavOptions').style.display=lessonIdx===0?'flex':'none';$$('[data-nav-variant]').forEach(b=>b.classList.toggle('active',b.dataset.navVariant===lessonNavVariant));$('#lessonTargetFramework').textContent=names[lessonFW];renderLessonTarget();if(!$('#lessonLibraryDock').hidden)faRenderDockLibrary();
- $('#lessonFramework').value=lessonFW;document.querySelectorAll('[data-framework-choice]').forEach(b=>{const selected=b.dataset.frameworkChoice===lessonFW;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected))});$('#lessonNumber').textContent='Exercício '+String(lessonIdx+1).padStart(2,'0')+' de '+lessonCatalog.length;$('#lessonTitle').textContent=l.name;$('#lessonReferenceContext').textContent='Questão '+String(lessonIdx+1).padStart(2,'0')+' · '+l.name;$('#lessonBrief').textContent=lessonIdx===0?(lessonNavVariant==='side'?'Construa um menu lateral: um botão ☰ abre o painel com a identidade do site.':'Construa uma barra superior responsiva: em telas menores, o botão ☰ deve abrir o menu.'):l.description;
+ $('#lessonFramework').value=lessonFW;document.querySelectorAll('[data-framework-choice]').forEach(b=>{const selected=b.dataset.frameworkChoice===lessonFW;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected))});$('#lessonNumber').textContent='Exercício '+String(lessonIdx+1).padStart(2,'0')+' de '+lessonCatalog.length;$('#lessonTitle').textContent=l.name;
+ $('#faExpandedQuestion').textContent='Questão '+String(lessonIdx+1).padStart(2,'0')+' · '+l.name;
+ $('#faExpandedFramework').textContent=names[lessonFW];$('#lessonReferenceContext').textContent='Questão '+String(lessonIdx+1).padStart(2,'0')+' · '+l.name;$('#lessonBrief').textContent=lessonIdx===0?(lessonNavVariant==='side'?'Construa um menu lateral: um botão ☰ abre o painel com a identidade do site.':'Construa uma barra superior responsiva: em telas menores, o botão ☰ deve abrir o menu.'):l.description;
  $('#lessonRequirements').innerHTML=(lessonIdx===0&&lessonNavVariant==='side'?['Criar navegação e botão de abertura','Incluir marca e menu lateral','Criar botão de abertura do menu','Associar botão à área do menu','Criar painel lateral']:l.requirements.map(k=>lessonRequirementsText[k])).map(label=>'<span>○ '+esc(label)+'</span>').join('');$('#lessonDocs').href=lessonIdx===0&&lessonNavVariant==='side'?(lessonFW==='bootstrap'?'https://getbootstrap.com/docs/5.3/components/offcanvas/':lessonFW==='materialize'?'https://materializecss.com/sidenav.html':'https://tailwindcss.com/docs/translate'):docs[lessonFW]+l.doc[lessonFW];const savedDraft=lessonDrafts[lessonDraftKey()];$('#lessonCode').value=typeof savedDraft==='string'&&savedDraft.trim()?savedDraft:lessonHtml(lessonFW,lessonIdx,false);
  syncLessonSyntax();$('#lessonTip').classList.add('hidden');$('#lessonFeedback').textContent='Execute e clique em Verificar para analisar os requisitos.';$('#lessonChecks').innerHTML='';$('#lessonDiagnostics').innerHTML='';
  updateStudentScore();
@@ -1293,7 +1295,11 @@ function closeLessonFullPreview(){
 }
 $('#closeFullPreview').onclick=closeLessonFullPreview;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#lessonFullPreview').classList.contains('hidden'))closeLessonFullPreview()});
-$('#lessonCompactReference').onclick=()=>{const section=$('.practice-challenge');const compact=section.classList.toggle('practice-reference-compact');$('#lessonCompactReference').textContent=compact?'↕ Expandir':'↕ Reduzir'};
+$('#lessonCompactReference').onclick=()=>{
+ const compact=$('.practice-challenge').classList.toggle('practice-reference-compact');
+ $('#lessonCompactReference').textContent=compact?'Mostrar exemplo':'Ocultar exemplo';
+ $('#lessonCompactReference').setAttribute('aria-expanded',String(!compact));
+};
 function faRefreshEditor(){requestAnimationFrame(()=>{if(window.__faCodeMirror)window.__faCodeMirror.refresh()})}
 function faOverlayLock(){document.body.classList.toggle('preview-lock',!!document.querySelector('.lesson-reference-expanded,.lesson-workspace-expanded')||!$('#lessonFullPreview').classList.contains('hidden')||!$('#classGuideOverlay').classList.contains('hidden'))}
 function faToggleWorkspace(force){
@@ -1309,9 +1315,11 @@ function faToggleWorkspace(force){
   }
   section.classList.toggle('lesson-workspace-expanded',expanded);
   const dock=$('#lessonLibraryDock');
-  dock.hidden=!expanded;
-  $('#lessonDockToggle').setAttribute('aria-pressed',String(expanded));
-  if(expanded)faRenderDockLibrary();
+  dock.hidden=true; // Biblioteca opcional, não cobre o editor por padrão.
+  section.classList.remove('fa-show-reference');
+  $('#faExpandedExample').setAttribute('aria-pressed','false');
+  $('#faExpandedClasses').setAttribute('aria-pressed','false');
+  $('#lessonDockToggle').setAttribute('aria-pressed','false');
   if(!expanded && reference?.dataset.workspaceHome==='moved'){
     const marker=window.__faReferenceMarker;
     if(marker?.parentNode)marker.parentNode.insertBefore(reference,marker);
@@ -1352,6 +1360,62 @@ function faToggleReference(force){
   $('#lessonExpandReference').setAttribute('aria-expanded',String(expanded));
   faOverlayLock();
 }
+// Ações da área ampliada são encaminhadas à mesma validação oficial da prática.
+function faUpdateExpandedStatus(message,success){
+ const label=$('#faExpandedStatus');
+ label.textContent=message;
+ label.style.color=success?'#15784e':'#854732';
+}
+$('#faExpandedExample').onclick=()=>{
+ const workspace=$('#lessonWorkspace');
+ const show=workspace.classList.toggle('fa-show-reference');
+ $('#faExpandedExample').setAttribute('aria-pressed',String(show));
+ faRefreshEditor();
+};
+$('#faExpandedClasses').onclick=()=>{
+ const dock=$('#lessonLibraryDock');
+ dock.hidden=!dock.hidden;
+ $('#faExpandedClasses').setAttribute('aria-pressed',String(!dock.hidden));
+ $('#lessonDockToggle').setAttribute('aria-pressed',String(!dock.hidden));
+ if(!dock.hidden)faRenderDockLibrary();
+ faRefreshEditor();
+};
+$('#faExpandedExit').onclick=()=>faToggleWorkspace(false);
+let faExpandedIsValidating=false;
+async function faValidateExpanded(advance){
+ if(faExpandedIsValidating)return;
+ faExpandedIsValidating=true;
+ $('#faExpandedValidate').disabled=true;
+ $('#faExpandedValidateNext').disabled=true;
+ faUpdateExpandedStatus('Validando resposta…',false);
+ try{
+  runLesson();
+  const approved=await validateLesson();
+  if(approved){
+   faUpdateExpandedStatus('Resposta aprovada! +1 ponto.',true);
+   if(advance){
+    if(lessonIdx<lessonCatalog.length-1){
+     $('#lessonNext').click();
+     faUpdateExpandedStatus('Aprovada. Próxima questão aberta.',true);
+    }else{
+     faUpdateExpandedStatus('Última questão aprovada neste framework.',true);
+    }
+   }
+  }else{
+   const feedback=$('#lessonFeedback').textContent;
+   faUpdateExpandedStatus(feedback||'Revise a resposta e tente novamente.',false);
+  }
+ }catch(error){
+  faUpdateExpandedStatus('Falha na validação: '+error.message,false);
+ }finally{
+  faExpandedIsValidating=false;
+  $('#faExpandedValidate').disabled=false;
+  $('#faExpandedValidateNext').disabled=false;
+  faRefreshEditor();
+ }
+}
+$('#faExpandedValidate').onclick=()=>faValidateExpanded(false);
+$('#faExpandedValidateNext').onclick=()=>faValidateExpanded(true);
 $('#lessonMaxWorkspace').onclick=()=>faToggleWorkspace();
 $('#lessonExpandReference').onclick=()=>faToggleReference();
 document.addEventListener('keydown',e=>{
@@ -1618,7 +1682,8 @@ function enterPractice(student,progress){
  document.getElementById('rankingNav').hidden=false;
  document.getElementById('studentName').value=student.name;
  document.getElementById('studentIdentity').textContent=student.name+' • '+student.enrollment;
- document.getElementById('studentCourse').textContent=student.course;
+ document.getElementById('studentCourse').textContent='Matrícula '+student.enrollment+' · '+student.course;
+ document.getElementById('studentAvatar').textContent=student.name.trim().charAt(0).toLocaleUpperCase('pt-BR');
  document.getElementById('studentGate').hidden=true;
  refreshRegisteredProgress(progress);
  faLoadDraftState();
@@ -1663,8 +1728,8 @@ validateLesson = async function(){
  const src=document.getElementById('lessonCode').value;
  const checks=lessonChecks(src), report=computeDiagnostics(src,checks);
  document.getElementById('lessonChecks').innerHTML=checks.map(x=>'<div class="lesson-check '+(x.ok?'pass':'fail')+'">'+(x.ok?'✓':'○')+' '+esc(x.label)+'</div>').join('');
- if(report.blocked){document.getElementById('lessonFeedback').textContent='Revise o código antes de enviar: cópia do exemplo ou erro de estrutura detectado.';document.getElementById('lessonDiagnostics').innerHTML='<strong>Diagnóstico local</strong><ul>'+report.errors.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';return}
- if(!loggedStudent){document.getElementById('lessonFeedback').textContent='Faça seu cadastro antes de enviar.';return}
+ if(report.blocked){document.getElementById('lessonFeedback').textContent='Revise o código antes de enviar: cópia do exemplo ou erro de estrutura detectado.';document.getElementById('lessonDiagnostics').innerHTML='<strong>Diagnóstico local</strong><ul>'+report.errors.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';return false;}
+ if(!loggedStudent){document.getElementById('lessonFeedback').textContent='Faça seu cadastro antes de enviar.';return false;}
  try{
   const result=await api('/api/submissions',{method:'POST',body:JSON.stringify({code:src,framework:lessonFW,exercise:lessonIdx,variant:lessonNavVariant})});
   refreshRegisteredProgress(result.progress);
@@ -1681,7 +1746,11 @@ validateLesson = async function(){
   }
   document.getElementById('lessonFeedback').textContent=result.passed?'Atividade concluída! Sua pontuação foi atualizada.':'Tentativa registrada. Ajuste os requisitos pendentes.';
   document.getElementById('lessonDiagnostics').innerHTML=result.missing?.length?'<strong>Requisitos pendentes</strong><ul>'+result.missing.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<div class="diag-ok">Todos os requisitos conferidos.</div>';
- }catch(err){document.getElementById('lessonFeedback').textContent='Não foi possível registrar a tentativa: '+err.message}
+  return Boolean(result.passed);
+ }catch(err){
+  document.getElementById('lessonFeedback').textContent='Não foi possível registrar a tentativa: '+err.message;
+  return false;
+ }
 };
 // O aluno implementa livremente ambos os modelos de navegação.
 // Painel do professor
