@@ -93,7 +93,31 @@ class ValidationTests(unittest.TestCase):
             invalid='<html><body>'+wrapper+'</body></html>'+' ' * 100
             passed, missing=check_submission(invalid, framework, 2, "top")
             self.assertFalse(passed)
-            self.assertIn("Incluir três cards/colunas", missing)
+            self.assertIn("Criar pelo menos três colunas lado a lado", missing)
+
+    def test_nested_grid_columns_are_rejected(self):
+        for framework in ("bootstrap", "materialize", "tailwind"):
+            col={
+                "bootstrap": "col-12 col-md-4",
+                "materialize": "col s12 m4",
+                "tailwind": "rounded shadow",
+            }[framework]
+            root="grid md:grid-cols-3" if framework=="tailwind" else "row"
+            # Três colunas no total, mas aninhadas: não formam três irmãs.
+            markup=('<div class="'+root+'"><div class="'+col+'">'
+                    '<div class="'+col+'">Interno</div>'
+                    '<div class="'+col+'">Interno</div>'
+                    '</div></div>')
+            passed,missing=check_submission('<html><body>'+markup+'</body></html>',framework,2,"top")
+            self.assertFalse(passed,framework)
+            self.assertIn("Criar pelo menos três colunas lado a lado",missing)
+
+    def test_rejects_style_from_another_framework(self):
+        html=('<html><body><section class="blue"><h2>Minha seção</h2></section>'
+              '</body></html>')
+        passed,missing=check_submission(html,"bootstrap",1,"top")
+        self.assertFalse(passed)
+        self.assertIn("Aplicar classe de cor",missing)
 
     def test_h4_and_card_title_supported(self):
         passed, missing = check_submission(
