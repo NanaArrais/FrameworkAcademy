@@ -460,6 +460,58 @@ body{background:var(--bg)}
 .practice-timer strong{font-variant-numeric:tabular-nums;letter-spacing:.06em;font-size:20px;color:#32165e}
 .practice-timer-symbol{font-size:20px}
 </style>
+<style>
+
+/* FA_UX_V2: estilos apenas da prática; nenhuma mudança na navegação global. */
+#studentPracticeBody .practice-intro{display:flex;flex-wrap:wrap;align-items:stretch;gap:16px;margin-bottom:18px}
+#studentPracticeBody .practice-intro>div:first-child{flex:1 1 220px}
+#studentPracticeBody .fa-student-summary{display:flex;align-items:center;flex:0 1 685px;gap:18px;min-width:0;margin:0;padding:14px 17px;border-color:#e7e6f0;border-radius:16px;box-shadow:0 6px 22px #2520450a}
+#studentPracticeBody .fa-student-person{display:flex;align-items:center;gap:11px;min-width:0;flex:1 1 180px}
+#studentPracticeBody .fa-student-avatar{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border-radius:13px;background:#efe7ff;color:#5e31af;font-size:19px;font-weight:850}
+#studentPracticeBody .fa-student-details{display:flex;flex-direction:column;gap:5px;min-width:0}
+#studentPracticeBody .fa-student-details strong{font-size:15px;white-space:normal;overflow-wrap:anywhere}
+#studentPracticeBody .fa-student-details small{font-size:11px;color:#68758b}
+#studentPracticeBody .fa-student-metrics{display:flex;flex:0 0 auto;gap:0;margin:0;border:1px solid #ebe8f5;border-radius:11px;background:#faf9ff;overflow:hidden}
+#studentPracticeBody .fa-student-metric{padding:9px 13px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:102px}
+#studentPracticeBody .fa-student-metric+ .fa-student-metric{border-left:1px solid #ebe8f5}
+#studentPracticeBody .fa-student-metric strong{font-size:16px;white-space:nowrap}
+#studentPracticeBody .fa-student-metric small{color:#64708a;font-size:10px;font-weight:700}
+#studentPracticeBody .fa-student-summary .session-switch-btn{margin:0;padding:8px 10px;font-size:11px;border-color:#dedbe9;background:#fff;white-space:nowrap}
+#studentPracticeBody .fa-student-progress-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+#studentPracticeBody .practice-challenge{padding:18px 21px}
+#studentPracticeBody .lesson-target{margin:12px 0;border-radius:12px}
+#studentPracticeBody .practice-reference-compact .lesson-target-stage{display:none!important}
+#studentPracticeBody .practice-editor-head{min-height:52px;padding:9px 12px}
+#studentPracticeBody .practice-editor-head .inline{gap:6px;flex-wrap:wrap}
+#studentPracticeBody .practice-editor-head .btn{padding:8px 10px}
+#studentPracticeBody .practice-reference-compact .lesson-target-header{border-bottom:0}
+#studentPracticeBody .practice-reference-compact .lesson-target{box-shadow:none}
+.fa-expanded-bar{display:none}
+#studentPracticeBody .lesson-workspace-expanded{grid-template-rows:58px minmax(0,1fr)!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+#studentPracticeBody .lesson-workspace-expanded>.fa-expanded-bar{display:flex;grid-column:1/-1;grid-row:1;align-items:center;gap:12px;justify-content:space-between;border:1px solid #ddd9ed;border-radius:10px;background:#fff;padding:7px 11px;min-width:0}
+.fa-expanded-heading{display:flex;flex-direction:column;gap:4px;min-width:135px;font-size:12px}
+.fa-expanded-heading strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fa-expanded-heading span{font-size:10px;color:#6d6480}
+.fa-expanded-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.fa-expanded-actions .btn{padding:8px 10px;font-size:11px;white-space:nowrap}
+#faExpandedStatus{font-size:11px;max-width:210px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#4c397e}
+#studentPracticeBody .lesson-workspace-expanded>.lesson-target{display:none!important}
+#studentPracticeBody .lesson-workspace-expanded.fa-show-reference>.lesson-target{display:flex!important;position:absolute;right:12px;top:74px;bottom:12px;width:min(660px,55%);height:auto!important;z-index:4;box-shadow:0 12px 35px #11172e65;grid-row:auto!important;grid-column:auto!important}
+#studentPracticeBody .lesson-workspace-expanded>.practice-editor,
+#studentPracticeBody .lesson-workspace-expanded>.practice-result{grid-row:2!important;min-height:0!important}
+#studentPracticeBody .lesson-workspace-expanded>.lesson-library-dock:not([hidden]){position:absolute;left:12px;top:74px;bottom:12px;width:min(300px,36%);z-index:5;box-shadow:0 10px 35px #11172e58;overflow:auto;background:#fff}
+@media(max-width:1050px){#studentPracticeBody .fa-student-summary{flex:1 1 100%}}
+@media(max-width:760px){#studentPracticeBody .lesson-workspace-expanded{grid-template-columns:1fr!important;grid-template-rows:auto minmax(0,1fr) minmax(0,1fr)!important}
+#studentPracticeBody .lesson-workspace-expanded>.fa-expanded-bar{grid-row:1;flex-wrap:wrap}
+#studentPracticeBody .lesson-workspace-expanded>.practice-editor{grid-row:2!important}
+#studentPracticeBody .lesson-workspace-expanded>.practice-result{grid-row:3!important}
+#studentPracticeBody .lesson-workspace-expanded.fa-show-reference>.lesson-target{width:calc(100% - 24px);top:104px;bottom:12px}
+#studentPracticeBody .fa-student-summary{flex-wrap:wrap}
+#studentPracticeBody .fa-student-metrics{order:3;width:100%}
+#studentPracticeBody .fa-student-metric{flex:1}
+}
+
+</style>
 </head>
 <body>
 <header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Laboratório de front-end</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">Aprender</button><button data-view="practice">Praticar</button><button data-view="ranking" id="rankingNav" hidden>Ranking diário</button><button data-view="teacher">Resultados da turma</button></nav><div class="headright"><span class="head-credit">Ana Arrais · 2026</span><div id="studentSessionMenu" class="student-session" hidden><span id="sessionStudentName" class="session-student-name"></span><button id="studentLogoutHeader" type="button" class="session-signout" aria-label="Sair e trocar de aluno">Sair da conta</button></div></div></header>
@@ -524,19 +576,35 @@ body{background:var(--bg)}
   </form><p id="registrationMessage" class="gate-message" role="status"></p>
 </div>
 <div id="studentPracticeBody" hidden>
-  <div class="practice-intro"><div><h1>Laboratório prático</h1><div class="practice-timer" aria-label="Tempo da rodada atual"><span class="practice-timer-symbol">◷</span><span>Tempo de implementação</span><strong id="practiceTimer" role="timer" aria-live="off">00:00:00</strong></div></div><div class="student-profile"><div><strong id="studentIdentity">Aluno</strong><br><small id="studentCourse"></small></div><button id="studentSwitchPractice" class="btn session-switch-btn" type="button">Trocar aluno</button><input id="studentName" type="hidden"><div class="student-score"><strong id="practiceDone">0/42</strong><span>concluídas</span><strong id="studentScore">0 pontos</strong></div><small id="overallCompletion">Progresso geral</small></div></div>
+  <div class="practice-intro"><div><h1>Laboratório prático</h1><div class="practice-timer" aria-label="Tempo da rodada atual"><span class="practice-timer-symbol">◷</span><span>Tempo de implementação</span><strong id="practiceTimer" role="timer" aria-live="off">00:00:00</strong></div></div><div class="student-profile fa-student-summary">
+  <div class="fa-student-person"><span class="fa-student-avatar" id="studentAvatar" aria-hidden="true">A</span><div class="fa-student-details"><strong id="studentIdentity">Aluno</strong><small id="studentCourse"></small></div></div>
+  <div class="student-score fa-student-metrics" aria-label="Progresso da rodada"><div class="fa-student-metric"><small>Concluídas</small><strong id="practiceDone">0/42</strong></div><div class="fa-student-metric"><small>Pontuação</small><strong id="studentScore">0 pontos</strong></div></div>
+  <button id="studentSwitchPractice" class="btn session-switch-btn" type="button">Trocar aluno</button>
+  <input id="studentName" type="hidden"><span id="overallCompletion" class="fa-student-progress-label">Progresso geral</span>
+</div></div>
   <div class="practice-shell">
     <aside class="panel practice-lessons"><h3>Atividades</h3><div id="lessonList"></div></aside>
     <div class="practice-main">
       <div class="panel practice-challenge"><div class="practice-challenge-top"><span class="pill" id="lessonNumber">Exercício 01</span><div class="framework-picker" role="group" aria-label="Escolha o framework"><span class="framework-picker-label">Framework</span><div class="framework-options"><button type="button" data-framework-choice="bootstrap" aria-pressed="true"><span class="framework-dot bootstrap-dot">B</span>Bootstrap</button><button type="button" data-framework-choice="tailwind" aria-pressed="false"><span class="framework-dot tailwind-dot">T</span>Tailwind</button><button type="button" data-framework-choice="materialize" aria-pressed="false"><span class="framework-dot materialize-dot">M</span>Materialize</button></div><select id="lessonFramework" aria-label="Framework do exercício" hidden><option value="bootstrap">Bootstrap</option><option value="tailwind">Tailwind CSS</option><option value="materialize">Materialize</option></select></div></div><h2 id="lessonTitle">Menu de navegação</h2><p id="lessonBrief"></p><div id="lessonNavOptions" class="lesson-nav-options"><div><strong>Tipo de navegação</strong><small>Escolha um modelo. No celular, os links podem ficar ocultos: o botão ☰ deve abrir e fechar o menu.</small></div><div class="nav-variant-controls" role="group" aria-label="Tipo de menu"><button type="button" data-nav-variant="top" class="active">☰ Menu superior</button><button type="button" data-nav-variant="side">▤ Menu lateral</button></div></div>
         <div class="mission-title">Critérios de conclusão</div><div id="lessonRequirements" class="lesson-requirements"></div><div class="lesson-actions"><button class="btn" id="lessonHint">Orientações</button><button class="btn" id="lessonClassGuide">Biblioteca de classes</button><a id="lessonDocs" href="https://getbootstrap.com/docs/5.3/" target="_blank" rel="noopener">Documentação oficial ↗</a></div><div id="lessonTip" class="lesson-tip hidden" aria-live="polite"></div>
         <section class="lesson-target" aria-label="Exemplo de código do framework">
-          <div class="lesson-target-header"><div class="lesson-reference-title"><strong>Exemplo comentado</strong><span id="lessonReferenceContext" class="lesson-reference-context">Questão 01 · Menu de navegação</span></div><div class="reference-toolbar"><span class="lesson-target-badge" id="lessonTargetFramework">Materialize</span><button type="button" class="btn" id="lessonCopyExample">Copiar exemplo</button><button type="button" class="btn" id="lessonCompactReference" title="Reduzir ou expandir código de referência">Reduzir</button><button type="button" class="btn primary" id="lessonExpandReference" aria-expanded="false">Ampliar</button></div></div>
+          <div class="lesson-target-header"><div class="lesson-reference-title"><strong>Exemplo comentado</strong><span id="lessonReferenceContext" class="lesson-reference-context">Questão 01 · Menu de navegação</span></div><div class="reference-toolbar"><span class="lesson-target-badge" id="lessonTargetFramework">Materialize</span><button type="button" class="btn" id="lessonCopyExample">Copiar exemplo</button><button type="button" class="btn" id="lessonCompactReference" title="Mostrar ou ocultar código de referência">Ocultar exemplo</button><button type="button" class="btn primary" id="lessonExpandReference" aria-expanded="false">Ampliar</button></div></div>
           <div class="lesson-target-stage"><pre id="lessonExampleCode" aria-label="Código de exemplo comentado"></pre></div>
           
         </section>
       </div>
       <div class="practice-editor-grid" id="lessonWorkspace">
+<div class="fa-expanded-bar" id="faExpandedBar" aria-label="Ações da prática ampliada">
+  <div class="fa-expanded-heading"><strong id="faExpandedQuestion">Questão atual</strong><span id="faExpandedFramework">Materialize</span></div>
+  <div class="fa-expanded-actions">
+    <button class="btn" type="button" id="faExpandedExample" aria-pressed="false">Ver exemplo</button>
+    <button class="btn" type="button" id="faExpandedClasses" aria-pressed="false">Classes</button>
+    <button class="btn" type="button" id="faExpandedValidate">Validar resposta</button>
+    <button class="btn primary" type="button" id="faExpandedValidateNext">Validar e avançar →</button>
+    <button class="btn" type="button" id="faExpandedExit">Fechar ampliação</button>
+  </div>
+  <span id="faExpandedStatus" role="status" aria-live="polite"></span>
+</div>
 <aside class="lesson-library-dock" id="lessonLibraryDock" hidden aria-label="Biblioteca de classes">
 <div class="lesson-library-head"><strong>Biblioteca de classes</strong><button type="button" class="btn" id="lessonDockClose">Ocultar</button></div>
 <div class="lesson-dock-tabs" role="tablist"><button type="button" data-dock-tab="colors" class="active">Cores</button><button type="button" data-dock-tab="type">Textos</button><button type="button" data-dock-tab="spacing">Espaços</button></div>
