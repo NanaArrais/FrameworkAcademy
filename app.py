@@ -99,16 +99,21 @@ def normalized_html(code):
     material=re.sub(r'<!--[\s\S]*?-->','',material)
     return re.sub(r'\s+',' ',material).strip().casefold()
 
-def check_submission(source, fw, exercise, variant):
+def check_submission(source, fw, exercise, variant, return_details=False):
+    """Avalia cada atividade utilizando critérios registrados no servidor."""
     doc=Inspector()
     try: doc.feed(source)
-    except Exception: return False,['HTML não pôde ser analisado.']
+    except Exception:
+        error=['HTML não pôde ser analisado.']
+        return (False,error,[]) if return_details else (False,error)
     sample=(REFERENCES['navSamples'][fw][variant] if exercise==0 else REFERENCES['lessonCodeExamples'][fw][exercise])
     clean_sample=normalized_html(sample)
     clean_user=normalized_html(source)
     if clean_sample==clean_user or (len(clean_sample)>60 and clean_sample in clean_user):
-        return False,['Não é permitido enviar uma cópia integral do código de referência.']
+        error=['Não é permitido enviar uma cópia integral do código de referência.']
+        return (False,error,[]) if return_details else (False,error)
     tags=doc.tags; classes=set(doc.classes); a=doc.attrs
+    html_class=lambda item: set(item.get('class','').split())
     text=' '.join(doc.texts).lower()
     has=lambda tag:tag in tags
     regex=lambda pattern:bool(re.search(pattern, ' '.join(doc.classes), re.I))
@@ -120,19 +125,21 @@ def check_submission(source, fw, exercise, variant):
             criteria += [(any('sidenav' in c or 'offcanvas' in c for c in classes) or has('aside'),'Criar painel lateral'),
                          (any('data-target' in x[1] or 'data-bs-target' in x[1] or 'aria-controls' in x[1] for x in a),'Associar botão ao menu lateral')]
     elif exercise==1:
-        criteria=[(has('section'),'Criar seção'),(any(t in tags for t in ['h1','h2','h3','h4']),'Adicionar título'),(regex(r'\b(bg-|red|pink|purple|deep-purple|indigo|blue|teal|green|amber|orange|grey|cyan|brown)'),'Aplicar classe de cor')]
+        criteria=[(has('section'),'Criar seção'),(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']),'Adicionar título'),(regex(r'\b(bg-|red|pink|purple|deep-purple|indigo|blue|teal|green|amber|orange|grey|cyan|brown)'),'Aplicar classe de cor')]
     elif exercise==2:
-        criteria=[(regex(r'\b(grid|row)\b'),'Criar grid'),(len([t for t in tags if t in ['article']])+len([v for t,v in a if t=='div' and any('card' in c for c in v.get('class','').split())])>=3 or len([v for t,v in a if t=='div' and re.search(r'\bcol(?:-|\s)',v.get('class',''))])>=3,'Incluir três cards/colunas'),(regex(r'\b(md:|sm:|col-md-|\bm\d+)'),'Aplicar responsividade')]
+        criteria=[(regex(r'\b(grid|row)\b'),'Criar grid'),(sum(t in ('article','div') and any(c in ('card','card-panel') or c.startswith('shadow') for c in html_class(d)) for t,d in a)>=3
+                    or sum(t=='div' and any(c.startswith('col-') or c=='col' for c in html_class(d)) for t,d in a)>=3
+                    or (fw=='tailwind' and sum(t=='div' and 'grid' in html_class(d) for t,d in a)>=1 and tags.count('div')>=4),'Incluir três cards/colunas'),(regex(r'(?:sm:|md:|lg:|xl:|col-(?:sm|md|lg|xl|xxl)-|\bm\d+\b|\bl\d+\b)'),'Aplicar responsividade')]
     elif exercise==3:
         criteria=[(has('button'),'Criar botão'),(regex(r'\bbtn\b|\bbg-[\w-]+\b'),'Aplicar classe de botão/cor'),(any(len(re.sub(r'<[^>]+>', '', button).strip()) > 2 for button in re.findall(r'<button\b[^>]*>(.*?)</button\s*>', source, re.I | re.S)),'Adicionar texto de ação')]
     elif exercise==4:
-        criteria=[(regex(r'\bcard\b|\bshadow\b'),'Criar card'),(any(t in tags for t in ['h2','h3','h4','h5']),'Adicionar título'),(has('p'),'Adicionar descrição')]
+        criteria=[(regex(r'\bcard\b|\bcard-panel\b|\bshadow(?:-[\w-]+)?\b'),'Criar card'),(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']) or 'card-title' in classes,'Adicionar título'),(has('p'),'Adicionar descrição')]
     elif exercise==5:
-        criteria=[(has('form'),'Criar formulário'),(any(t=='input' and d.get('type')=='text' for t,d in a) and any(t=='input' and d.get('type')=='email' for t,d in a),'Incluir nome e e-mail'),(any(t=='button' and d.get('type')=='submit' for t,d in a),'Adicionar envio')]
+        criteria=[(has('form'),'Criar formulário'),(any(t=='input' and d.get('type')=='text' for t,d in a) and any(t=='input' and d.get('type')=='email' for t,d in a),'Incluir nome e e-mail'),(any(t in ('button','input') and d.get('type')=='submit' for t,d in a),'Adicionar envio')]
     elif exercise==6:
         criteria=[(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']),'Adicionar título'),(has('p'),'Adicionar parágrafo'),(regex(r'flow-text|text-|fs-|fw-|font-|center-align'),'Estilizar tipografia')]
     elif exercise==7:
-        criteria=[(has('section'),'Criar seção'),(any(t in tags for t in ['h1','h2','h3','h4']),'Adicionar título'),(regex(r'\b(p-|m-|py-|px-|my-|mx-|section|container)'),'Aplicar espaçamento')]
+        criteria=[(has('section'),'Criar seção'),(any(t in tags for t in ['h1','h2','h3','h4','h5','h6']),'Adicionar título'),(regex(r'\b(p-|m-|py-|px-|my-|mx-|section|container)'),'Aplicar espaçamento')]
     elif exercise==8:
         criteria=[(has('img'),'Inserir imagem'),(any(t=='img' and d.get('alt','').strip() for t,d in a),'Adicionar texto alternativo'),(regex(r'img-fluid|responsive-img|w-full|max-w-full'),'Tornar imagem responsiva')]
     elif exercise==9:
@@ -148,7 +155,8 @@ def check_submission(source, fw, exercise, variant):
     misses=[label for ok,label in criteria if not ok]
     # Comparison against commented examples is also performed in the client UI.
     if len(re.sub(r'\s+','',source))<100: misses.append('Código incompleto')
-    return not misses, misses
+    details=[{'label':label,'ok':bool(ok)} for ok,label in criteria]
+    return (not misses,misses,details) if return_details else (not misses,misses)
 
 def student_only(fn):
     @wraps(fn)
@@ -202,14 +210,14 @@ def submit():
     code=data.get('code',''); fw=data.get('framework'); ex=data.get('exercise'); variant=data.get('variant','top')
     if not isinstance(code,str) or len(code)>100_000 or fw not in ('bootstrap','tailwind','materialize') or type(ex)!=int or not 0<=ex<14 or variant not in ('top','side'):
         return jsonify(error='Dados do exercício inválidos.'),400
-    passed,missing=check_submission(code,fw,ex,variant)
+    passed,missing,criteria=check_submission(code,fw,ex,variant,return_details=True)
     feedback='Concluído' if passed else 'Pendências: '+', '.join(missing)
     obj=Submission(student_id=session['student_id'],framework=fw,exercise=ex,variant=variant,code=code,passed=passed,score=1 if passed else 0,feedback=feedback)
     db.session.add(obj)
     if passed and not Award.query.filter_by(student_id=session['student_id'],framework=fw,exercise=ex).first():
         db.session.add(Award(student_id=session['student_id'],framework=fw,exercise=ex))
     db.session.commit()
-    return jsonify(passed=passed,missing=missing,progress=progress_of(session['student_id']))
+    return jsonify(passed=passed,missing=missing,criteria=criteria,progress=progress_of(session['student_id']))
 
 @app.post('/api/teacher/login')
 def teacher_login():
