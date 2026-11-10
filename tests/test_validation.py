@@ -169,6 +169,45 @@ class ValidationTests(unittest.TestCase):
             self.assertEqual(Student.query.count(),1)
             self.assertEqual(Award.query.count(),0)
 
+    def test_new_login_starts_fresh_round_and_preserves_submissions(self):
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+        with app.test_client() as client:
+            data={"name":"Aluno Reinício","enrollment":"FRESH001","course":"ADS"}
+            first=client.post("/api/student/register",json=data)
+            self.assertEqual(first.status_code,200)
+            self.assertEqual(first.get_json()["progress"]["points"],0)
+            sample_solution=solution
+            answer=client.post("/api/submissions",json={"framework":"materialize","exercise":1,"variant":"top","code":sample_solution(1,"materialize")})
+            self.assertTrue(answer.get_json()["passed"])
+            self.assertEqual(answer.get_json()["progress"]["points"],1)
+            self.assertEqual(client.get("/api/student/me").get_json()["progress"]["points"],1)
+            client.post("/api/student/logout")
+            second=client.post("/api/student/register",json=data)
+            self.assertEqual(second.status_code,200)
+            self.assertEqual(second.get_json()["progress"]["points"],0)
+            self.assertEqual(second.get_json()["progress"]["completed"],[])
+            self.assertNotEqual(second.get_json()["progress"]["run_id"],first.get_json()["progress"]["run_id"])
+            with app.app_context():
+                from app import Submission
+                self.assertEqual(Submission.query.count(),1)
+                self.assertEqual(Award.query.count(),1)
+            answer=client.post("/api/submissions",json={"framework":"materialize","exercise":1,"variant":"top","code":sample_solution(1,"materialize")})
+            self.assertTrue(answer.get_json()["passed"])
+            self.assertEqual(answer.get_json()["progress"]["points"],1)
+
+    def test_teacher_access_requires_password(self):
+        os.environ["TEACHER_PASSWORD_HASH"]=generate_password_hash("senha-de-teste")
+        with app.test_client() as client:
+            self.assertEqual(client.get("/api/teacher/results").status_code,403)
+            self.assertEqual(client.post("/api/teacher/login",json={"password":"errada"}).status_code,401)
+            self.assertEqual(client.get("/api/teacher/results").status_code,403)
+            self.assertEqual(client.post("/api/teacher/login",json={"password":"senha-de-teste"}).status_code,200)
+            self.assertEqual(client.get("/api/teacher/results").status_code,200)
+            self.assertEqual(client.post("/api/teacher/logout").status_code,200)
+            self.assertEqual(client.get("/api/teacher/results").status_code,403)
+
     def test_student_logout_allows_switch_without_deleting_results(self):
         with app.app_context():
             db.drop_all()
@@ -181,7 +220,7 @@ class ValidationTests(unittest.TestCase):
                 first_id = Student.query.filter_by(enrollment="SWITCH001").first().id
                 db.session.add(Award(student_id=first_id, framework="materialize", exercise=1))
                 db.session.commit()
-            self.assertEqual(client.get("/api/student/me").get_json()["progress"]["points"], 1)
+            self.assertEqual(client.get("/api/student/me").get_json()["progress"]["points"], 0)
             self.assertEqual(client.post("/api/student/logout").status_code, 200)
             self.assertEqual(client.get("/api/student/me").status_code, 401)
             self.assertEqual(client.get("/api/ranking/today").status_code, 401)
