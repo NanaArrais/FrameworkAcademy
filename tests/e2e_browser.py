@@ -181,6 +181,33 @@ with sync_playwright() as p:
     expect(page.locator("#sessionStudentName")).to_contain_text("Outro Estudante")
     expect(page.locator("#rankingNav")).to_be_visible()
     expect(page.locator("#practiceDone")).to_have_text("0/42")
+
+    # Avaliação real na interface: 42 questões, não apenas abertura/navegação.
+    # Cada questão recebe primeiro uma entrada vazia (0 ponto), depois uma
+    # solução independente (1 ponto), verificando feedback e contador.
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from test_validation import solution as valid_solution
+    count = 0
+    for framework in ("bootstrap", "tailwind", "materialize"):
+        page.locator(f'[data-framework-choice="{framework}"]').click()
+        for exercise in range(14):
+            page.locator(f'[data-lesson="{exercise}"]').click()
+            expect(page.locator("#lessonTitle")).to_have_text(NAMES[exercise])
+            invalid = "<!doctype html><html><head></head><body></body></html>"
+            page.evaluate("(code) => { window.__faCodeMirror.setValue(code); window.__faCodeMirror.save(); }", invalid)
+            page.locator("#lessonCheck").click()
+            expect(page.locator("#lessonFeedback")).not_to_contain_text("Atividade concluída!", timeout=15000)
+            page.evaluate("(code) => { window.__faCodeMirror.setValue(code); window.__faCodeMirror.save(); }",
+                          valid_solution(exercise, framework))
+            page.locator("#lessonCheck").click()
+            expect(page.locator("#lessonFeedback")).to_contain_text("Atividade concluída!", timeout=15000)
+            count += 1
+            expect(page.locator("#studentScore")).to_contain_text(str(count)+" pontos", timeout=15000)
+    assert count == 42
+    assert page.request.get(BASE_URL+"/api/student/me").json()["progress"]["points"] == 42
+
     assert not errors, "\n".join(errors)
     print(f"PASS: onboarding, registration, {checked} framework/exercise UI combinations, maximization, class library, no main-page JS errors")
     browser.close()

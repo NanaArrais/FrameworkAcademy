@@ -146,6 +146,33 @@ class ValidationTests(unittest.TestCase):
             self.assertIn('type="text"', form, framework)
             self.assertIn('type="submit"', form, framework)
 
+    def test_teacher_results_and_export_without_student_session(self):
+        """Consulta docente de turma em navegador separado, sem student_id."""
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+        with app.test_client() as student_client:
+            register=student_client.post("/api/student/register",json={
+                "name":"Estudante Isolado", "enrollment":"TEACHER42", "course":"ADS"})
+            self.assertEqual(register.status_code,200)
+            answer=student_client.post("/api/submissions",json={
+                "framework":"materialize", "exercise":1, "variant":"top",
+                "code":solution(1,"materialize")})
+            self.assertTrue(answer.get_json()["passed"])
+        os.environ["TEACHER_PASSWORD_HASH"]=generate_password_hash("senha-de-teste")
+        with app.test_client() as teacher_client:
+            self.assertEqual(teacher_client.post("/api/teacher/login",
+                             json={"password":"senha-de-teste"}).status_code,200)
+            result=teacher_client.get("/api/teacher/results")
+            self.assertEqual(result.status_code,200,result.data[:300])
+            students=result.get_json()["students"]
+            self.assertEqual(len(students),1)
+            self.assertEqual(students[0]["points"],1)
+            self.assertEqual(students[0]["framework_progress"]["materialize"]["completed"],1)
+            report=teacher_client.get("/api/teacher/export.csv")
+            self.assertEqual(report.status_code,200,report.data[:300])
+            self.assertIn("TEACHER42",report.get_data(as_text=True))
+
     def test_access_log_and_teacher_result(self):
         os.environ["TEACHER_PASSWORD_HASH"] = generate_password_hash("senha-de-teste")
         with app.app_context():

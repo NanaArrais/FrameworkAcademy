@@ -396,6 +396,19 @@ def teacher_login():
 @app.post('/api/teacher/logout')
 def teacher_logout():session.pop('teacher',None);return jsonify(ok=True)
 
+def progress_today_for_student(student_id):
+    """Progresso independente da sessão HTTP do professor, isolado no dia atual."""
+    day = datetime.now(ZoneInfo('America/Fortaleza')).date()
+    start = datetime.combine(day, time.min, tzinfo=ZoneInfo('America/Fortaleza')).astimezone(timezone.utc)
+    finish = datetime.combine(day + timedelta(days=1), time.min,
+                              tzinfo=ZoneInfo('America/Fortaleza')).astimezone(timezone.utc)
+    completed = (db.session.query(Submission.framework, Submission.exercise)
+                 .filter(Submission.student_id == student_id, Submission.passed.is_(True),
+                         Submission.submitted_at >= start, Submission.submitted_at < finish)
+                 .distinct().all())
+    return {'points': len(completed),
+            'completed': [{'framework': fw, 'exercise': ex} for fw, ex in completed]}
+
 @app.get('/api/teacher/results')
 @teacher_only
 def results():
@@ -403,7 +416,7 @@ def results():
     data=[]
     for s in students:
         attempts=Submission.query.filter_by(student_id=s.id).order_by(Submission.submitted_at.desc()).all()
-        progress=progress_of(s.id)
+        progress=progress_today_for_student(s.id)
         per_framework={fw:{'completed':sum(x['framework']==fw for x in progress['completed']),
                            'attempts':sum(x.framework==fw for x in attempts)}
                        for fw in ('bootstrap','tailwind','materialize')}
@@ -488,7 +501,7 @@ def export_csv():
     out=io.StringIO();w=csv.writer(out)
     w.writerow(['Nome','Matrícula','Curso','Frameworks praticados','Bootstrap (concluídos)','Tailwind (concluídos)','Materialize (concluídos)','Pontuação','Atividades concluídas','Último acesso (UTC)','Total de acessos'])
     for s in Student.query.order_by(Student.name):
-        p=progress_of(s.id)
+        p=progress_today_for_student(s.id)
         attempted={fw for (fw,) in db.session.query(Submission.framework).filter_by(student_id=s.id).distinct().all()}
         counts={fw:sum(item['framework']==fw for item in p['completed']) for fw in ('bootstrap','tailwind','materialize')}
         w.writerow([s.name,s.enrollment,s.course,', '.join(fw for fw in ('bootstrap','tailwind','materialize') if fw in attempted),
