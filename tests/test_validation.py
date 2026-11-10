@@ -169,6 +169,43 @@ class ValidationTests(unittest.TestCase):
             self.assertEqual(Student.query.count(),1)
             self.assertEqual(Award.query.count(),0)
 
+    def test_student_logout_allows_switch_without_deleting_results(self):
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+        with app.test_client() as client:
+            first = client.post("/api/student/register", json={
+                "name": "Primeiro Aluno", "enrollment": "SWITCH001", "course": "ADS"})
+            self.assertEqual(first.status_code, 200)
+            with app.app_context():
+                first_id = Student.query.filter_by(enrollment="SWITCH001").first().id
+                db.session.add(Award(student_id=first_id, framework="materialize", exercise=1))
+                db.session.commit()
+            self.assertEqual(client.get("/api/student/me").get_json()["progress"]["points"], 1)
+            self.assertEqual(client.post("/api/student/logout").status_code, 200)
+            self.assertEqual(client.get("/api/student/me").status_code, 401)
+            self.assertEqual(client.get("/api/ranking/today").status_code, 401)
+            second = client.post("/api/student/register", json={
+                "name": "Segundo Aluno", "enrollment": "SWITCH002", "course": "Jogos Digitais"})
+            self.assertEqual(second.status_code, 200)
+            self.assertEqual(second.get_json()["progress"]["points"], 0)
+            self.assertEqual(client.get("/api/student/me").get_json()["student"]["enrollment"], "SWITCH002")
+            with app.app_context():
+                self.assertEqual(Student.query.count(), 2)
+                self.assertEqual(Award.query.filter_by(student_id=first_id).count(), 1)
+            self.assertEqual(client.post("/api/student/logout").status_code, 200)
+
+    def test_student_switch_controls_and_scoped_home_styling(self):
+        html=(ROOT/"templates"/"index.html").read_text(encoding="utf-8")
+        for element_id in ("studentSessionMenu","sessionStudentName","studentLogoutHeader","studentSwitchPractice"):
+            self.assertEqual(html.count('id="'+element_id+'"'),1,element_id)
+        self.assertIn("async function faSwitchStudent()",html)
+        self.assertIn("await api('/api/student/logout'",html)
+        self.assertIn("window.location.assign('/?trocar-aluno=1')",html)
+        self.assertIn("document.getElementById('studentSessionMenu').hidden=false",html)
+        self.assertIn("#view-learn .introhero",html)
+        self.assertIn("faDraftStorageKey()",html)
+
     def test_submit_api_all_42_awards_one_point_each_and_no_double_count(self):
         with app.app_context():
             db.drop_all()
