@@ -5,6 +5,7 @@ Run with: python -m playwright install chromium && python tests/e2e_browser.py
 The SQLite instance and student used by CI are disposable.
 """
 import os
+import re
 from playwright.sync_api import sync_playwright, expect
 
 BASE_URL = os.getenv("FA_TEST_URL", "http://127.0.0.1:5300")
@@ -58,7 +59,7 @@ with sync_playwright() as p:
 
     # The expanded workspace should keep the reference and class library available.
     page.locator("#lessonMaxWorkspace").click()
-    expect(page.locator("#lessonWorkspace")).to_have_class("lesson-workspace-expanded", timeout=5000)
+    expect(page.locator("#lessonWorkspace")).to_have_class(re.compile(r"\\blesson-workspace-expanded\\b"), timeout=5000)
     assert page.locator("#lessonWorkspace .lesson-target").count() == 1
     expect(page.locator("#lessonLibraryDock")).to_be_visible()
     for tab in ("colors", "type", "spacing"):
@@ -66,7 +67,7 @@ with sync_playwright() as p:
         expect(page.locator(f'[data-dock-tab="{tab}"]')).to_have_class("active")
         assert page.locator("#lessonDockResults").inner_text().strip()
     page.locator("#lessonMaxWorkspace").click()
-    expect(page.locator("#lessonWorkspace")).not_to_have_class("lesson-workspace-expanded")
+    expect(page.locator("#lessonWorkspace")).not_to_have_class(re.compile(r"\\blesson-workspace-expanded\\b"))
     assert not errors, "\n".join(errors)
     print(f"PASS: onboarding, registration, {checked} framework/exercise UI combinations, maximization, class library, no main-page JS errors")
     browser.close()
