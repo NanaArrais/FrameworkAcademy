@@ -95,6 +95,8 @@ with sync_playwright() as p:
         }""", prefix)
         assert expected in suggestions, (framework, suggestions[:20])
         assert forbidden not in suggestions, (framework, suggestions[:20])
+    # O fluxo de validação abaixo usa uma resposta Materialize.
+    page.locator('[data-framework-choice="materialize"]').click()
     page.evaluate("() => renderLesson()")
 
     # Select the challenge before expanding: outside controls are intentionally
