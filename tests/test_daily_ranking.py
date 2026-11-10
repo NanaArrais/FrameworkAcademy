@@ -161,6 +161,26 @@ class DailyRankingTests(unittest.TestCase):
         self.assertEqual(result[0]["duration"], "—")
         self.assertIsNone(result[0]["duration_seconds"])
 
+    def test_yesterday_session_resets_when_returning_today(self):
+        yesterday = datetime.now(timezone.utc) - timedelta(days=1)
+        with self.client.session_transaction() as cookie:
+            cookie["student_id"] = self.ids[0]
+            cookie["practice_started_at"] = yesterday.isoformat()
+        self.add_submission(0, "materialize", 1, yesterday + timedelta(minutes=5))
+        response = self.client.get("/api/student/me")
+        self.assertEqual(response.status_code, 200)
+        progress = response.get_json()["progress"]
+        self.assertEqual(progress["points"], 0)
+        self.assertEqual(progress["completed"], [])
+        self.assertEqual(progress["practice_day"], self.day.isoformat())
+        self.assertNotEqual(progress["run_id"], yesterday.isoformat())
+        self.assertIsNone(progress["timer_started_at"])
+        with self.client.session_transaction() as cookie:
+            self.assertEqual(cookie["practice_started_at"], progress["run_id"])
+        html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
+        self.assertIn("fa_drafts_v20:", html)
+        self.assertIn("faPracticeDay=progress.practice_day||''", html)
+
     def test_ranking_is_own_menu_tab_without_history_picker(self):
         html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
         self.assertEqual(html.count('id="rankingNav"'), 1)
