@@ -95,7 +95,7 @@ class DailyRankingTests(unittest.TestCase):
         with self.client.session_transaction() as cookie:
             cookie.clear()
         response = self.client.post("/api/student/register", json={
-            "name": "Ana Aluna", "enrollment": "DAILY001", "course": "ADS"})
+            "name": "Ana Aluna", "enrollment": "DAILY001", "course": "Análise e Desenvolvimento de Sistemas"})
         self.assertEqual(response.status_code, 200)
         self.assertIsNone(response.get_json()["progress"]["timer_started_at"])
         self.assertIsNone(self.client.get("/api/student/me").get_json()["progress"]["timer_started_at"])
@@ -113,7 +113,7 @@ class DailyRankingTests(unittest.TestCase):
         with app.app_context():
             self.assertIsNotNone(PracticeRun.query.one().ended_at)
         next_session = self.client.post("/api/student/register", json={
-            "name": "Ana Aluna", "enrollment": "DAILY001", "course": "ADS"})
+            "name": "Ana Aluna", "enrollment": "DAILY001", "course": "Análise e Desenvolvimento de Sistemas"})
         self.assertEqual(next_session.status_code, 200)
         self.assertIsNone(next_session.get_json()["progress"]["timer_started_at"])
         with app.app_context():
