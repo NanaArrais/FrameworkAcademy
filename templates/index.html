@@ -538,6 +538,12 @@ body{background:var(--bg)}
 <label class="teacher-filter"><span>Ordenar por</span><select id="teacherFilterSort"><option value="name">Nome (A–Z)</option><option value="recent">Último acesso</option><option value="points">Maior pontuação</option><option value="attempts">Mais tentativas</option></select></label>
   </div>
 </div>
+<section class="daily-ranking" aria-labelledby="dailyRankingTitle">
+  <div class="daily-ranking-head"><div><h2 id="dailyRankingTitle">🏆 Ranking diário</h2><p>1 ponto por questão aprovada em cada dia. Tentativas repetidas da mesma questão no mesmo dia não somam pontos.</p></div>
+  <label for="rankingDate">Consultar dia<input id="rankingDate" type="date" aria-label="Data do ranking"></label></div>
+  <p id="rankingStatus" class="muted" role="status" aria-live="polite">Carregando classificação…</p>
+  <div class="daily-ranking-table-wrap"><table class="daily-ranking-table"><thead><tr><th>Posição</th><th>Aluno</th><th>Curso</th><th>Pontos do dia</th></tr></thead><tbody id="rankingRows"></tbody></table></div>
+</section>
 <div class="teacher-stats" id="teacherSummary"></div>
 <div class="teacher-results-heading"><div><strong>Alunos</strong><span id="teacherResultCount" role="status">Carregando resultados…</span></div><span class="teacher-results-hint">Deslize a tabela para ver todas as colunas</span></div>
 <div class="panel teacher-table-wrap" tabindex="0" role="region" aria-label="Tabela de resultados da turma"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Progresso por framework</th><th>Pontos</th><th>Concluídas</th><th>Tentativas</th><th>Último acesso</th><th>Acessos</th><th>Detalhes</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
@@ -705,7 +711,72 @@ function generateCompleteHTML(s,f){
     }
     out.push('    });','  '+scriptEnd);
   }
-  out.push('</body>','</html>');
+  out.push('<style>
+.daily-ranking{margin:18px 0 24px;padding:21px;background:#fff;border:1px solid #e1e4ed;border-radius:12px}
+.daily-ranking-head{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.daily-ranking-head h2{font-size:18px;margin:0 0 7px;color:#302451}
+.daily-ranking-head p{font-size:12px;color:#66708c;line-height:1.6;margin:0;max-width:700px}
+.daily-ranking-head label{font-size:12px;font-weight:700;color:#4b536d;display:flex;flex-direction:column;gap:6px}
+.daily-ranking-head input{border:1px solid #d8dbe7;border-radius:8px;padding:9px 12px;background:#fff}
+.daily-ranking-table-wrap{overflow-x:auto}
+.daily-ranking-table{border-collapse:collapse;width:100%;font-size:12px;text-align:left}
+.daily-ranking-table th,.daily-ranking-table td{padding:12px;border-bottom:1px solid #eef0f5}
+.daily-ranking-table th{color:#5f6880;background:#f7f7fc;font-weight:750}
+.daily-ranking-table tr:last-child td{border-bottom:0}
+.daily-ranking-table td:first-child{font-weight:800;color:#5731a4}
+.daily-ranking-table td:last-child{font-weight:800}
+@media(max-width:680px){.daily-ranking{padding:13px}.daily-ranking-head label,.daily-ranking-head input{width:100%}}
+</style>
+<script>
+(function(){
+  const picker=document.getElementById('rankingDate');
+  const rows=document.getElementById('rankingRows');
+  const status=document.getElementById('rankingStatus');
+  if(!picker||!rows||!status)return;
+  function todayFortaleza(){
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Fortaleza',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));
+    return p.year+'-'+p.month+'-'+p.day;
+  }
+  picker.value=todayFortaleza();
+  let requestId=0;
+  async function refreshDailyRanking(){
+    const thisRequest=++requestId;
+    const day=picker.value||todayFortaleza();
+    status.textContent='Consultando classificação de '+day.split('-').reverse().join('/')+'…';
+    try{
+      const res=await fetch('/api/ranking/daily?date='+encodeURIComponent(day),{credentials:'same-origin'});
+      const data=await res.json();
+      if(!res.ok)throw Error(data.error||'Não foi possível consultar.');
+      if(thisRequest!==requestId)return;
+      rows.replaceChildren();
+      if(!data.ranking.length){
+        const tr=document.createElement('tr'),td=document.createElement('td');
+        td.colSpan=4;td.textContent='Nenhuma questão aprovada nesta data.';
+        tr.appendChild(td);rows.appendChild(tr);
+      }
+      for(const item of data.ranking){
+        const tr=document.createElement('tr');
+        for(const value of [item.position+'º',item.name,item.course,String(item.points)]){
+          const td=document.createElement('td');td.textContent=value;tr.appendChild(td);
+        }
+        rows.appendChild(tr);
+      }
+      status.textContent=data.ranking.length+' aluno(s) pontuaram em '+day.split('-').reverse().join('/')+' · Fuso: Fortaleza.';
+    }catch(error){
+      if(thisRequest!==requestId)return;
+      rows.replaceChildren();
+      status.textContent='Não foi possível carregar o ranking: '+error.message;
+    }
+  }
+  picker.addEventListener('change',refreshDailyRanking);
+  document.getElementById('teacherRefresh')?.addEventListener('click',refreshDailyRanking);
+  document.querySelectorAll('[data-view="teacher"]').forEach(button=>button.addEventListener('click',refreshDailyRanking));
+  document.getElementById('teacherLoginForm')?.addEventListener('submit',()=>setTimeout(refreshDailyRanking,400));
+  refreshDailyRanking();
+})();
+</script>
+</body>','</html>');
   return out.join('\n');
 }
 function exportFullHTML(){return generateCompleteHTML(cur(),cur().framework)}
