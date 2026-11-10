@@ -276,6 +276,10 @@ def export_csv():
                     db.session.query(func.count(StudentAccess.id)).filter_by(student_id=s.id).scalar()])
     return Response('\ufeff'+out.getvalue(),mimetype='text/csv; charset=utf-8',headers={'Content-Disposition':'attachment; filename="resultados_framework_academy.csv"'})
 
+# Cria apenas tabelas inexistentes (incluindo o log de acessos).
+# Não remove nem substitui tabelas/dados existentes.
+with app.app_context():
+    db.create_all()
+
 if __name__=='__main__':
-    with app.app_context():db.create_all()
     app.run(port=int(os.getenv('PORT','5000')),debug=os.getenv('FLASK_DEBUG')=='1')
