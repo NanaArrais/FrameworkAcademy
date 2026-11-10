@@ -55,6 +55,25 @@ class Award(db.Model):
     exercise = db.Column(db.Integer, nullable=False)
     __table_args__ = (UniqueConstraint('student_id', 'framework', 'exercise', name='uq_student_exercise'),)
 
+class StudentAccess(db.Model):
+    """Registro de abertura do laboratório. Horários UTC; a interface converte para Fortaleza."""
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False, index=True)
+    accessed_at = db.Column(db.DateTime(timezone=True), nullable=False,
+                            default=lambda: datetime.now(timezone.utc), index=True)
+
+def register_student_access(student_id):
+    db.session.add(StudentAccess(student_id=student_id))
+    db.session.commit()
+
+def iso_utc(value):
+    """Devolve um timestamp ISO com fuso, inclusive em bancos que retornam datetime ingênuo."""
+    if value is None:
+        return None
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc).isoformat()
+
 class Inspector(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -161,6 +180,7 @@ def register():
     else:
         student=Student(name=name,enrollment=enrollment,course=course);db.session.add(student);db.session.commit()
     session['student_id']=student.id
+    register_student_access(student.id)
     return jsonify(student={'name':student.name,'enrollment':student.enrollment,'course':student.course}, progress=progress_of(student.id))
 
 def progress_of(student_id):
@@ -172,6 +192,7 @@ def progress_of(student_id):
 def me():
     student=db.session.get(Student,session['student_id'])
     if not student:return jsonify(error='Aluno não encontrado.'),404
+    register_student_access(student.id)
     return jsonify(student={'name':student.name,'enrollment':student.enrollment,'course':student.course},progress=progress_of(student.id))
 
 @app.post('/api/submissions')
@@ -213,11 +234,14 @@ def results():
         per_framework={fw:{'completed':sum(x['framework']==fw for x in progress['completed']),
                            'attempts':sum(x.framework==fw for x in attempts)}
                        for fw in ('bootstrap','tailwind','materialize')}
-        data.append({'id':s.id,'name':s.name,'enrollment':s.enrollment,'course':s.course,'points':progress['points'],
+        access_info=db.session.query(func.count(StudentAccess.id),func.max(StudentAccess.accessed_at)).filter(
+            StudentAccess.student_id==s.id).one()
+        data.append({'access_count':access_info[0], 'last_access':iso_utc(access_info[1]),
+                     'id':s.id,'name':s.name,'enrollment':s.enrollment,'course':s.course,'points':progress['points'],
                      'completed':progress['completed'],'attempts':len(attempts),
                      'frameworks_practiced':[fw for fw,p in per_framework.items() if p['attempts']>0],
                      'framework_progress':per_framework,
-                     'last_attempt':attempts[0].submitted_at.isoformat() if attempts else None})
+                     'last_attempt':iso_utc(attempts[0].submitted_at) if attempts else None})
     return jsonify(students=data)
 
 @app.get('/api/teacher/student/<int:student_id>')
@@ -226,19 +250,22 @@ def student_attempts(student_id):
     s=db.session.get(Student,student_id)
     if not s:return jsonify(error='Aluno não encontrado.'),404
     rows=Submission.query.filter_by(student_id=student_id).order_by(Submission.submitted_at.desc()).limit(200).all()
-    return jsonify(name=s.name,attempts=[{'framework':x.framework,'exercise':x.exercise+1,'variant':x.variant,'passed':x.passed,'feedback':x.feedback,'code':x.code,'at':x.submitted_at.isoformat()} for x in rows])
+    access_rows=StudentAccess.query.filter_by(student_id=student_id).order_by(StudentAccess.accessed_at.desc()).limit(50).all()
+    return jsonify(name=s.name,accesses=[iso_utc(x.accessed_at) for x in access_rows],attempts=[{'framework':x.framework,'exercise':x.exercise+1,'variant':x.variant,'passed':x.passed,'feedback':x.feedback,'code':x.code,'at':iso_utc(x.submitted_at)} for x in rows])
 
 @app.get('/api/teacher/export.csv')
 @teacher_only
 def export_csv():
     out=io.StringIO();w=csv.writer(out)
-    w.writerow(['Nome','Matrícula','Curso','Frameworks praticados','Bootstrap (concluídos)','Tailwind (concluídos)','Materialize (concluídos)','Pontuação','Atividades concluídas'])
+    w.writerow(['Nome','Matrícula','Curso','Frameworks praticados','Bootstrap (concluídos)','Tailwind (concluídos)','Materialize (concluídos)','Pontuação','Atividades concluídas','Último acesso (UTC)','Total de acessos'])
     for s in Student.query.order_by(Student.name):
         p=progress_of(s.id)
         attempted={fw for (fw,) in db.session.query(Submission.framework).filter_by(student_id=s.id).distinct().all()}
         counts={fw:sum(item['framework']==fw for item in p['completed']) for fw in ('bootstrap','tailwind','materialize')}
         w.writerow([s.name,s.enrollment,s.course,', '.join(fw for fw in ('bootstrap','tailwind','materialize') if fw in attempted),
-                    counts['bootstrap'],counts['tailwind'],counts['materialize'],p['points'],len(p['completed'])])
+                    counts['bootstrap'],counts['tailwind'],counts['materialize'],p['points'],len(p['completed']),
+                    iso_utc(db.session.query(func.max(StudentAccess.accessed_at)).filter_by(student_id=s.id).scalar()),
+                    db.session.query(func.count(StudentAccess.id)).filter_by(student_id=s.id).scalar()])
     return Response('\ufeff'+out.getvalue(),mimetype='text/csv; charset=utf-8',headers={'Content-Disposition':'attachment; filename="resultados_framework_academy.csv"'})
 
 if __name__=='__main__':
