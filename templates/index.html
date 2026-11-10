@@ -902,7 +902,8 @@ function computeDiagnostics(src,checks){const errors=analyzeSyntax(src),copy=det
 function currentLessonKey(){return lessonFW+'|'+lessonIdx}
 function lessonDraftKey(){return (studentName.trim().toLocaleLowerCase('pt-BR')||'sem-nome')+'|'+currentLessonKey()+(lessonIdx===0?'|'+lessonNavVariant:'')}
 let faCurrentPracticeRunId='';
-function faDraftStorageKey(){return 'fa_drafts_v19:'+(loggedStudent?.enrollment||'guest')+':'+faCurrentPracticeRunId}
+let faPracticeDay='';
+function faDraftStorageKey(){return 'fa_drafts_v20:'+(loggedStudent?.enrollment||'guest')+':'+faPracticeDay+':'+faCurrentPracticeRunId}
 function faSaveDraftState(){try{localStorage.setItem(faDraftStorageKey(),JSON.stringify({drafts:lessonDrafts,selected:{exercise:lessonIdx,framework:lessonFW,variant:lessonNavVariant},savedAt:new Date().toISOString()}))}catch(e){console.warn('Armazenamento local indisponível:',e)}}
 function faLoadDraftState(){try{const data=JSON.parse(localStorage.getItem(faDraftStorageKey())||'null');if(!data)return;Object.assign(lessonDrafts,data.drafts||{});if(data.selected&&Number.isInteger(data.selected.exercise)&&data.selected.exercise>=0&&data.selected.exercise<lessonCatalog.length){lessonIdx=data.selected.exercise;lessonFW=['bootstrap','tailwind','materialize'].includes(data.selected.framework)?data.selected.framework:'bootstrap';lessonNavVariant=data.selected.variant==='side'?'side':'top'}}catch(e){console.warn('Falha ao restaurar rascunhos:',e)}}
 function saveLessonDraft(){let ed=$('#lessonCode');if(ed){lessonDrafts[lessonDraftKey()]=ed.value;faSaveDraftState()}}
@@ -1710,11 +1711,13 @@ function faHandleFirstRealEdit(){
 function enterPractice(student,progress){
  // Novos logins têm rodada e rascunhos isolados; refresh conserva a rodada atual.
  const previousRun=faCurrentPracticeRunId;
+ const previousDay=faPracticeDay;
  loggedStudent=student;studentName=student.name;
+ faPracticeDay=progress.practice_day||'';
  faCurrentPracticeRunId=progress.run_id||'';
  faTimerStartedAt=Date.parse(progress.timer_started_at||'')||0;
  faUpdatePracticeTimer();
- if(previousRun!==faCurrentPracticeRunId){
+ if(previousRun!==faCurrentPracticeRunId||previousDay!==faPracticeDay){
   Object.keys(lessonDrafts).forEach(key=>delete lessonDrafts[key]);
   lessonIdx=0;lessonNavVariant='top';
  }
