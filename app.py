@@ -6,7 +6,8 @@ import io
 import secrets
 import json
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date, time, timedelta
+from zoneinfo import ZoneInfo
 from difflib import SequenceMatcher
 from functools import wraps
 from html.parser import HTMLParser
@@ -295,6 +296,53 @@ def results():
                      'framework_progress':per_framework,
                      'last_attempt':iso_utc(attempts[0].submitted_at) if attempts else None})
     return jsonify(students=data)
+
+# Ranking por dia civil de Fortaleza. Não modifica Award nem a pontuação acumulada.
+# Uma aprovação por aluno / framework / exercício conta uma vez por dia;
+# uma aprovação da mesma atividade em outro dia pode pontuar novamente.
+RANKING_TIMEZONE = ZoneInfo('America/Fortaleza')
+
+@app.get('/api/teacher/ranking/daily')
+@teacher_only
+def teacher_daily_ranking():
+    selected = request.args.get('date', '').strip()
+    if not selected:
+        day = datetime.now(RANKING_TIMEZONE).date()
+    else:
+        try:
+            day = date.fromisoformat(selected)
+            if selected != day.isoformat():
+                raise ValueError('Formato inválido')
+        except ValueError:
+            return jsonify(error='Informe uma data válida no formato AAAA-MM-DD.'), 400
+
+    beginning = datetime.combine(day, time.min, tzinfo=RANKING_TIMEZONE).astimezone(timezone.utc)
+    ending = datetime.combine(day + timedelta(days=1), time.min, tzinfo=RANKING_TIMEZONE).astimezone(timezone.utc)
+
+    # GROUP BY evita contar reenvios do mesmo exercício no dia selecionado.
+    approved = (db.session.query(Submission.student_id, Submission.framework, Submission.exercise)
+                .filter(Submission.passed.is_(True),
+                        Submission.submitted_at >= beginning,
+                        Submission.submitted_at < ending)
+                .group_by(Submission.student_id, Submission.framework, Submission.exercise).all())
+    scores = {}
+    for student_id, _framework, _exercise in approved:
+        scores[student_id] = scores.get(student_id, 0) + 1
+
+    students = Student.query.filter(Student.id.in_(scores.keys())).all() if scores else []
+    students.sort(key=lambda student: (-scores[student.id], student.name.casefold(), student.id))
+    entries = []
+    position = 0
+    last_score = None
+    for index, student in enumerate(students, 1):
+        points = scores[student.id]
+        if last_score != points:
+            position = index
+        entries.append({'position': position, 'student_id': student.id,
+                        'name': student.name, 'course': student.course, 'points': points})
+        last_score = points
+
+    return jsonify(date=day.isoformat(), timezone='America/Fortaleza', ranking=entries)
 
 @app.get('/api/teacher/student/<int:student_id>')
 @teacher_only
