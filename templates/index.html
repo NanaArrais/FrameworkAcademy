@@ -197,6 +197,7 @@ body.preview-lock{overflow:hidden}
 <!-- FA_EDITOR_V17: dependências do editor com numeração de linhas -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
@@ -204,6 +205,7 @@ body.preview-lock{overflow:hidden}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
 <style>
 .teacher-fw-pill{display:inline-block;padding:5px 8px;margin:2px 5px 2px 0;border:1px solid #e2daf5;border-radius:8px;background:#f5f1fc;color:#4e3383;font-size:11px;font-weight:700;white-space:nowrap}
 /* Navegação livre e seletor destacado do laboratório */
@@ -532,6 +534,50 @@ body{background:var(--bg)}
 #studentPracticeBody .lesson-workspace-expanded.fa-hide-reference{grid-template-rows:auto minmax(0,1fr) minmax(0,1fr)!important}
 #studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.practice-editor{grid-row:2!important}
 #studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.practice-result{grid-row:3!important}}
+
+</style>
+<style>
+/* FA_EXPANDED_SIDE_LIBRARY: biblioteca ocupa coluna própria; não é overlay. */
+#studentPracticeBody .lesson-workspace-expanded:has(>.lesson-library-dock:not([hidden])){
+ grid-template-columns:minmax(220px,270px) minmax(0,1.2fr) minmax(0,.85fr)!important;
+}
+#studentPracticeBody .lesson-workspace-expanded:has(>.lesson-library-dock[hidden]){
+ grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)!important;
+}
+#studentPracticeBody .lesson-workspace-expanded>.fa-expanded-bar,
+#studentPracticeBody .lesson-workspace-expanded>.lesson-target{
+ grid-column:1/-1!important;
+}
+#studentPracticeBody .lesson-workspace-expanded>.lesson-library-dock:not([hidden]){
+ display:flex!important;position:static!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;
+ width:auto!important;min-width:0!important;height:100%!important;grid-column:1!important;grid-row:3!important;
+ z-index:auto!important;box-shadow:none!important;overflow:hidden!important;
+}
+#studentPracticeBody .lesson-workspace-expanded:has(>.lesson-library-dock:not([hidden]))>.practice-editor{
+ grid-column:2!important;grid-row:3!important;min-width:0!important;
+}
+#studentPracticeBody .lesson-workspace-expanded:has(>.lesson-library-dock:not([hidden]))>.practice-result{
+ grid-column:3!important;grid-row:3!important;min-width:0!important;
+}
+#studentPracticeBody .lesson-workspace-expanded:has(>.lesson-library-dock[hidden])>.practice-editor{
+ grid-column:1!important;grid-row:3!important;
+}
+#studentPracticeBody .lesson-workspace-expanded:has(>.lesson-library-dock[hidden])>.practice-result{
+ grid-column:2!important;grid-row:3!important;
+}
+#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.lesson-library-dock:not([hidden]),
+#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.practice-editor,
+#studentPracticeBody .lesson-workspace-expanded.fa-hide-reference>.practice-result{grid-row:2!important}
+#studentPracticeBody .lesson-workspace-expanded>.lesson-library-dock .lesson-dock-results{min-height:0;overflow:auto;flex:1}
+.CodeMirror-hints{z-index:11000!important;background:#fff!important;border:1px solid #c8b6eb!important;border-radius:10px!important;box-shadow:0 10px 30px #1b15374f!important;font:12px/1.5 Inter,sans-serif!important;max-width:320px}
+.CodeMirror-hint{padding:6px 10px!important;white-space:nowrap}
+.CodeMirror-hint-active{background:#eee8ff!important;color:#382078!important}
+@media(max-width:850px){
+ #studentPracticeBody .lesson-workspace-expanded:has(>.lesson-library-dock:not([hidden])){grid-template-columns:minmax(165px,230px) minmax(0,1fr)!important;grid-template-rows:auto minmax(120px,20vh) minmax(0,1fr) minmax(140px,28vh)!important}
+ #studentPracticeBody .lesson-workspace-expanded>.lesson-library-dock:not([hidden]){grid-column:1!important;grid-row:3!important}
+ #studentPracticeBody .lesson-workspace-expanded:has(>.lesson-library-dock:not([hidden]))>.practice-editor{grid-column:2!important;grid-row:3!important}
+ #studentPracticeBody .lesson-workspace-expanded:has(>.lesson-library-dock:not([hidden]))>.practice-result{grid-column:1/-1!important;grid-row:4!important}
+}
 
 </style>
 </head>
@@ -1343,12 +1389,12 @@ function faToggleWorkspace(force){
   }
   section.classList.toggle('lesson-workspace-expanded',expanded);
   const dock=$('#lessonLibraryDock');
-  dock.hidden=true; // Biblioteca opcional, não cobre o editor por padrão.
+  dock.hidden=!expanded; // Na ampliação, biblioteca fica em uma coluna própria ao lado do editor.
   section.classList.remove('fa-show-reference','fa-hide-reference');
   $('#faExpandedExample').textContent='Ocultar exemplo';
   $('#faExpandedExample').setAttribute('aria-pressed','true');
   $('#faExpandedAlerts').hidden=true;
-  $('#faExpandedClasses').setAttribute('aria-pressed','false');
+  $('#faExpandedClasses').setAttribute('aria-pressed',String(expanded));
   $('#lessonDockToggle').setAttribute('aria-pressed','false');
   if(!expanded && reference?.dataset.workspaceHome==='moved'){
     const marker=window.__faReferenceMarker;
