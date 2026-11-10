@@ -307,6 +307,7 @@ def ranking_for_day(day):
     return ranking
 
 @app.get('/api/ranking/daily')
+@teacher_only
 def ranking_daily():
     value = request.args.get('date', '').strip()
     if value:
