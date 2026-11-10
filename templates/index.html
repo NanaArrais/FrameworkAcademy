@@ -580,7 +580,16 @@ body{background:var(--bg)}
 }
 
 </style>
-</head>
+<style>
+.fa-student-buttons{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#studentPracticeBody .fa-profile-edit{display:grid;gap:10px;border:1px solid #ddd8ed;background:#fff;border-radius:14px;padding:18px;margin:0 0 18px;max-width:650px}
+#studentPracticeBody .fa-profile-edit[hidden]{display:none!important}
+#studentPracticeBody .fa-profile-edit label{display:grid;gap:5px;font-size:12px;font-weight:700}
+#studentPracticeBody .fa-profile-edit input,#studentPracticeBody .fa-profile-edit select{width:100%;padding:10px;border:1px solid #d7d3e5;border-radius:9px;background:#fff;color:#26263e}
+#studentPracticeBody .fa-profile-edit input[readonly]{background:#f5f5f8;color:#73738a}
+#studentPracticeBody .fa-profile-edit small{font-size:11px;color:#697087}
+#studentPracticeBody .fa-profile-edit p{font-size:12px;margin:0}
+</style></head>
 <body>
 <header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Laboratório de front-end</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">Aprender</button><button data-view="practice">Praticar</button><button data-view="ranking" id="rankingNav" hidden>Ranking diário</button><button data-view="teacher">Resultados da turma</button></nav><div class="headright"><span class="head-credit">Ana Arrais · 2026</span><div id="studentSessionMenu" class="student-session" hidden><span id="sessionStudentName" class="session-student-name"></span><button id="studentLogoutHeader" type="button" class="session-signout" aria-label="Sair e trocar de aluno">Sair da conta</button></div></div></header>
 <main class="app">
@@ -639,7 +648,9 @@ body{background:var(--bg)}
   <form id="studentRegisterForm" class="gate-form">
     <label>Nome completo<input id="registerName" name="name" required minlength="3" maxlength="120" placeholder="Seu nome completo"></label>
     <label>Matrícula<input id="registerEnrollment" name="enrollment" required minlength="3" maxlength="48" placeholder="Sua matrícula"></label>
-    <label>Curso<input id="registerCourse" name="course" required minlength="2" maxlength="120" placeholder="Ex.: Análise e Desenvolvimento de Sistemas"></label>
+    <label>Curso<select id="registerCourse" name="course" required><option value="">Selecione seu curso</option>
+<option value="Engenharia da Computação">Engenharia da Computação</option>
+<option value="Análise e Desenvolvimento de Sistemas">Análise e Desenvolvimento de Sistemas</option></select></label>
     <button class="btn primary" type="submit">Entrar no laboratório →</button>
   </form><p id="registrationMessage" class="gate-message" role="status"></p>
 </div>
@@ -647,9 +658,20 @@ body{background:var(--bg)}
   <div class="practice-intro"><div><h1>Laboratório prático</h1><div class="practice-timer" aria-label="Tempo da rodada atual"><span class="practice-timer-symbol">◷</span><span>Tempo de implementação</span><strong id="practiceTimer" role="timer" aria-live="off">00:00:00</strong></div></div><div class="student-profile fa-student-summary">
   <div class="fa-student-person"><span class="fa-student-avatar" id="studentAvatar" aria-hidden="true">A</span><div class="fa-student-details"><strong id="studentIdentity">Aluno</strong><small id="studentCourse"></small></div></div>
   <div class="student-score fa-student-metrics" aria-label="Progresso da rodada"><div class="fa-student-metric"><small>Concluídas</small><strong id="practiceDone">0/42</strong></div><div class="fa-student-metric"><small>Pontuação</small><strong id="studentScore">0 pontos</strong></div></div>
-  <button id="studentSwitchPractice" class="btn session-switch-btn" type="button">Trocar aluno</button>
+  <div class="fa-student-buttons"><button id="studentEditProfile" class="btn session-switch-btn" type="button">Editar perfil</button><button id="studentSwitchPractice" class="btn session-switch-btn" type="button">Trocar aluno</button></div>
   <input id="studentName" type="hidden"><span id="overallCompletion" class="fa-student-progress-label">Progresso geral</span>
 </div></div>
+  <form id="studentProfileForm" class="fa-profile-edit" hidden>
+    <strong>Editar perfil</strong>
+    <label>Nome completo<input id="profileName" maxlength="120" minlength="3" required></label>
+    <label>Matrícula<input id="profileEnrollment" readonly aria-describedby="profileEnrollmentHelp"></label>
+    <small id="profileEnrollmentHelp">A matrícula não pode ser alterada para preservar o vínculo com os exercícios.</small>
+    <label>Curso<select id="profileCourse" required><option value="">Selecione seu curso</option>
+<option value="Engenharia da Computação">Engenharia da Computação</option>
+<option value="Análise e Desenvolvimento de Sistemas">Análise e Desenvolvimento de Sistemas</option></select></label>
+    <p id="profileEditMessage" role="status" aria-live="polite"></p>
+    <div class="fa-student-buttons"><button type="submit" class="btn primary">Salvar alterações</button><button type="button" class="btn" id="studentCancelProfile">Cancelar</button></div>
+  </form>
   <div class="practice-shell">
     <aside class="panel practice-lessons"><h3>Atividades</h3><div id="lessonList"></div></aside>
     <div class="practice-main">
@@ -1787,6 +1809,48 @@ function enterPractice(student,progress){
  document.getElementById('studentPracticeBody').hidden=!faPracticeStarted;
  if(faPracticeStarted)renderLesson();
 }
+// A edição não encerra a rodada nem altera a matrícula, a pontuação ou os rascunhos.
+document.getElementById('studentEditProfile').onclick=()=>{
+ if(!loggedStudent)return;
+ document.getElementById('profileName').value=loggedStudent.name;
+ document.getElementById('profileEnrollment').value=loggedStudent.enrollment;
+ document.getElementById('profileCourse').value=['Engenharia da Computação','Análise e Desenvolvimento de Sistemas'].includes(loggedStudent.course)?loggedStudent.course:'';
+ document.getElementById('profileEditMessage').textContent='';
+ document.getElementById('studentProfileForm').hidden=false;
+};
+document.getElementById('studentCancelProfile').onclick=()=>{
+ document.getElementById('studentProfileForm').hidden=true;
+};
+document.getElementById('studentProfileForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const message=document.getElementById('profileEditMessage');
+ const button=event.currentTarget.querySelector('button[type="submit"]');
+ button.disabled=true;
+ try{
+  const data=await api('/api/student/profile',{method:'PATCH',
+   body:JSON.stringify({name:document.getElementById('profileName').value,
+    course:document.getElementById('profileCourse').value})});
+  const previousPrefix=studentName.trim().toLocaleLowerCase('pt-BR')+'|';
+  const newPrefix=data.student.name.trim().toLocaleLowerCase('pt-BR')+'|';
+  for(const key of Object.keys(lessonDrafts)){
+   if(key.startsWith(previousPrefix)){
+    lessonDrafts[newPrefix+key.slice(previousPrefix.length)]=lessonDrafts[key];
+    delete lessonDrafts[key];
+   }
+  }
+  loggedStudent={...loggedStudent,...data.student};
+  studentName=data.student.name;
+  faSaveDraftState();
+  document.getElementById('studentName').value=data.student.name;
+  document.getElementById('studentIdentity').textContent=data.student.name+' • '+data.student.enrollment;
+  document.getElementById('studentCourse').textContent='Matrícula '+data.student.enrollment+' · '+data.student.course;
+  document.getElementById('studentAvatar').textContent=data.student.name.trim().charAt(0).toLocaleUpperCase('pt-BR');
+  document.getElementById('sessionStudentName').textContent=data.student.name;
+  message.textContent='Perfil atualizado. Seu progresso foi preservado.';
+  document.getElementById('studentProfileForm').hidden=true;
+ }catch(error){message.textContent='Erro ao salvar: '+error.message;}
+ finally{button.disabled=false;}
+});
 document.getElementById('studentRegisterForm').addEventListener('submit',async e=>{
  e.preventDefault();const message=document.getElementById('registrationMessage');
  message.textContent='';
@@ -1958,15 +2022,10 @@ document.getElementById('teacherSearch').oninput=showTeacherRows;
 $('#teacherClearFilters').onclick=()=>{['teacherSearch','teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince'].forEach(key=>$('#'+key).value='');$('#teacherFilterSort').value='name';showTeacherRows()};
 document.getElementById('teacherRefresh').onclick=loadTeacherResults;
 document.getElementById('teacherLogout').onclick=async()=>{await api('/api/teacher/logout',{method:'POST'});teacherData.hidden=true;teacherAuth.hidden=false};
-// Toda entrada no painel exige nova autenticação, inclusive em sessões anteriores.
-document.querySelector('[data-view="teacher"]').addEventListener('click',async()=>{
- teacherData.hidden=true;
- teacherAuth.hidden=false;
- document.getElementById('teacherPassword').value='';
- document.getElementById('teacherLoginMessage').textContent='';
- try{await api('/api/teacher/logout',{method:'POST'});}
- catch(error){document.getElementById('teacherLoginMessage').textContent='Não foi possível reiniciar a autenticação: '+error.message;}
-});
+// A sessão do professor é mantida ao navegar ou atualizar a página.
+// A proteção de acesso continua no servidor; logout somente pelo botão "Sair".
+document.querySelector('[data-view="teacher"]').addEventListener('click',loadTeacherResults);
+loadTeacherResults();
 // Sem identificador visual desnecessário de edição livre.
 </script>
 <!-- FA_EDITOR_V17: integração CodeMirror com o laboratório existente -->
