@@ -329,6 +329,22 @@ body{background:var(--bg)}
 .lesson-workspace-expanded .lesson-reference-title{gap:8px}
 .lesson-workspace-expanded .lesson-reference-context{font-size:11px}
 @media(max-width:650px){.lesson-reference-title{align-items:flex-start;flex-direction:column;gap:3px}}
+
+/* Painel docente: filtros acessíveis e rastreabilidade dos acessos */
+.teacher-tools{display:flex;gap:9px;align-items:flex-end;flex-wrap:wrap}
+.teacher-filter{display:flex;flex-direction:column;gap:4px;min-width:128px;flex:1}
+.teacher-filter span{font-size:11px;color:#5c667a;font-weight:700}
+.teacher-filter input,.teacher-filter select{width:100%;height:37px;min-height:37px;padding:6px 9px;background:#fff;color:#243048;border:1px solid #dfe3eb;border-radius:7px;font-size:12px}
+.teacher-filter:first-child{min-width:190px;flex:2}
+.teacher-table-wrap{overflow:auto}
+.teacher-table td,.teacher-table th{white-space:nowrap;font-size:12px}
+.attempt-filters{display:flex;flex-wrap:wrap;gap:9px;align-items:flex-end;margin:15px 0}
+.attempt-filters label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:650}
+.attempt-filters select,.attempt-filters input{min-width:125px;border:1px solid #dfe3eb;border-radius:7px;padding:8px;font-size:12px;background:#fff;color:#243048}
+.student-access-log{border-top:1px solid #e4e7ed;margin:16px 0;padding-top:12px;font-size:12px;color:#4f596b}
+.student-access-log summary{cursor:pointer;font-weight:700}
+.student-access-log ul{max-height:145px;overflow:auto;line-height:1.9}
+@media(max-width:700px){.teacher-filter,.teacher-filter:first-child{min-width:100%;flex:1}}
 </style>
 </head>
 <body>
@@ -379,7 +395,12 @@ body{background:var(--bg)}
 <section id="view-teacher" class="view">
   <div class="teacher-page"><div class="teacher-heading"><div><span class="pill">ACESSO DO PROFESSOR</span><h1>Resultados da turma</h1><p>Consulte matrícula, curso, pontuação e histórico de tentativas dos alunos.</p></div></div>
   <div id="teacherAuth" class="panel teacher-login"><h2>Entrar como professor</h2><p>Utilize a senha configurada no servidor.</p><form id="teacherLoginForm"><label>Senha do professor<input id="teacherPassword" type="password" required autocomplete="current-password"></label><button type="submit" class="btn primary">Acessar resultados</button></form><p id="teacherLoginMessage" role="status"></p></div>
-  <div id="teacherData" hidden><div class="teacher-tools"><input type="search" id="teacherSearch" placeholder="Buscar por nome, matrícula ou curso"><a class="btn" href="/api/teacher/export.csv">↓ Exportar CSV</a><button class="btn" id="teacherRefresh">↻ Atualizar</button><button class="btn" id="teacherLogout">Sair</button></div><div class="teacher-stats" id="teacherSummary"></div><div class="panel teacher-table-wrap"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Frameworks praticados</th><th>Pontos</th><th>Exercícios</th><th>Tentativas</th><th>Ações</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
+  <div id="teacherData" hidden><div class="teacher-tools"><label class="teacher-filter"><span>Buscar</span><input type="search" id="teacherSearch" placeholder="Nome ou matrícula"></label>
+<label class="teacher-filter"><span>Curso</span><select id="teacherFilterCourse"><option value="">Todos os cursos</option></select></label>
+<label class="teacher-filter"><span>Framework</span><select id="teacherFilterFramework"><option value="">Todos</option><option value="bootstrap">Bootstrap</option><option value="tailwind">Tailwind</option><option value="materialize">Materialize</option></select></label>
+<label class="teacher-filter"><span>Situação</span><select id="teacherFilterStatus"><option value="">Todas</option><option value="completed">Concluído</option><option value="started">Em andamento</option><option value="none">Sem tentativas</option></select></label>
+<label class="teacher-filter"><span>Acesso a partir de</span><input type="date" id="teacherFilterSince"></label>
+<button type="button" class="btn" id="teacherClearFilters">Limpar filtros</button><a class="btn" href="/api/teacher/export.csv">↓ Exportar CSV</a><button class="btn" id="teacherRefresh">↻ Atualizar</button><button class="btn" id="teacherLogout">Sair</button></div><div class="teacher-stats" id="teacherSummary"></div><div class="panel teacher-table-wrap"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Frameworks praticados</th><th>Pontos</th><th>Exercícios</th><th>Tentativas</th><th>Último acesso</th><th>Acessos</th><th>Ações</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
   </div>
 </section>
 </main><footer class="footer">© 2026 Ana Arrais - Uninassau - Frontend Frameworks 2026</footer>
