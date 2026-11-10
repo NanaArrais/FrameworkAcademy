@@ -538,6 +538,19 @@ body{background:var(--bg)}
 <label class="teacher-filter"><span>Ordenar por</span><select id="teacherFilterSort"><option value="name">Nome (A–Z)</option><option value="recent">Último acesso</option><option value="points">Maior pontuação</option><option value="attempts">Mais tentativas</option></select></label>
   </div>
 </div>
+<section id="dailyRankingPanel" class="panel" style="padding:18px;margin:18px 0" aria-labelledby="dailyRankingTitle">
+  <div class="teacher-results-heading">
+    <div><strong id="dailyRankingTitle">🏆 Ranking diário</strong><span>Um ponto por atividade aprovada a cada dia; reenvios da mesma atividade no mesmo dia não pontuam.</span></div>
+    <label class="teacher-filter" for="dailyRankingDate"><span>Data</span><input id="dailyRankingDate" type="date"></label>
+  </div>
+  <p id="dailyRankingMessage" class="muted" role="status" aria-live="polite">Selecione a data para consultar a classificação.</p>
+  <div class="teacher-table-wrap" role="region" aria-label="Classificação diária" tabindex="0">
+    <table class="teacher-table" style="min-width:620px">
+      <thead><tr><th>Posição</th><th>Aluno</th><th>Curso</th><th>Pontos do dia</th></tr></thead>
+      <tbody id="dailyRankingRows"></tbody>
+    </table>
+  </div>
+</section>
 <div class="teacher-stats" id="teacherSummary"></div>
 <div class="teacher-results-heading"><div><strong>Alunos</strong><span id="teacherResultCount" role="status">Carregando resultados…</span></div><span class="teacher-results-hint">Deslize a tabela para ver todas as colunas</span></div>
 <div class="panel teacher-table-wrap" tabindex="0" role="region" aria-label="Tabela de resultados da turma"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Progresso por framework</th><th>Pontos</th><th>Concluídas</th><th>Tentativas</th><th>Último acesso</th><th>Acessos</th><th>Detalhes</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
@@ -1559,6 +1572,28 @@ function showTeacherRows(){
   '<div><strong>'+data.reduce((sum,x)=>sum+(x.access_count||0),0)+'</strong>Acessos registrados</div>';
  document.querySelectorAll('[data-student-id]').forEach(button=>button.onclick=()=>showAttempts(Number(button.dataset.studentId)));
 }
+// Ranking usa o mesmo painel e o mesmo cliente HTTP dos resultados docentes.
+let dailyRankingRequest=0;
+function faTodayFortaleza(){
+ return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Fortaleza',
+  year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+}
+async function loadDailyRanking(){
+ const dateInput=$('#dailyRankingDate'),message=$('#dailyRankingMessage'),rows=$('#dailyRankingRows');
+ const day=dateInput.value||faTodayFortaleza();
+ const current=++dailyRankingRequest;
+ message.textContent='Consultando a classificação do dia '+day.split('-').reverse().join('/')+'…';
+ try{
+  const data=await api('/api/teacher/ranking/daily?date='+encodeURIComponent(day));
+  if(current!==dailyRankingRequest)return;
+  rows.innerHTML=(data.ranking||[]).map(item=>'<tr><td>'+item.position+'º</td><td>'+esc(item.name)+'</td><td>'+esc(item.course)+'</td><td><strong>'+item.points+'</strong></td></tr>').join('');
+  message.textContent=data.ranking.length?data.ranking.length+' aluno(s) pontuaram neste dia. Horário de Fortaleza (UTC−3).':'Nenhuma atividade aprovada nesta data.';
+ }catch(error){
+  if(current!==dailyRankingRequest)return;
+  rows.innerHTML='';
+  message.textContent='Não foi possível carregar o ranking: '+error.message;
+ }
+}
 async function loadTeacherResults(){
  try{
   const data=await api('/api/teacher/results');
@@ -1570,6 +1605,7 @@ async function loadTeacherResults(){
   courseSelect.innerHTML='<option value="">Todos os cursos</option>'+options.map(name=>'<option value="'+attr(name)+'">'+esc(name)+'</option>').join('');
   if(options.includes(previous))courseSelect.value=previous;
   showTeacherRows();
+  loadDailyRanking();
  }catch(e){
   teacherAuth.hidden=false;teacherData.hidden=true;
   $('#teacherLoginMessage').textContent='Não foi possível carregar os resultados: '+e.message;
@@ -1610,6 +1646,8 @@ document.getElementById('teacherLoginForm').onsubmit=async e=>{e.preventDefault(
 document.getElementById('teacherSearch').oninput=showTeacherRows;
 ['teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince','teacherFilterSort'].forEach(key=>$('#'+key).addEventListener('change',showTeacherRows));
 $('#teacherClearFilters').onclick=()=>{['teacherSearch','teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince'].forEach(key=>$('#'+key).value='');$('#teacherFilterSort').value='name';showTeacherRows()};
+$('#dailyRankingDate').value=faTodayFortaleza();
+$('#dailyRankingDate').addEventListener('change',loadDailyRanking);
 document.getElementById('teacherRefresh').onclick=loadTeacherResults;
 document.getElementById('teacherLogout').onclick=async()=>{await api('/api/teacher/logout',{method:'POST'});teacherData.hidden=true;teacherAuth.hidden=false};
 document.querySelector('[data-view="teacher"]').addEventListener('click',loadTeacherResults);
