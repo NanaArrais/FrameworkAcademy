@@ -431,7 +431,7 @@ body{background:var(--bg)}
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Laboratório de front-end</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">Aprender</button><button data-view="practice">Praticar</button><button data-view="teacher">Resultados da turma</button></nav><div class="headright">Ana Arrais · 2026</div></header>
+<header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Laboratório de front-end</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">Aprender</button><button data-view="practice">Praticar</button><button data-view="ranking" id="rankingNav" hidden>Ranking diário</button><button data-view="teacher">Resultados da turma</button></nav><div class="headright">Ana Arrais · 2026</div></header>
 <main class="app">
 <section id="view-learn" class="view active"><div class="intro"><div class="introhero"><span class="pill">APRENDA • PRATIQUE • EVOLUA</span><h1>Entenda o framework.<br>Depois, resolva desafios.</h1><p>Conheça três abordagens para construir interfaces: componentes prontos no Bootstrap, linguagem Material Design no Materialize e estilização por utilitários no Tailwind. Aplique os conceitos em exercícios interativos e acompanhe sua pontuação.</p><button class="btn primary" data-view="practice">Começar os exercícios →</button></div><div class="introgrid"><article class="introcard"><div class="logo" style="color:#7952b3"><span class="fw-logo bs-logo">B</span> Bootstrap</div><h2>Componentes prontos</h2><p>Framework com grid, formulários, navegação e componentes estilizados. Útil quando é importante desenvolver rapidamente uma interface consistente.</p><div class="meta"><b>Vantagem:</b> ecossistema abrangente.<br><b>Atenção:</b> personalizações exigem cuidado com os padrões do tema.</div><p><a href="https://getbootstrap.com/docs/5.3/" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article><article class="introcard"><div class="logo" style="color:#0ea5ae"><span class="fw-logo tw-logo">〰</span> Tailwind CSS</div><h2>Utility-first</h2><p>Classes pequenas compõem diretamente a aparência da interface. É flexível para produtos com identidade visual própria.</p><div class="meta"><b>Vantagem:</b> controle granular.<br><b>Atenção:</b> não oferece todos os componentes interativos prontos.</div><p><a href="https://tailwindcss.com/docs" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article><article class="introcard"><div class="logo" style="color:#f06275"><span class="fw-logo mz-logo">M</span> Materialize</div><h2>Baseado em Material Design</h2><p>Oferece grid, cores, botões, cards e componentes com estética inspirada nas diretrizes de Material Design.</p><div class="meta"><b>Vantagem:</b> experiência visual consistente.<br><b>Atenção:</b> a linguagem visual pode exigir ajustes para produtos muito personalizados.</div><p><a href="https://materializecss.com/" target="_blank" rel="noopener">Documentação oficial ↗</a></p></article></div></div></section>
 <section id="view-create" class="view"><div class="pagehead"><div><h1>Criar página <span id="fwPill" class="pill">Bootstrap</span></h1><p>Monte sua interface visualmente. Selecione os componentes para editar e compreender o código.</p></div><div class="toolbar"><button class="btn" id="undoBtn">↶ Desfazer</button><button class="btn" id="redoBtn">↷ Refazer</button><button class="btn" id="clearBtn">♲ Limpar</button><button class="btn" id="exportBtn">↓ Exportar HTML</button><button class="btn primary" id="saveBtn">▣ Salvar</button></div></div><div id="workspaceMount"></div></section>
@@ -520,6 +520,18 @@ body{background:var(--bg)}
     </div>
   </div>
 </div></div></section>
+<section id="view-ranking" class="view">
+  <div class="teacher-page">
+    <div class="teacher-heading"><div><span class="pill">CLASSIFICAÇÃO DOS ALUNOS</span><h1>🏆 Ranking diário</h1><p>Confira a pontuação obtida hoje. Cada questão aprovada vale 1 ponto por dia; repetir a mesma questão no mesmo dia não soma novamente.</p></div></div>
+    <div class="panel" style="padding:20px">
+      <div class="teacher-results-heading"><div><strong>Classificação de hoje</strong><span id="rankingTodayDate">Horário de Fortaleza (UTC−3)</span></div><button type="button" class="btn" id="rankingRefresh">Atualizar ranking</button></div>
+      <p id="rankingTodayMessage" class="muted" role="status" aria-live="polite">Carregando classificação…</p>
+      <div class="teacher-table-wrap" role="region" aria-label="Ranking do dia corrente" tabindex="0">
+        <table class="teacher-table" style="min-width:550px"><thead><tr><th>Posição</th><th>Aluno</th><th>Curso</th><th>Pontos de hoje</th></tr></thead><tbody id="rankingTodayRows"></tbody></table>
+      </div>
+    </div>
+  </div>
+</section>
 <section id="view-teacher" class="view">
   <div class="teacher-page"><div class="teacher-heading"><div><span class="pill">ACESSO DO PROFESSOR</span><h1>Resultados da turma</h1><p>Consulte matrícula, curso, pontuação e histórico de tentativas dos alunos.</p></div></div>
   <div id="teacherAuth" class="panel teacher-login"><h2>Entrar como professor</h2><p>Utilize a senha configurada no servidor.</p><form id="teacherLoginForm"><label>Senha do professor<input id="teacherPassword" type="password" required autocomplete="current-password"></label><button type="submit" class="btn primary">Acessar resultados</button></form><p id="teacherLoginMessage" role="status"></p></div>
@@ -538,19 +550,6 @@ body{background:var(--bg)}
 <label class="teacher-filter"><span>Ordenar por</span><select id="teacherFilterSort"><option value="name">Nome (A–Z)</option><option value="recent">Último acesso</option><option value="points">Maior pontuação</option><option value="attempts">Mais tentativas</option></select></label>
   </div>
 </div>
-<section id="dailyRankingPanel" class="panel" style="padding:18px;margin:18px 0" aria-labelledby="dailyRankingTitle">
-  <div class="teacher-results-heading">
-    <div><strong id="dailyRankingTitle">🏆 Ranking diário</strong><span>Um ponto por atividade aprovada a cada dia; reenvios da mesma atividade no mesmo dia não pontuam.</span></div>
-    <label class="teacher-filter" for="dailyRankingDate"><span>Data</span><input id="dailyRankingDate" type="date"></label>
-  </div>
-  <p id="dailyRankingMessage" class="muted" role="status" aria-live="polite">Selecione a data para consultar a classificação.</p>
-  <div class="teacher-table-wrap" role="region" aria-label="Classificação diária" tabindex="0">
-    <table class="teacher-table" style="min-width:620px">
-      <thead><tr><th>Posição</th><th>Aluno</th><th>Curso</th><th>Pontos do dia</th></tr></thead>
-      <tbody id="dailyRankingRows"></tbody>
-    </table>
-  </div>
-</section>
 <div class="teacher-stats" id="teacherSummary"></div>
 <div class="teacher-results-heading"><div><strong>Alunos</strong><span id="teacherResultCount" role="status">Carregando resultados…</span></div><span class="teacher-results-hint">Deslize a tabela para ver todas as colunas</span></div>
 <div class="panel teacher-table-wrap" tabindex="0" role="region" aria-label="Tabela de resultados da turma"><table class="teacher-table"><thead><tr><th>Aluno</th><th>Matrícula</th><th>Curso</th><th>Progresso por framework</th><th>Pontos</th><th>Concluídas</th><th>Tentativas</th><th>Último acesso</th><th>Acessos</th><th>Detalhes</th></tr></thead><tbody id="teacherRows"></tbody></table></div><div id="studentAttempts" class="panel attempt-details" hidden></div></div>
@@ -1468,8 +1467,30 @@ $('#practiceWelcomeStart').addEventListener('click',()=>{
   $('#registerName').focus();
  }
 });
+let studentRankingRequest=0;
+async function loadStudentRanking(){
+ const message=document.getElementById('rankingTodayMessage');
+ const rows=document.getElementById('rankingTodayRows');
+ const requestNumber=++studentRankingRequest;
+ message.textContent='Consultando a classificação de hoje…';
+ try{
+  const data=await api('/api/ranking/today');
+  if(requestNumber!==studentRankingRequest)return;
+  const date=data.date.split('-').reverse().join('/');
+  document.getElementById('rankingTodayDate').textContent=date+' · Fortaleza (UTC−3)';
+  rows.innerHTML=(data.ranking||[]).map(item=>'<tr><td>'+item.position+'º</td><td>'+esc(item.name)+'</td><td>'+esc(item.course)+'</td><td><strong>'+item.points+'</strong></td></tr>').join('');
+  message.textContent=data.ranking.length?data.ranking.length+' aluno(s) pontuaram hoje.':'Ainda não há questões aprovadas hoje.';
+ }catch(error){
+  if(requestNumber!==studentRankingRequest)return;
+  rows.innerHTML='';
+  message.textContent='Não foi possível carregar o ranking: '+error.message;
+ }
+}
+document.getElementById('rankingNav').addEventListener('click',loadStudentRanking);
+document.getElementById('rankingRefresh').addEventListener('click',loadStudentRanking);
 function enterPractice(student,progress){
  loggedStudent=student;studentName=student.name;
+ document.getElementById('rankingNav').hidden=false;
  document.getElementById('studentName').value=student.name;
  document.getElementById('studentIdentity').textContent=student.name+' • '+student.enrollment;
  document.getElementById('studentCourse').textContent=student.course;
@@ -1572,28 +1593,6 @@ function showTeacherRows(){
   '<div><strong>'+data.reduce((sum,x)=>sum+(x.access_count||0),0)+'</strong>Acessos registrados</div>';
  document.querySelectorAll('[data-student-id]').forEach(button=>button.onclick=()=>showAttempts(Number(button.dataset.studentId)));
 }
-// Ranking usa o mesmo painel e o mesmo cliente HTTP dos resultados docentes.
-let dailyRankingRequest=0;
-function faTodayFortaleza(){
- return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Fortaleza',
-  year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-}
-async function loadDailyRanking(){
- const dateInput=$('#dailyRankingDate'),message=$('#dailyRankingMessage'),rows=$('#dailyRankingRows');
- const day=dateInput.value||faTodayFortaleza();
- const current=++dailyRankingRequest;
- message.textContent='Consultando a classificação do dia '+day.split('-').reverse().join('/')+'…';
- try{
-  const data=await api('/api/teacher/ranking/daily?date='+encodeURIComponent(day));
-  if(current!==dailyRankingRequest)return;
-  rows.innerHTML=(data.ranking||[]).map(item=>'<tr><td>'+item.position+'º</td><td>'+esc(item.name)+'</td><td>'+esc(item.course)+'</td><td><strong>'+item.points+'</strong></td></tr>').join('');
-  message.textContent=data.ranking.length?data.ranking.length+' aluno(s) pontuaram neste dia. Horário de Fortaleza (UTC−3).':'Nenhuma atividade aprovada nesta data.';
- }catch(error){
-  if(current!==dailyRankingRequest)return;
-  rows.innerHTML='';
-  message.textContent='Não foi possível carregar o ranking: '+error.message;
- }
-}
 async function loadTeacherResults(){
  try{
   const data=await api('/api/teacher/results');
@@ -1605,7 +1604,6 @@ async function loadTeacherResults(){
   courseSelect.innerHTML='<option value="">Todos os cursos</option>'+options.map(name=>'<option value="'+attr(name)+'">'+esc(name)+'</option>').join('');
   if(options.includes(previous))courseSelect.value=previous;
   showTeacherRows();
-  loadDailyRanking();
  }catch(e){
   teacherAuth.hidden=false;teacherData.hidden=true;
   $('#teacherLoginMessage').textContent='Não foi possível carregar os resultados: '+e.message;
@@ -1646,8 +1644,6 @@ document.getElementById('teacherLoginForm').onsubmit=async e=>{e.preventDefault(
 document.getElementById('teacherSearch').oninput=showTeacherRows;
 ['teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince','teacherFilterSort'].forEach(key=>$('#'+key).addEventListener('change',showTeacherRows));
 $('#teacherClearFilters').onclick=()=>{['teacherSearch','teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince'].forEach(key=>$('#'+key).value='');$('#teacherFilterSort').value='name';showTeacherRows()};
-$('#dailyRankingDate').value=faTodayFortaleza();
-$('#dailyRankingDate').addEventListener('change',loadDailyRanking);
 document.getElementById('teacherRefresh').onclick=loadTeacherResults;
 document.getElementById('teacherLogout').onclick=async()=>{await api('/api/teacher/logout',{method:'POST'});teacherData.hidden=true;teacherAuth.hidden=false};
 document.querySelector('[data-view="teacher"]').addEventListener('click',loadTeacherResults);
