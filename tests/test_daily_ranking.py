@@ -1,9 +1,10 @@
-"""Regressão do ranking diário, isolada do PostgreSQL de produção."""
+"""Testes do ranking diário visível somente para alunos identificados."""
 import os
 import sys
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -26,6 +27,7 @@ class DailyRankingTests(unittest.TestCase):
             db.session.commit()
             self.ids = [s.id for s in students]
         self.client = app.test_client()
+        self.day = datetime.now(ZoneInfo("America/Fortaleza")).date()
 
     def tearDown(self):
         with app.app_context():
@@ -41,58 +43,64 @@ class DailyRankingTests(unittest.TestCase):
                                       feedback="teste", submitted_at=timestamp))
             db.session.commit()
 
-    def teacher_login(self):
+    def login_student(self, index=0):
+        with self.client.session_transaction() as session:
+            session["student_id"] = self.ids[index]
+
+    def test_only_logged_students_can_view_ranking(self):
+        self.assertEqual(self.client.get("/api/ranking/today").status_code, 401)
         with self.client.session_transaction() as session:
             session["teacher"] = True
+        self.assertEqual(self.client.get("/api/ranking/today").status_code, 401)
+        self.login_student()
+        response = self.client.get("/api/ranking/today")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["date"], self.day.isoformat())
 
-    def test_teacher_authorization_and_invalid_date(self):
-        self.assertEqual(self.client.get("/api/teacher/ranking/daily").status_code, 403)
-        self.teacher_login()
-        self.assertEqual(self.client.get("/api/teacher/ranking/daily?date=10-11-2026").status_code, 400)
-        self.assertEqual(self.client.get("/api/teacher/ranking/daily?date=2026-02-30").status_code, 400)
-        self.assertEqual(self.client.get("/api/teacher/ranking/daily?date=2026-11-10").status_code, 200)
+    def test_only_today_even_when_date_query_is_supplied(self):
+        self.login_student()
+        response = self.client.get("/api/ranking/today?date=2020-01-01")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["date"], self.day.isoformat())
+        self.assertEqual(response.get_json()["timezone"], "America/Fortaleza")
 
-    def test_fortaleza_midnight_duplicate_attempts_and_next_day(self):
-        # 02:59 UTC => 09/11 23:59 em Fortaleza; 03:00 UTC => 10/11 00:00.
-        self.add_submission(0, "materialize", 1, datetime(2026, 11, 10, 2, 59, tzinfo=timezone.utc))
-        self.add_submission(0, "materialize", 1, datetime(2026, 11, 10, 3, 0, tzinfo=timezone.utc))
-        self.add_submission(0, "materialize", 1, datetime(2026, 11, 10, 14, tzinfo=timezone.utc))
-        self.add_submission(0, "bootstrap", 1, datetime(2026, 11, 10, 15, tzinfo=timezone.utc))
-        self.add_submission(0, "tailwind", 2, datetime(2026, 11, 10, 16, tzinfo=timezone.utc), passed=False)
-        self.add_submission(1, "materialize", 4, datetime(2026, 11, 10, 17, tzinfo=timezone.utc))
-        self.teacher_login()
+    def test_fortaleza_midnight_duplicates_and_failed_attempts(self):
+        start = datetime.combine(self.day, time.min, tzinfo=ZoneInfo("America/Fortaleza")).astimezone(timezone.utc)
+        self.add_submission(0, "materialize", 1, start - timedelta(minutes=1))
+        self.add_submission(0, "materialize", 1, start)
+        self.add_submission(0, "materialize", 1, start + timedelta(hours=1))
+        self.add_submission(0, "bootstrap", 1, start + timedelta(hours=2))
+        self.add_submission(0, "tailwind", 2, start + timedelta(hours=3), passed=False)
+        self.add_submission(1, "materialize", 4, start + timedelta(hours=4))
+        self.login_student()
+        ranked = self.client.get("/api/ranking/today").get_json()["ranking"]
+        self.assertEqual([item["points"] for item in ranked], [2, 1])
+        self.assertEqual([item["position"] for item in ranked], [1, 2])
 
-        yesterday = self.client.get("/api/teacher/ranking/daily?date=2026-11-09").get_json()
-        today = self.client.get("/api/teacher/ranking/daily?date=2026-11-10").get_json()
-        tomorrow = self.client.get("/api/teacher/ranking/daily?date=2026-11-11").get_json()
-        self.assertEqual(yesterday["ranking"][0]["points"], 1)
-        self.assertEqual([row["points"] for row in today["ranking"]], [2, 1])
-        self.assertEqual([row["position"] for row in today["ranking"]], [1, 2])
-        self.assertEqual(tomorrow["ranking"], [])
-        self.assertEqual(today["timezone"], "America/Fortaleza")
-
-    def test_ties_have_same_position_and_original_award_remains_unchanged(self):
-        stamp = datetime(2026, 11, 10, 12, tzinfo=timezone.utc)
+    def test_ties_and_accumulated_awards_unchanged(self):
+        stamp = datetime.now(timezone.utc)
         self.add_submission(0, "materialize", 1, stamp)
         self.add_submission(1, "materialize", 2, stamp)
         with app.app_context():
             db.session.add(Award(student_id=self.ids[0], framework="materialize", exercise=1))
             db.session.commit()
-        self.teacher_login()
-        result = self.client.get("/api/teacher/ranking/daily?date=2026-11-10").get_json()
-        self.assertEqual([row["position"] for row in result["ranking"]], [1, 1])
+        self.login_student()
+        ranked = self.client.get("/api/ranking/today").get_json()["ranking"]
+        self.assertEqual([item["position"] for item in ranked], [1, 1])
         with app.app_context():
             self.assertEqual(Award.query.count(), 1)
 
-    def test_teacher_markup_is_scoped_to_results_panel(self):
+    def test_ranking_is_own_menu_tab_without_history_picker(self):
         html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
-        self.assertEqual(html.count('id="dailyRankingPanel"'), 1)
-        self.assertEqual(html.count('id="dailyRankingDate"'), 1)
-        self.assertEqual(html.count('id="dailyRankingRows"'), 1)
-        self.assertIn("loadDailyRanking();", html)
-        self.assertIn("function faTodayFortaleza()", html)
-        self.assertIn("function loadDailyRanking()", html)
-        self.assertTrue(html.index('id="view-teacher"') < html.index('id="dailyRankingPanel"') < html.index("</main>"))
+        self.assertEqual(html.count('id="rankingNav"'), 1)
+        self.assertIn('data-view="ranking" id="rankingNav" hidden', html)
+        self.assertEqual(html.count('id="view-ranking"'), 1)
+        self.assertEqual(html.count('id="rankingTodayRows"'), 1)
+        self.assertNotIn('id="dailyRankingPanel"', html)
+        self.assertNotIn('id="dailyRankingDate"', html)
+        self.assertIn("document.getElementById('rankingNav').hidden=false", html)
+        self.assertIn("document.getElementById('rankingNav').addEventListener('click',loadStudentRanking)", html)
+        self.assertTrue(html.index('id="view-ranking"') < html.index('id="view-teacher"'))
 
 
 if __name__ == "__main__":

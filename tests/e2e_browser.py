@@ -21,6 +21,7 @@ with sync_playwright() as p:
     errors = []
     page.on("pageerror", lambda exc: errors.append(str(exc)))
     page.goto(BASE_URL, wait_until="domcontentloaded", timeout=30000)
+    expect(page.locator("#rankingNav")).to_be_hidden()
     page.locator('button[data-view="practice"]').first.click()
 
     # The new orientation screen appears BEFORE identity and exercises.
@@ -39,6 +40,14 @@ with sync_playwright() as p:
     page.locator("#registerCourse").fill("ADS")
     page.locator('#studentRegisterForm button[type="submit"]').click()
     expect(page.locator("#studentPracticeBody")).to_be_visible(timeout=15000)
+    expect(page.locator("#rankingNav")).to_be_visible()
+    page.locator("#rankingNav").click()
+    expect(page.locator("#view-ranking")).to_be_visible()
+    expect(page.locator("#rankingTodayMessage")).to_contain_text("hoje", timeout=15000)
+    assert page.locator("#view-ranking input[type=date]").count() == 0
+    page.locator('button[data-view="practice"]').first.click()
+    expect(page.locator("#studentPracticeBody")).to_be_visible()
+
     assert page.locator("#lessonFramework").input_value() == "tailwind"
 
     # Every exercise must open, across all three frameworks, without a JS exception
