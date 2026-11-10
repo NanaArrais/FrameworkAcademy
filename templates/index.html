@@ -1406,21 +1406,23 @@ async function showAttempts(id){
    '<p class="muted">Horários apresentados no fuso de Fortaleza (UTC−3).</p>'+
    '<div class="attempt-filters">'+
    '<label>Framework<select id="attemptFilterFramework"><option value="">Todos</option><option value="bootstrap">Bootstrap</option><option value="tailwind">Tailwind</option><option value="materialize">Materialize</option></select></label>'+
+   '<label>Questão<select id="attemptFilterExercise"><option value="">Todas</option>'+Array.from({length:14},(_,i)=>'<option value="'+(i+1)+'">Questão '+(i+1)+'</option>').join('')+'</select></label>'+ 
    '<label>Situação<select id="attemptFilterStatus"><option value="">Todas</option><option value="passed">Aprovadas</option><option value="failed">Pendentes</option></select></label>'+
    '<label>Data a partir de<input type="date" id="attemptFilterSince"></label>'+
    '</div><div id="attemptFilteredResults"></div>'+
    '<details class="student-access-log"><summary>Histórico de acessos ('+(result.accesses||[]).length+' mais recentes)</summary>'+
    (accessLog?'<ul>'+accessLog+'</ul>':'<p>Não existem acessos registrados anteriormente a esta atualização.</p>')+'</details>';
   const renderAttempts=()=>{
-   const framework=$('#attemptFilterFramework').value,status=$('#attemptFilterStatus').value,since=$('#attemptFilterSince').value;
+   const framework=$('#attemptFilterFramework').value,exercise=$('#attemptFilterExercise').value,status=$('#attemptFilterStatus').value,since=$('#attemptFilterSince').value;
    const filtered=attempts.filter(a=>
     (!framework||a.framework===framework)&&
+    (!exercise||String(a.exercise)===exercise)&&
     (!status||(status==='passed'?a.passed:!a.passed))&&
     (!since||faAccessDay(a.at)>=since));
    $('#attemptFilteredResults').innerHTML='<p class="muted">'+filtered.length+' de '+attempts.length+' tentativas exibidas (últimas 200 tentativas disponíveis).</p>'+
     (filtered.map(a=>'<article class="attempt-card"><strong>'+esc(names[a.framework]||a.framework)+' · Exercício '+a.exercise+' · '+(a.passed?'Aprovado':'Pendente')+'</strong><p>'+esc(a.feedback)+' · '+esc(faAccessDate(a.at))+'</p><details><summary>Consultar código enviado</summary><pre>'+esc(a.code)+'</pre></details></article>').join('')||'<p>Nenhuma tentativa corresponde aos filtros.</p>');
   };
-  ['attemptFilterFramework','attemptFilterStatus','attemptFilterSince'].forEach(key=>$('#'+key).addEventListener('change',renderAttempts));
+  ['attemptFilterFramework','attemptFilterExercise','attemptFilterStatus','attemptFilterSince'].forEach(key=>$('#'+key).addEventListener('change',renderAttempts));
   renderAttempts();
   box.scrollIntoView({behavior:'smooth',block:'nearest'});
  }catch(e){notify('Não foi possível carregar o histórico: '+e.message)}
