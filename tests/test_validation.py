@@ -85,13 +85,15 @@ class ValidationTests(unittest.TestCase):
 
     def test_grid_requires_three_items(self):
         for framework in ("bootstrap", "tailwind", "materialize"):
-            invalid = solution(2, framework).replace('Curso 2', '').replace('Curso 1', '')
-            # Remove realmente dois cartões/colunas, preservando o primeiro.
-            invalid = solution(2, framework)
-            invalid = invalid.replace('<div class="card">Curso 1</div>', '<p>Um item</p>')
-            invalid = invalid.replace('<div class="card">Curso 2</div>', '<p>Outro item</p>')
-            # Verificação da presença de 3 colunas é específica e deve impedir aprovação de apenas uma.
-            self.assertTrue(isinstance(check_submission(invalid, framework, 2, "top")[1], list))
+            wrapper = {
+                "bootstrap": '<div class="row"><div class="col-12 col-md-4"><div class="card">A</div></div></div>',
+                "materialize": '<div class="row"><div class="col s12 m4"><div class="card-panel">A</div></div></div>',
+                "tailwind": '<div class="grid md:grid-cols-3"><div class="shadow">A</div></div>',
+            }[framework]
+            invalid='<html><body>'+wrapper+'</body></html>'+' ' * 100
+            passed, missing=check_submission(invalid, framework, 2, "top")
+            self.assertFalse(passed)
+            self.assertIn("Incluir três cards/colunas", missing)
 
     def test_h4_and_card_title_supported(self):
         passed, missing = check_submission(
