@@ -151,6 +151,10 @@ with sync_playwright() as p:
     page.keyboard.type(" ")
     page.wait_for_function("faTimerStartedAt > 0", timeout=12000)
     page.locator("#faExpandedValidateNext").click()
+    page.wait_for_timeout(400)
+    print("Expanded validation diagnostic:", page.locator("#faExpandedStatus").inner_text(),
+          page.locator("#lessonFeedback").inner_text(), page.locator("#faExpandedAlerts").inner_text(),
+          "code:", page.locator("#lessonCode").input_value()[:450], flush=True)
     expect(page.locator("#lessonTitle")).to_have_text("Grid responsivo", timeout=15000)
     expect(page.locator("#faExpandedStatus")).to_contain_text("Próxima questão aberta")
     expect(page.locator("#faExpandedAlerts")).to_be_visible()
