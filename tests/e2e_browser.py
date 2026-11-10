@@ -70,6 +70,11 @@ with sync_playwright() as p:
             checked += 1
     assert checked == 42
 
+    # Select the challenge before expanding: outside controls are intentionally
+    # blocked by the fullscreen editor.
+    page.locator('[data-lesson="1"]').click()
+    expect(page.locator("#lessonTitle")).to_have_text("Cores e fundo")
+
     # The expanded workspace opens focused, without the example or library
     # covering the editor, yet both panels remain available on demand.
     expect(page.locator("#studentAvatar")).to_have_text("E")
@@ -94,8 +99,6 @@ with sync_playwright() as p:
     expect(page.locator("#lessonLibraryDock")).to_be_hidden()
 
     # Failed validation must leave the learner on the current question.
-    page.locator('[data-framework-choice="materialize"]').click()
-    page.locator('[data-lesson="1"]').click()
     page.locator("#faExpandedValidateNext").click()
     expect(page.locator("#lessonTitle")).to_have_text("Cores e fundo")
     expect(page.locator("#faExpandedStatus")).to_contain_text("Tentativa registrada", timeout=15000)
