@@ -1411,7 +1411,8 @@ function faTeacherFilters(){
   course:$('#teacherFilterCourse').value,
   framework:$('#teacherFilterFramework').value,
   status:$('#teacherFilterStatus').value,
-  since:$('#teacherFilterSince').value
+  since:$('#teacherFilterSince').value,
+  sort:$('#teacherFilterSort').value
  };
 }
 function faMatchesTeacher(student,filters){
@@ -1425,12 +1426,19 @@ function faMatchesTeacher(student,filters){
 function showTeacherRows(){
  const filters=faTeacherFilters();
  const data=teacherRowsCache.filter(student=>faMatchesTeacher(student,filters));
+ data.sort((a,b)=>{
+   if(filters.sort==='recent')return (Date.parse(b.last_access||'')||0)-(Date.parse(a.last_access||'')||0);
+   if(filters.sort==='points')return b.points-a.points || a.name.localeCompare(b.name,'pt-BR');
+   if(filters.sort==='attempts')return b.attempts-a.attempts || a.name.localeCompare(b.name,'pt-BR');
+   return a.name.localeCompare(b.name,'pt-BR');
+ });
+ $('#teacherResultCount').textContent=data.length+' de '+teacherRowsCache.length+' alunos';
  document.getElementById('teacherRows').innerHTML=data.map(student=>{
   const practiced=['bootstrap','tailwind','materialize'].map(framework=>{
    const progress=(student.framework_progress||{})[framework]||{completed:0,attempts:0};
    return progress.attempts?'<span class="teacher-fw-pill">'+esc(names[framework])+' · '+progress.completed+'/14</span>':'';
   }).filter(Boolean).join('')||'<span class="muted">Não iniciado</span>';
-  return '<tr><td>'+esc(student.name)+'</td><td>'+esc(student.enrollment)+'</td><td>'+esc(student.course)+'</td><td>'+practiced+'</td><td><strong>'+student.points+'</strong></td><td>'+student.completed.length+'/42</td><td>'+student.attempts+'</td><td>'+esc(faAccessDate(student.last_access))+'</td><td>'+Number(student.access_count||0)+'</td><td><button type="button" class="btn" data-student-id="'+student.id+'">Detalhes</button></td></tr>';
+  return '<tr><td>'+esc(student.name)+'</td><td>'+esc(student.enrollment)+'</td><td>'+esc(student.course)+'</td><td>'+practiced+'</td><td><strong>'+student.points+'</strong></td><td><strong>'+student.completed.length+'/42</strong><div class="teacher-progress" aria-label="'+student.completed.length+' atividades de 42 concluídas"><span style="width:'+Math.min(100,(student.completed.length/42)*100).toFixed(1)+'%"></span></div></td><td>'+student.attempts+'</td><td>'+esc(faAccessDate(student.last_access))+'</td><td>'+Number(student.access_count||0)+'</td><td><button type="button" class="btn" data-student-id="'+student.id+'">Ver aluno</button></td></tr>';
  }).join('')||'<tr><td colspan="10">Nenhum aluno corresponde aos filtros selecionados.</td></tr>';
  document.getElementById('teacherSummary').innerHTML=
   '<div><strong>'+data.length+'</strong>Alunos exibidos</div>'+
@@ -1488,8 +1496,8 @@ async function showAttempts(id){
 }
 document.getElementById('teacherLoginForm').onsubmit=async e=>{e.preventDefault();try{await api('/api/teacher/login',{method:'POST',body:JSON.stringify({password:document.getElementById('teacherPassword').value})});document.getElementById('teacherPassword').value='';loadTeacherResults()}catch(err){document.getElementById('teacherLoginMessage').textContent=err.message}};
 document.getElementById('teacherSearch').oninput=showTeacherRows;
-['teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince'].forEach(key=>$('#'+key).addEventListener('change',showTeacherRows));
-$('#teacherClearFilters').onclick=()=>{['teacherSearch','teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince'].forEach(key=>$('#'+key).value='');showTeacherRows()};
+['teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince','teacherFilterSort'].forEach(key=>$('#'+key).addEventListener('change',showTeacherRows));
+$('#teacherClearFilters').onclick=()=>{['teacherSearch','teacherFilterCourse','teacherFilterFramework','teacherFilterStatus','teacherFilterSince'].forEach(key=>$('#'+key).value='');$('#teacherFilterSort').value='name';showTeacherRows()};
 document.getElementById('teacherRefresh').onclick=loadTeacherResults;
 document.getElementById('teacherLogout').onclick=async()=>{await api('/api/teacher/logout',{method:'POST'});teacherData.hidden=true;teacherAuth.hidden=false};
 document.querySelector('[data-view="teacher"]').addEventListener('click',loadTeacherResults);
