@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT))
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 os.environ["COOKIE_SECURE"] = "false"
 
-from app import app, db, Student, Submission, Award
+from app import app, db, Student, Submission, Award, PracticeRun, duration_clock
 
 
 class DailyRankingTests(unittest.TestCase):
@@ -90,12 +90,74 @@ class DailyRankingTests(unittest.TestCase):
         with app.app_context():
             self.assertEqual(Award.query.count(), 1)
 
+    def test_timer_tracks_session_and_is_preserved_after_refresh(self):
+        self.assertEqual(duration_clock(3661), "01:01:01")
+        with self.client.session_transaction() as cookie:
+            cookie.clear()
+        response = self.client.post("/api/student/register", json={
+            "name": "Ana Aluna", "enrollment": "DAILY001", "course": "ADS"})
+        self.assertEqual(response.status_code, 200)
+        started = response.get_json()["progress"]["timer_started_at"]
+        self.assertIsNotNone(started)
+        self.assertEqual(self.client.get("/api/student/me").get_json()["progress"]["timer_started_at"], started)
+        with app.app_context():
+            run = PracticeRun.query.filter_by(student_id=self.ids[0]).one()
+            self.assertIsNotNone(run.started_at)
+            self.assertIsNone(run.last_approved_at)
+        self.assertEqual(self.client.post("/api/student/logout").status_code, 200)
+        with app.app_context():
+            self.assertIsNotNone(PracticeRun.query.one().ended_at)
+        next_session = self.client.post("/api/student/register", json={
+            "name": "Ana Aluna", "enrollment": "DAILY001", "course": "ADS"})
+        self.assertEqual(next_session.status_code, 200)
+        self.assertNotEqual(next_session.get_json()["progress"]["timer_started_at"], started)
+        with app.app_context():
+            self.assertEqual(PracticeRun.query.count(), 2)
+
+    def test_ranking_includes_measured_time_and_sums_daily_sessions(self):
+        # Cria uma sessão por aluno, com duração conhecida e mesma pontuação.
+        start = datetime.combine(self.day, time(10, 0), tzinfo=ZoneInfo("America/Fortaleza")).astimezone(timezone.utc)
+        self.add_submission(0, "materialize", 1, start + timedelta(minutes=9))
+        self.add_submission(1, "bootstrap", 2, start + timedelta(minutes=5))
+        with app.app_context():
+            db.session.add_all([
+                PracticeRun(student_id=self.ids[0], started_at=start,
+                            last_approved_at=start + timedelta(minutes=9)),
+                PracticeRun(student_id=self.ids[1], started_at=start,
+                            last_approved_at=start + timedelta(minutes=5))
+            ])
+            db.session.commit()
+        self.login_student()
+        ranked = self.client.get("/api/ranking/today").get_json()["ranking"]
+        self.assertEqual([item["name"] for item in ranked], ["Bruno Aluno", "Ana Aluna"])
+        self.assertEqual([item["points"] for item in ranked], [1, 1])
+        self.assertEqual([item["duration"] for item in ranked], ["00:05:00", "00:09:00"])
+        self.assertEqual([item["duration_seconds"] for item in ranked], [300, 540])
+        with app.app_context():
+            db.session.add(PracticeRun(student_id=self.ids[0],
+                                       started_at=start + timedelta(hours=1),
+                                       last_approved_at=start + timedelta(hours=1, minutes=3)))
+            db.session.commit()
+        ranked = self.client.get("/api/ranking/today").get_json()["ranking"]
+        ana = next(item for item in ranked if item["student_id"] == self.ids[0])
+        self.assertEqual(ana["duration_seconds"], 720)
+
+    def test_old_scores_without_timer_are_not_assigned_false_zero(self):
+        self.add_submission(0, "materialize", 1, datetime.now(timezone.utc))
+        self.login_student()
+        result = self.client.get("/api/ranking/today").get_json()["ranking"]
+        self.assertEqual(result[0]["duration"], "—")
+        self.assertIsNone(result[0]["duration_seconds"])
+
     def test_ranking_is_own_menu_tab_without_history_picker(self):
         html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
         self.assertEqual(html.count('id="rankingNav"'), 1)
         self.assertIn('data-view="ranking" id="rankingNav" hidden', html)
         self.assertEqual(html.count('id="view-ranking"'), 1)
         self.assertEqual(html.count('id="rankingTodayRows"'), 1)
+        self.assertEqual(html.count('id="practiceTimer"'), 1)
+        self.assertIn("Tempo de implementação", html)
+        self.assertIn("faUpdatePracticeTimer()", html)
         self.assertNotIn('id="dailyRankingPanel"', html)
         self.assertNotIn('id="dailyRankingDate"', html)
         self.assertIn("document.getElementById('rankingNav').hidden=false", html)

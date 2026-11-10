@@ -56,6 +56,14 @@ class Award(db.Model):
     exercise = db.Column(db.Integer, nullable=False)
     __table_args__ = (UniqueConstraint('student_id', 'framework', 'exercise', name='uq_student_exercise'),)
 
+class PracticeRun(db.Model):
+    """Uma rodada de prática por identificação; tabela nova, sem alterar as existentes."""
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False, index=True)
+    started_at = db.Column(db.DateTime(timezone=True), nullable=False, index=True)
+    last_approved_at = db.Column(db.DateTime(timezone=True), nullable=True, index=True)
+    ended_at = db.Column(db.DateTime(timezone=True), nullable=True)
+
 class StudentAccess(db.Model):
     """Registro de abertura do laboratório. Horários UTC; a interface converte para Fortaleza."""
     id = db.Column(db.Integer, primary_key=True)
@@ -74,6 +82,29 @@ def iso_utc(value):
     if value.tzinfo is None:
         value = value.replace(tzinfo=timezone.utc)
     return value.astimezone(timezone.utc).isoformat()
+
+def ensure_practice_run(student_id):
+    """Recupera a rodada da sessão ou cria uma para sessões anteriores ao recurso."""
+    run_id = session.get('practice_run_record_id')
+    run = db.session.get(PracticeRun, run_id) if isinstance(run_id, int) else None
+    if run and run.student_id == student_id and run.ended_at is None:
+        return run
+    started_iso = session.get('practice_started_at')
+    started = datetime.fromisoformat(started_iso) if started_iso else datetime.now(timezone.utc)
+    if started.tzinfo is None:
+        started = started.replace(tzinfo=timezone.utc)
+    run = PracticeRun(student_id=student_id, started_at=started)
+    db.session.add(run)
+    db.session.commit()
+    session['practice_run_record_id'] = run.id
+    session['practice_started_at'] = iso_utc(started)
+    return run
+
+def duration_clock(seconds):
+    seconds = max(0, int(seconds))
+    hours, remainder = divmod(seconds, 3600)
+    minutes, secs = divmod(remainder, 60)
+    return f'{hours:02d}:{minutes:02d}:{secs:02d}'
 
 class Inspector(HTMLParser):
     def __init__(self):
@@ -236,6 +267,8 @@ def register():
     session.pop('teacher', None)
     session['student_id']=student.id
     session['practice_started_at']=datetime.now(timezone.utc).isoformat()
+    session.pop('practice_run_record_id', None)
+    ensure_practice_run(student.id)
     register_student_access(student.id)
     return jsonify(student={'name':student.name,'enrollment':student.enrollment,'course':student.course}, progress=progress_of(student.id))
 
@@ -253,13 +286,19 @@ def progress_of(student_id):
                .distinct().all())
     return {'points':len(completed),
             'completed':[{'framework':fw,'exercise':exercise} for fw,exercise in completed],
-            'run_id':started_iso}
+            'run_id':started_iso, 'timer_started_at':started_iso}
 
 @app.post('/api/student/logout')
 @student_only
 def student_logout():
     # Encerra somente a identificação do aluno. Os resultados permanecem no banco.
-    session.pop('student_id', None)
+    student_id = session.pop('student_id', None)
+    run_id = session.pop('practice_run_record_id', None)
+    if isinstance(run_id, int):
+        run = db.session.get(PracticeRun, run_id)
+        if run and run.student_id == student_id and run.ended_at is None:
+            run.ended_at = datetime.now(timezone.utc)
+            db.session.commit()
     session.pop('practice_started_at', None)
     return jsonify(ok=True)
 
@@ -270,6 +309,7 @@ def me():
     if not student:return jsonify(error='Aluno não encontrado.'),404
     if not session.get('practice_started_at'):
         session['practice_started_at']=datetime.now(timezone.utc).isoformat()
+    ensure_practice_run(student.id)
     register_student_access(student.id)
     return jsonify(student={'name':student.name,'enrollment':student.enrollment,'course':student.course},progress=progress_of(student.id))
 
@@ -282,8 +322,12 @@ def submit():
         return jsonify(error='Dados do exercício inválidos.'),400
     passed,missing,criteria=check_submission(code,fw,ex,variant,return_details=True)
     feedback='Concluído' if passed else 'Pendências: '+', '.join(missing)
-    obj=Submission(student_id=session['student_id'],framework=fw,exercise=ex,variant=variant,code=code,passed=passed,score=1 if passed else 0,feedback=feedback)
+    run=ensure_practice_run(session['student_id'])
+    submitted_now=datetime.now(timezone.utc)
+    obj=Submission(student_id=session['student_id'],framework=fw,exercise=ex,variant=variant,code=code,passed=passed,score=1 if passed else 0,feedback=feedback,submitted_at=submitted_now)
     db.session.add(obj)
+    if passed:
+        run.last_approved_at=submitted_now
     if passed and not Award.query.filter_by(student_id=session['student_id'],framework=fw,exercise=ex).first():
         db.session.add(Award(student_id=session['student_id'],framework=fw,exercise=ex))
     db.session.commit()
@@ -342,8 +386,24 @@ def student_daily_ranking():
     for student_id, _framework, _exercise in approved:
         scores[student_id] = scores.get(student_id, 0) + 1
 
+    # Tempo de execução = início da rodada até a última resposta aprovada do dia,
+    # somando rodadas distintas, com corte no início e no fim do dia de Fortaleza.
+    elapsed = {}
+    runs = (PracticeRun.query.filter(PracticeRun.student_id.in_(list(scores)),
+                                     PracticeRun.last_approved_at >= beginning,
+                                     PracticeRun.last_approved_at < ending).all()
+            if scores else [])
+    for run in runs:
+        started = run.started_at.replace(tzinfo=timezone.utc) if run.started_at.tzinfo is None else run.started_at
+        approved_at = (run.last_approved_at.replace(tzinfo=timezone.utc)
+                       if run.last_approved_at.tzinfo is None else run.last_approved_at)
+        seconds = max(0, int((min(approved_at, ending) - max(started, beginning)).total_seconds()))
+        elapsed[run.student_id] = elapsed.get(run.student_id, 0) + seconds
+
     students = Student.query.filter(Student.id.in_(scores.keys())).all() if scores else []
-    students.sort(key=lambda student: (-scores[student.id], student.name.casefold(), student.id))
+    students.sort(key=lambda student: (-scores[student.id],
+                                        elapsed.get(student.id, float('inf')),
+                                        student.name.casefold(), student.id))
     entries = []
     position = 0
     last_score = None
@@ -352,7 +412,10 @@ def student_daily_ranking():
         if points != last_score:
             position = index
         entries.append({'position': position, 'student_id': student.id,
-                        'name': student.name, 'course': student.course, 'points': points})
+                        'name': student.name, 'course': student.course, 'points': points,
+                        'duration_seconds': elapsed.get(student.id),
+                        'duration': duration_clock(elapsed[student.id])
+                                    if student.id in elapsed else '—'})
         last_score = points
     return jsonify(date=day.isoformat(), timezone='America/Fortaleza', ranking=entries)
 
