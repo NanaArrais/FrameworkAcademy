@@ -2070,6 +2070,53 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',async()
     }
   });
   window.__faCodeMirror = cm;
+  // Sugestões reais da biblioteca do framework ativo, apenas dentro de class="...".
+  // Sem IA nem inserção automática de soluções: o estudante escolhe a classe.
+  const faCommonClassSuggestions={
+    materialize:['container','section','row','col','s12','m6','m4','l4','btn','btn-small','btn-large','btn-flat','waves-effect','waves-light','card','card-panel','card-content','card-title','nav-wrapper','sidenav','sidenav-trigger','input-field','responsive-img','material-icons','center-align','valign-wrapper','z-depth-1','z-depth-2','collection','collection-item','striped','highlight','red','blue','green','white-text','blue-text','hide-on-small-only'],
+    bootstrap:['container','container-fluid','row','col','col-12','col-md-6','col-md-4','d-flex','d-grid','justify-content-center','align-items-center','gap-2','gap-3','btn','btn-primary','btn-secondary','btn-success','btn-outline-primary','card','card-body','card-title','navbar','navbar-expand-lg','navbar-brand','navbar-toggler','nav','nav-item','nav-link','form-control','form-label','alert','alert-success','table','table-striped','img-fluid','text-center','text-white','bg-primary','bg-light','p-3','mt-3'],
+    tailwind:['container','mx-auto','flex','inline-flex','grid','grid-cols-1','grid-cols-2','md:grid-cols-3','items-center','justify-center','justify-between','gap-2','gap-4','gap-6','p-2','p-4','p-6','px-4','py-2','mt-4','mb-4','rounded','rounded-lg','shadow','shadow-md','border','bg-blue-500','bg-red-500','bg-green-500','bg-white','text-white','text-gray-700','text-xl','text-2xl','font-bold','font-medium','w-full','max-w-screen-lg','hover:bg-blue-600','sm:flex','md:flex','lg:grid']
+  };
+  function faFrameworkSuggestionValues(){
+    const framework=typeof lessonFW==='string'?lessonFW:'materialize';
+    const values=new Set(faCommonClassSuggestions[framework]||[]);
+    for(const fn of [guideColors,guideType,guideSpacing]){
+      const sections=fn().groups||[];
+      for(const group of sections){
+        for(const item of (group.items||group.codes||[])){
+          const code=String(item.code??item[0]??'');
+          const description=String(item.desc??item[1]??'');
+          // Excluir exemplos CSS, rótulos e elementos HTML não pertencentes a classes.
+          if(/CSS personalizado|não é classe|Elemento HTML|Fonte padrão/.test(description))continue;
+          if(!/^[a-zA-Z0-9:_-]+(?: [a-zA-Z0-9:_-]+)*$/.test(code))continue;
+          for(const token of code.split(/\s+/))if(token)values.add(token);
+        }
+      }
+    }
+    return [...values];
+  }
+  window.faFrameworkSuggestionValues=faFrameworkSuggestionValues;
+  function faClassCompletion(editor){
+    const pos=editor.getCursor(),line=editor.getLine(pos.line),before=line.slice(0,pos.ch);
+    // Somente classes HTML, inclusive após múltiplas classes no atributo.
+    if(!/\bclass\s*=\s*["'][^"'<>]*$/i.test(before))return null;
+    const match=before.match(/[a-zA-Z0-9:_-]*$/);
+    const prefix=match?match[0]:'';
+    const start=pos.ch-prefix.length;
+    if(!prefix.length)return null;
+    const choices=faFrameworkSuggestionValues().filter(value=>value.toLowerCase().startsWith(prefix.toLowerCase())&&value!==prefix);
+    if(!choices.length)return null;
+    return {list:choices.slice(0,60),from:window.CodeMirror.Pos(pos.line,start),to:pos};
+  }
+  window.faClassCompletion=faClassCompletion;
+  function faShowFrameworkHints(editor){
+    if(typeof editor.showHint!=='function'||editor.state.completionActive)return;
+    const options=faClassCompletion(editor);
+    if(!options)return;
+    editor.showHint({hint:()=>options,completeSingle:false,alignWithWord:true,closeOnUnfocus:true});
+  }
+  cm.addKeyMap({'Ctrl-Space':faShowFrameworkHints,'Cmd-Space':faShowFrameworkHints});
+
   // Bloqueia a via alternativa de colagem do CodeMirror que não emite evento DOM.
   // Inserções internas feitas por replaceSelection usam origem +input e permanecem válidas.
   cm.on('beforeChange',function(editor,change){
@@ -2085,6 +2132,10 @@ document.querySelector('[data-view="teacher"]').addEventListener('click',async()
     editor.save();
     if(!syncingLesson && change.origin!=='setValue')faHandleFirstRealEdit();
     if (!syncingLesson) original.dispatchEvent(new Event('input', { bubbles: true }));
+    if(!syncingLesson && change.origin==='+input' && change.text.join('').length<30){
+      // Sugestões somente depois de uma digitação, sem aparecer ao trocar questão.
+      faShowFrameworkHints(editor);
+    }
   });
   if (typeof renderLesson === 'function') {
     const oldRender = renderLesson;
