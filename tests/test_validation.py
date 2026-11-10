@@ -28,7 +28,9 @@ def solution(index, framework, variant="top"):
                 '<aside id="painel" class="sidenav"><a href="#cursos">Cursos</a></aside>')
     else:
         parts = [
-            '<nav><a href="#inicio">Portal Acadêmico Digital</a><a href="#cursos">Cursos</a></nav>',
+            '<nav><a href="#inicio">Portal Acadêmico Digital</a>'
+            '<button type="button" aria-controls="menu-academia">Abrir menu</button>'
+            '<div id="menu-academia"><a href="#cursos">Cursos</a></div></nav>',
             f'<section class="{bg}"><h4>Portal de Aprendizagem</h4></section>',
             ('<div class="row grid md:grid-cols-3">'
              + ''.join(f'<div class="{responsive}"><div class="card">Curso {n}</div></div>' for n in range(3))
@@ -75,6 +77,13 @@ class ValidationTests(unittest.TestCase):
                     self.assertEqual(passed, not missing)
                     self.assertTrue(criteria)
                     self.assertTrue(all(c["ok"] for c in criteria), str(criteria))
+
+    def test_navigation_requires_mobile_toggle_and_linked_target(self):
+        html='<html><body><nav><a href="#inicio">Portal de cursos</a></nav></body></html>'
+        passed, missing=check_submission(html,"bootstrap",0,"top")
+        self.assertFalse(passed)
+        self.assertIn("Criar botão de abertura do menu",missing)
+        self.assertIn("Associar botão à área do menu",missing)
 
     def test_form_rejects_missing_email(self):
         invalid = ('<form><input type="text"><input type="text">'
