@@ -72,10 +72,18 @@ with sync_playwright() as p:
     expect(page.locator("#rankingNav")).to_be_visible()
     page.locator("#rankingNav").click()
     expect(page.locator("#view-ranking")).to_be_visible()
-    expect(page.locator("#view-ranking th")).to_contain_text(["Posição","Aluno","Curso","Pontos de hoje","Tempo de implementação"])
-
-    expect(page.locator("#rankingTodayMessage")).to_contain_text("hoje", timeout=15000)
-    assert page.locator("#view-ranking input[type=date]").count() == 0
+    expect(page.locator("#view-ranking th")).to_contain_text(["Posição","Aluno","Curso","Pontos do dia","Tempo de implementação"])
+    picker=page.locator("#rankingSelectDate")
+    expect(picker).to_be_visible()
+    current_date=picker.get_attribute("max")
+    assert current_date and len(current_date)==10
+    expect(picker).to_have_value(current_date)
+    expect(page.locator("#rankingTodayMessage")).to_contain_text("Nenhuma questão aprovada", timeout=15000)
+    page.evaluate("() => { const el=document.getElementById('rankingSelectDate'); const d=new Date(el.max+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-1);el.value=d.toISOString().slice(0,10);el.dispatchEvent(new Event('change',{bubbles:true}));}")
+    expect(page.locator("#rankingPeriodTitle")).to_contain_text("Classificação de",timeout=15000)
+    page.locator("#rankingGoToday").click()
+    expect(picker).to_have_value(current_date)
+    expect(page.locator("#rankingTodayDate")).to_contain_text(current_date.split("-")[2]+"/"+current_date.split("-")[1],timeout=15000)
     page.locator('button[data-view="practice"]').first.click()
     expect(page.locator("#studentPracticeBody")).to_be_visible()
 
