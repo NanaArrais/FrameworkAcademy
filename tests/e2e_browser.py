@@ -211,6 +211,45 @@ with sync_playwright() as p:
     expect(page.locator("#rankingNav")).to_be_visible()
     expect(page.locator("#practiceDone")).to_have_text("0/42")
 
+    # F5 deve manter aba, framework, questão e rascunho da rodada atual.
+    page.locator('[data-framework-choice="bootstrap"]').click()
+    page.locator('[data-lesson="4"]').click()
+    expect(page.locator("#lessonTitle")).to_have_text("Cards de conteúdo")
+    page.evaluate("""() => {
+      window.__faCodeMirror.setValue('<!DOCTYPE html><html><body><article class="card"><h3>Rascunho mantido</h3></article></body></html>');
+      window.__faCodeMirror.save();
+      document.getElementById('lessonCode').dispatchEvent(new Event('input',{bubbles:true}));
+    }""")
+    page.reload(wait_until="domcontentloaded")
+    expect(page.locator("#view-practice")).to_be_visible()
+    expect(page.locator("#studentPracticeBody")).to_be_visible(timeout=15000)
+    expect(page.locator("#lessonTitle")).to_have_text("Cards de conteúdo",timeout=15000)
+    expect(page.locator("#lessonFramework")).to_have_value("bootstrap")
+    expect(page.locator("#lessonCode")).to_have_value("Rascunho mantido" if False else __import__('re').compile("Rascunho mantido"))
+    expect(page.locator("#practiceDone")).to_have_text("0/42")
+    # Ranking com uma data histórica deve ficar na mesma aba e mesma data após F5.
+    page.locator("#rankingNav").click()
+    expect(page.locator("#view-ranking")).to_be_visible()
+    page.evaluate("""() => {
+      const el=document.getElementById('rankingSelectDate');
+      const d=new Date(el.max+'T12:00:00Z');
+      d.setUTCDate(d.getUTCDate()-1);
+      el.value=d.toISOString().slice(0,10);
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+    }""")
+    past_date=page.locator("#rankingSelectDate").input_value()
+    page.reload(wait_until="domcontentloaded")
+    expect(page.locator("#view-ranking")).to_be_visible()
+    expect(page.locator("#rankingSelectDate")).to_have_value(past_date)
+    # O painel do professor também deve permanecer na mesma aba após recarga.
+    page.locator('button[data-view="teacher"]').first.click()
+    expect(page.locator("#view-teacher")).to_be_visible()
+    page.reload(wait_until="domcontentloaded")
+    expect(page.locator("#view-teacher")).to_be_visible()
+    page.locator('button[data-view="practice"]').first.click()
+    expect(page.locator("#studentPracticeBody")).to_be_visible(timeout=15000)
+    expect(page.locator("#lessonTitle")).to_have_text("Cards de conteúdo")
+
     # Avaliação real na interface: 42 questões, não apenas abertura/navegação.
     # Cada questão recebe primeiro uma entrada vazia (0 ponto), depois uma
     # solução independente (1 ponto), verificando feedback e contador.

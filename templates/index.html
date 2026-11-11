@@ -785,7 +785,10 @@ function transact(fn){let s=cur();history[mode].past.push(structuredClone(s));if
 function undo(){const h=history[mode];if(!h.past.length)return notify('Não há alterações para desfazer.');h.future.push(structuredClone(cur()));states[mode]=h.past.pop();lastValidation=null;render()}
 function redo(){const h=history[mode];if(!h.future.length)return notify('Não há alterações para refazer.');h.past.push(structuredClone(cur()));states[mode]=h.future.pop();lastValidation=null;render()}
 function notify(message,kind='info'){const t=$('#toast');t.textContent=message;t.classList.toggle('toast-warning',kind==='warning');t.classList.remove('hidden');clearTimeout(notify.timeout);notify.timeout=setTimeout(()=>{t.classList.add('hidden');t.classList.remove('toast-warning')},4700)}
-function setView(v){activeView=v;mode=v==='practice'?'practice':'create';$$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));$$('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='practice')renderChallenge();if(v!=='learn')render()}
+function setView(v){
+ if(!['learn','practice','ranking','teacher'].includes(v))return;
+ try{sessionStorage.setItem('fa_last_active_view_v1',v)}catch(e){}
+ activeView=v;mode=v==='practice'?'practice':'create';$$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));$$('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='practice')renderChallenge();if(v!=='learn')render()}
 $$('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
 function addBlock(type,at){transact(s=>{let block=createBlock(type);s.blocks.splice(at===undefined?s.blocks.length:at,0,block);s.selected=block.id;})}
 function removeBlock(id){transact(s=>{s.blocks=s.blocks.filter(b=>b.id!==id);s.selected=null})}
@@ -979,7 +982,19 @@ let faCurrentPracticeRunId='';
 let faPracticeDay='';
 function faDraftStorageKey(){return 'fa_drafts_v20:'+(loggedStudent?.enrollment||'guest')+':'+faPracticeDay+':'+faCurrentPracticeRunId}
 function faSaveDraftState(){try{localStorage.setItem(faDraftStorageKey(),JSON.stringify({drafts:lessonDrafts,selected:{exercise:lessonIdx,framework:lessonFW,variant:lessonNavVariant},savedAt:new Date().toISOString()}))}catch(e){console.warn('Armazenamento local indisponível:',e)}}
-function faLoadDraftState(){try{const data=JSON.parse(localStorage.getItem(faDraftStorageKey())||'null');if(!data)return;Object.assign(lessonDrafts,data.drafts||{});if(data.selected&&Number.isInteger(data.selected.exercise)&&data.selected.exercise>=0&&data.selected.exercise<lessonCatalog.length){lessonIdx=data.selected.exercise;lessonFW=['bootstrap','tailwind','materialize'].includes(data.selected.framework)?data.selected.framework:'bootstrap';lessonNavVariant=data.selected.variant==='side'?'side':'top'}}catch(e){console.warn('Falha ao restaurar rascunhos:',e)}}
+function faLoadDraftState(){
+ try{
+  const data=JSON.parse(localStorage.getItem(faDraftStorageKey())||'null');
+  if(!data)return false;
+  Object.assign(lessonDrafts,data.drafts||{});
+  if(data.selected&&Number.isInteger(data.selected.exercise)&&data.selected.exercise>=0&&data.selected.exercise<lessonCatalog.length){
+   lessonIdx=data.selected.exercise;
+   lessonFW=['bootstrap','tailwind','materialize'].includes(data.selected.framework)?data.selected.framework:'materialize';
+   lessonNavVariant=data.selected.variant==='side'?'side':'top';
+  }
+  return true;
+ }catch(e){console.warn('Falha ao restaurar rascunhos:',e);return false}
+}
 function saveLessonDraft(){let ed=$('#lessonCode');if(ed){lessonDrafts[lessonDraftKey()]=ed.value;faSaveDraftState()}}
 function faUnlockedExercise(framework){for(let i=0;i<lessonCatalog.length;i++){if(!solvedLessons.has(framework+'|'+i))return i}return lessonCatalog.length-1}
 function faCanOpenExercise(index){return index<=faUnlockedExercise(lessonFW)||solvedLessons.has(lessonFW+'|'+index)}
@@ -1719,6 +1734,7 @@ function refreshRegisteredProgress(progress){
  if(list?.children.length)renderLessonListOnly();
 }
 let faPracticeStarted=false;
+try{faPracticeStarted=sessionStorage.getItem('fa_practice_started_v1')==='yes'}catch(e){}
 let faWelcomeFramework='materialize';
 function faSelectWelcomeFramework(fw){
  if(!frameworks.includes(fw))return;
@@ -1732,6 +1748,7 @@ function faSelectWelcomeFramework(fw){
 document.querySelectorAll('[data-welcome-framework]').forEach(button=>button.addEventListener('click',()=>faSelectWelcomeFramework(button.dataset.welcomeFramework)));
 $('#practiceWelcomeStart').addEventListener('click',()=>{
  faPracticeStarted=true;
+ try{sessionStorage.setItem('fa_practice_started_v1','yes')}catch(e){}
  lessonFW=faWelcomeFramework;
  $('#practiceWelcome').hidden=true;
  if(loggedStudent){
@@ -1754,7 +1771,10 @@ function faRankingCurrentDay(){
 function faRankingDatePicker(){
  const picker=document.getElementById('rankingSelectDate'),today=faRankingCurrentDay();
  picker.max=today;
- if(!picker.value||picker.value>today)picker.value=today;
+ let saved='';
+ try{saved=sessionStorage.getItem('fa_ranking_selected_date_v1')||''}catch(e){}
+ if(!picker.value)picker.value=(/^\d{4}-\d{2}-\d{2}$/.test(saved)&&saved<=today)?saved:today;
+ if(picker.value>today)picker.value=today;
  return picker;
 }
 async function loadStudentRanking(){
@@ -1784,9 +1804,14 @@ async function loadStudentRanking(){
  }
 }
 document.getElementById('rankingNav').addEventListener('click',loadStudentRanking);
-document.getElementById('rankingSelectDate').addEventListener('change',loadStudentRanking);
+document.getElementById('rankingSelectDate').addEventListener('change',()=>{
+ try{sessionStorage.setItem('fa_ranking_selected_date_v1',document.getElementById('rankingSelectDate').value)}catch(e){}
+ loadStudentRanking();
+});
 document.getElementById('rankingGoToday').addEventListener('click',()=>{
- document.getElementById('rankingSelectDate').value=faRankingCurrentDay();
+ const today=faRankingCurrentDay();
+ document.getElementById('rankingSelectDate').value=today;
+ try{sessionStorage.setItem('fa_ranking_selected_date_v1',today)}catch(e){}
  loadStudentRanking();
 });
 document.getElementById('rankingRefresh').addEventListener('click',loadStudentRanking);
@@ -1834,11 +1859,11 @@ function enterPractice(student,progress){
  document.getElementById('studentAvatar').textContent=student.name.trim().charAt(0).toLocaleUpperCase('pt-BR');
  document.getElementById('studentGate').hidden=true;
  refreshRegisteredProgress(progress);
- faLoadDraftState();
- lessonFW=faWelcomeFramework;
+ if(!faLoadDraftState())lessonFW=faWelcomeFramework;
  document.getElementById('practiceWelcome').hidden=faPracticeStarted;
  document.getElementById('studentPracticeBody').hidden=!faPracticeStarted;
  if(faPracticeStarted)renderLesson();
+ if(activeView==='ranking')loadStudentRanking();
 }
 // A edição não encerra a rodada nem altera a matrícula, a pontuação ou os rascunhos.
 document.getElementById('studentEditProfile').onclick=()=>{
@@ -1888,7 +1913,15 @@ document.getElementById('studentRegisterForm').addEventListener('submit',async e
  try{const result=await api('/api/student/register',{method:'POST',body:JSON.stringify({name:document.getElementById('registerName').value,enrollment:document.getElementById('registerEnrollment').value,course:document.getElementById('registerCourse').value})});enterPractice(result.student,result.progress)}
  catch(err){message.textContent=err.message}
 });
-api('/api/student/me').then(r=>enterPractice(r.student,r.progress)).catch(()=>{});
+api('/api/student/me').then(r=>enterPractice(r.student,r.progress)).catch(()=>{
+ // Não mostrar um ranking restrito a alunos quando a sessão deixou de existir.
+ if(activeView==='ranking'){setView('practice');}
+ if(activeView==='practice'&&faPracticeStarted){
+  document.getElementById('practiceWelcome').hidden=true;
+  document.getElementById('studentGate').hidden=false;
+  document.getElementById('studentPracticeBody').hidden=true;
+ }
+});
 // A troca de aluno encerra a sessão no servidor e recarrega a aplicação,
  // limpando estado em memória (respostas, editor e pontuação do usuário anterior).
 async function faSwitchStudent(){
@@ -1910,6 +1943,18 @@ if(new URLSearchParams(window.location.search).get('trocar-aluno')==='1'){
  window.history.replaceState(null,'','/');
  setView('practice');
  document.getElementById('practiceWelcomeStart').click();
+}else{
+ // Mantém a aba da guia atual após F5, sem compartilhar essa navegação com outras guias.
+ let restored=null;
+ try{restored=sessionStorage.getItem('fa_last_active_view_v1')}catch(e){}
+ if(['learn','practice','ranking','teacher'].includes(restored)){
+  setView(restored);
+  if(restored==='practice'&&faPracticeStarted){
+   document.getElementById('practiceWelcome').hidden=true;
+   document.getElementById('studentGate').hidden=false;
+   document.getElementById('studentPracticeBody').hidden=true;
+  }
+ }
 }
 
 // Após a correção local, validar novamente no servidor para evitar pontos locais fictícios.
