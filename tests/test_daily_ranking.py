@@ -57,12 +57,31 @@ class DailyRankingTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_json()["date"], self.day.isoformat())
 
-    def test_only_today_even_when_date_query_is_supplied(self):
+    def test_current_day_by_default_and_past_date_filter(self):
         self.login_student()
-        response = self.client.get("/api/ranking/today?date=2020-01-01")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.get_json()["date"], self.day.isoformat())
-        self.assertEqual(response.get_json()["timezone"], "America/Fortaleza")
+        current = self.client.get("/api/ranking/today")
+        self.assertEqual(current.status_code, 200)
+        self.assertEqual(current.get_json()["date"], self.day.isoformat())
+        self.assertEqual(current.get_json()["timezone"], "America/Fortaleza")
+        previous = self.day - timedelta(days=1)
+        stamp = datetime.combine(previous, time(10, 0), tzinfo=ZoneInfo("America/Fortaleza")).astimezone(timezone.utc)
+        self.add_submission(0, "materialize", 1, stamp)
+        self.add_submission(0, "materialize", 1, stamp+timedelta(minutes=2))
+        self.add_submission(1, "bootstrap", 3, stamp)
+        old = self.client.get("/api/ranking/today?date="+previous.isoformat())
+        self.assertEqual(old.status_code, 200)
+        self.assertEqual(old.get_json()["date"], previous.isoformat())
+        self.assertEqual([row["points"] for row in old.get_json()["ranking"]], [1,1])
+        self.assertEqual(len(old.get_json()["ranking"]), 2)
+        self.assertEqual(self.client.get("/api/ranking/today").get_json()["ranking"], [])
+
+    def test_invalid_or_future_date_rejected(self):
+        self.login_student()
+        future = self.day + timedelta(days=1)
+        for value in ("2026-02-30","11-10-2026","2026-1-01",future.isoformat(),"not-a-date"):
+            with self.subTest(date=value):
+                response=self.client.get("/api/ranking/today?date="+value)
+                self.assertEqual(response.status_code,400)
 
     def test_fortaleza_midnight_duplicates_and_failed_attempts(self):
         start = datetime.combine(self.day, time.min, tzinfo=ZoneInfo("America/Fortaleza")).astimezone(timezone.utc)
@@ -181,7 +200,7 @@ class DailyRankingTests(unittest.TestCase):
         self.assertIn("fa_drafts_v20:", html)
         self.assertIn("faPracticeDay=progress.practice_day||''", html)
 
-    def test_ranking_is_own_menu_tab_without_history_picker(self):
+    def test_ranking_is_own_menu_tab_with_history_picker(self):
         html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
         self.assertEqual(html.count('id="rankingNav"'), 1)
         self.assertIn('data-view="ranking" id="rankingNav" hidden', html)
@@ -192,6 +211,9 @@ class DailyRankingTests(unittest.TestCase):
         self.assertIn("faUpdatePracticeTimer()", html)
         self.assertNotIn('id="dailyRankingPanel"', html)
         self.assertNotIn('id="dailyRankingDate"', html)
+        self.assertIn('id="rankingSelectDate" type="date"',html)
+        self.assertIn('id="rankingGoToday"',html)
+        self.assertIn("api('/api/ranking/today?date='+encodeURIComponent(day))",html)
         self.assertIn("document.getElementById('rankingNav').hidden=false", html)
         self.assertIn("document.getElementById('rankingNav').addEventListener('click',loadStudentRanking)", html)
         self.assertTrue(html.index('id="view-ranking"') < html.index('id="view-teacher"'))
