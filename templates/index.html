@@ -1771,7 +1771,10 @@ function faRankingCurrentDay(){
 function faRankingDatePicker(){
  const picker=document.getElementById('rankingSelectDate'),today=faRankingCurrentDay();
  picker.max=today;
- if(!picker.value||picker.value>today)picker.value=today;
+ let saved='';
+ try{saved=sessionStorage.getItem('fa_ranking_selected_date_v1')||''}catch(e){}
+ if(!picker.value)picker.value=(/^\d{4}-\d{2}-\d{2}$/.test(saved)&&saved<=today)?saved:today;
+ if(picker.value>today)picker.value=today;
  return picker;
 }
 async function loadStudentRanking(){
@@ -1801,9 +1804,14 @@ async function loadStudentRanking(){
  }
 }
 document.getElementById('rankingNav').addEventListener('click',loadStudentRanking);
-document.getElementById('rankingSelectDate').addEventListener('change',loadStudentRanking);
+document.getElementById('rankingSelectDate').addEventListener('change',()=>{
+ try{sessionStorage.setItem('fa_ranking_selected_date_v1',document.getElementById('rankingSelectDate').value)}catch(e){}
+ loadStudentRanking();
+});
 document.getElementById('rankingGoToday').addEventListener('click',()=>{
- document.getElementById('rankingSelectDate').value=faRankingCurrentDay();
+ const today=faRankingCurrentDay();
+ document.getElementById('rankingSelectDate').value=today;
+ try{sessionStorage.setItem('fa_ranking_selected_date_v1',today)}catch(e){}
  loadStudentRanking();
 });
 document.getElementById('rankingRefresh').addEventListener('click',loadStudentRanking);
