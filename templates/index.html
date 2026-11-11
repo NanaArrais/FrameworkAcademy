@@ -589,6 +589,12 @@ body{background:var(--bg)}
 #studentPracticeBody .fa-profile-edit input[readonly]{background:#f5f5f8;color:#73738a}
 #studentPracticeBody .fa-profile-edit small{font-size:11px;color:#697087}
 #studentPracticeBody .fa-profile-edit p{font-size:12px;margin:0}
+</style><style>
+#view-ranking .fa-ranking-date-actions{display:flex;align-items:end;gap:8px;flex-wrap:wrap}
+#view-ranking .fa-ranking-date-actions label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#60657a;font-weight:700}
+#view-ranking .fa-ranking-date-actions input{min-width:150px;height:36px;padding:6px 10px;background:#fff;color:#2b2a40;border:1px solid #d8d5e5;border-radius:8px}
+#view-ranking .fa-ranking-date-actions button{height:36px}
+@media(max-width:680px){ #view-ranking .fa-ranking-date-actions{width:100%}#view-ranking .fa-ranking-date-actions label{flex:1}}
 </style></head>
 <body>
 <header class="top"><div class="brand"><span class="brand-mark">&lt;/&gt;</span><div><b>Framework Academy</b><small>Laboratório de front-end</small></div></div><nav class="topnav" aria-label="Navegação principal"><button data-view="learn" class="active">Aprender</button><button data-view="practice">Praticar</button><button data-view="ranking" id="rankingNav" hidden>Ranking diário</button><button data-view="teacher">Resultados da turma</button></nav><div class="headright"><span class="head-credit">Ana Arrais · 2026</span><div id="studentSessionMenu" class="student-session" hidden><span id="sessionStudentName" class="session-student-name"></span><button id="studentLogoutHeader" type="button" class="session-signout" aria-label="Sair e trocar de aluno">Sair da conta</button></div></div></header>
@@ -711,12 +717,12 @@ body{background:var(--bg)}
 </div></div></section>
 <section id="view-ranking" class="view">
   <div class="teacher-page">
-    <div class="teacher-heading"><div><span class="pill">CLASSIFICAÇÃO DOS ALUNOS</span><h1>🏆 Ranking diário</h1><p>Confira a pontuação obtida hoje. Cada questão aprovada vale 1 ponto por dia; repetir a mesma questão no mesmo dia não soma novamente.</p></div></div>
+    <div class="teacher-heading"><div><span class="pill">CLASSIFICAÇÃO DOS ALUNOS</span><h1>🏆 Ranking diário</h1><p>Consulte a classificação do dia atual ou de aulas anteriores. Cada questão aprovada vale 1 ponto por dia; tentativas repetidas não somam novamente.</p></div></div>
     <div class="panel" style="padding:20px">
-      <div class="teacher-results-heading"><div><strong>Classificação de hoje</strong><span id="rankingTodayDate">Horário de Fortaleza (UTC−3)</span></div><button type="button" class="btn" id="rankingRefresh">Atualizar ranking</button></div>
+      <div class="teacher-results-heading"><div><strong id="rankingPeriodTitle">Classificação de hoje</strong><span id="rankingTodayDate">Horário de Fortaleza (UTC−3)</span></div><div class="fa-ranking-date-actions"><label for="rankingSelectDate">Consultar data <input id="rankingSelectDate" type="date" aria-label="Data da classificação"></label><button type="button" class="btn" id="rankingGoToday">Hoje</button><button type="button" class="btn" id="rankingRefresh">Atualizar ranking</button></div></div>
       <p id="rankingTodayMessage" class="muted" role="status" aria-live="polite">Carregando classificação…</p>
-      <div class="teacher-table-wrap" role="region" aria-label="Ranking do dia corrente" tabindex="0">
-        <table class="teacher-table" style="min-width:550px"><thead><tr><th>Posição</th><th>Aluno</th><th>Curso</th><th>Pontos de hoje</th><th>Tempo de implementação</th></tr></thead><tbody id="rankingTodayRows"></tbody></table>
+      <div class="teacher-table-wrap" role="region" aria-label="Ranking da data selecionada" tabindex="0">
+        <table class="teacher-table" style="min-width:550px"><thead><tr><th>Posição</th><th>Aluno</th><th>Curso</th><th>Pontos do dia</th><th>Tempo de implementação</th></tr></thead><tbody id="rankingTodayRows"></tbody></table>
       </div>
     </div>
   </div>
@@ -1739,25 +1745,50 @@ $('#practiceWelcomeStart').addEventListener('click',()=>{
  }
 });
 let studentRankingRequest=0;
+function faRankingCurrentDay(){
+ const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Fortaleza',
+  year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+ const values=Object.fromEntries(parts.map(part=>[part.type,part.value]));
+ return values.year+'-'+values.month+'-'+values.day;
+}
+function faRankingDatePicker(){
+ const picker=document.getElementById('rankingSelectDate'),today=faRankingCurrentDay();
+ picker.max=today;
+ if(!picker.value||picker.value>today)picker.value=today;
+ return picker;
+}
 async function loadStudentRanking(){
  const message=document.getElementById('rankingTodayMessage');
  const rows=document.getElementById('rankingTodayRows');
+ const picker=faRankingDatePicker(),day=picker.value;
+ const today=faRankingCurrentDay();
  const requestNumber=++studentRankingRequest;
- message.textContent='Consultando a classificação de hoje…';
+ if(!day||day>today){
+  message.textContent='Selecione uma data válida até hoje.';
+  return;
+ }
+ message.textContent='Consultando a classificação de '+day.split('-').reverse().join('/')+'…';
  try{
-  const data=await api('/api/ranking/today');
+  const data=await api('/api/ranking/today?date='+encodeURIComponent(day));
   if(requestNumber!==studentRankingRequest)return;
   const date=data.date.split('-').reverse().join('/');
+  const isToday=data.date===faRankingCurrentDay();
+  document.getElementById('rankingPeriodTitle').textContent=isToday?'Classificação de hoje':'Classificação de '+date;
   document.getElementById('rankingTodayDate').textContent=date+' · Fortaleza (UTC−3)';
-  rows.innerHTML=(data.ranking||[]).map(item=>'<tr><td>'+item.position+'º</td><td>'+esc(item.name)+'</td><td>'+esc(item.course)+'</td><td><strong>'+item.points+'</strong></td><td><strong>'+esc(item.duration||'00:00:00')+'</strong></td></tr>').join('');
-  message.textContent=data.ranking.length?data.ranking.length+' aluno(s) pontuaram hoje.':'Ainda não há questões aprovadas hoje.';
+  rows.innerHTML=(data.ranking||[]).map(item=>'<tr><td>'+item.position+'º</td><td>'+esc(item.name)+'</td><td>'+esc(item.course)+'</td><td><strong>'+item.points+'</strong></td><td><strong>'+esc(item.duration||'—')+'</strong></td></tr>').join('');
+  message.textContent=data.ranking.length?data.ranking.length+' aluno(s) pontuaram em '+date+'.':'Nenhuma questão aprovada em '+date+'.';
  }catch(error){
   if(requestNumber!==studentRankingRequest)return;
-  rows.innerHTML='';
+  rows.replaceChildren();
   message.textContent='Não foi possível carregar o ranking: '+error.message;
  }
 }
 document.getElementById('rankingNav').addEventListener('click',loadStudentRanking);
+document.getElementById('rankingSelectDate').addEventListener('change',loadStudentRanking);
+document.getElementById('rankingGoToday').addEventListener('click',()=>{
+ document.getElementById('rankingSelectDate').value=faRankingCurrentDay();
+ loadStudentRanking();
+});
 document.getElementById('rankingRefresh').addEventListener('click',loadStudentRanking);
 // O cronômetro utiliza a hora UTC devolvida pelo servidor e sobrevive ao refresh.
 let faTimerStartedAt=0;
