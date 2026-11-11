@@ -37,9 +37,30 @@ with sync_playwright() as p:
     expect(page.locator("#studentGate")).to_be_visible()
     page.locator("#registerName").fill("Estudante de Testes")
     page.locator("#registerEnrollment").fill("E2E000007")
-    page.locator("#registerCourse").fill("ADS")
+    page.locator("#registerCourse").select_option("Análise e Desenvolvimento de Sistemas")
     page.locator('#studentRegisterForm button[type="submit"]').click()
     expect(page.locator("#studentPracticeBody")).to_be_visible(timeout=15000)
+    # A edição de perfil não reinicia a rodada e mantém a matrícula.
+    expect(page.locator("#studentEditProfile")).to_be_visible()
+    initial_run = page.request.get(BASE_URL+"/api/student/me").json()["progress"]["run_id"]
+    page.locator("#studentEditProfile").click()
+    expect(page.locator("#studentProfileForm")).to_be_visible()
+    expect(page.locator("#profileEnrollment")).to_have_value("E2E000007")
+    page.locator("#profileName").fill("Estudante de Testes Atualizado")
+    page.locator("#profileCourse").select_option("Engenharia da Computação")
+    page.locator('#studentProfileForm button[type="submit"]').click()
+    expect(page.locator("#studentIdentity")).to_contain_text("Estudante de Testes Atualizado")
+    current_student = page.request.get(BASE_URL+"/api/student/me").json()
+    assert current_student["student"]["course"] == "Engenharia da Computação"
+    assert current_student["student"]["enrollment"] == "E2E000007"
+    assert current_student["progress"]["run_id"] == initial_run
+    # Restaurar nome original para o restante da regressão.
+    page.locator("#studentEditProfile").click()
+    page.locator("#profileName").fill("Estudante de Testes")
+    page.locator("#profileCourse").select_option("Análise e Desenvolvimento de Sistemas")
+    page.locator('#studentProfileForm button[type="submit"]').click()
+    expect(page.locator("#studentIdentity")).to_contain_text("Estudante de Testes")
+
     # O exemplo comentado deve abrir automaticamente em cada questão.
     expect(page.locator("#lessonCompactReference")).to_have_text("Ocultar exemplo")
     expect(page.locator(".practice-challenge")).not_to_have_class("practice-reference-compact")
@@ -175,7 +196,7 @@ with sync_playwright() as p:
     assert page.locator("#registerEnrollment").input_value() == ""
     page.locator("#registerName").fill("Outro Estudante")
     page.locator("#registerEnrollment").fill("E2E000008")
-    page.locator("#registerCourse").fill("Engenharia de Software")
+    page.locator("#registerCourse").select_option("Engenharia da Computação")
     page.locator('#studentRegisterForm button[type="submit"]').click()
     expect(page.locator("#studentPracticeBody")).to_be_visible(timeout=15000)
     expect(page.locator("#sessionStudentName")).to_contain_text("Outro Estudante")

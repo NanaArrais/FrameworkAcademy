@@ -290,16 +290,38 @@ def teacher_only(fn):
 @app.get('/')
 def home(): return render_template('index.html')
 
+STUDENT_COURSES = ('Engenharia da Computação', 'Análise e Desenvolvimento de Sistemas')
+
+@app.patch('/api/student/profile')
+@student_only
+def update_student_profile():
+    """Edita os dados não identificadores sem recriar o aluno ou afetar o histórico."""
+    student = db.session.get(Student, session['student_id'])
+    if student is None:
+        return jsonify(error='Aluno não encontrado.'), 404
+    data = request.get_json(silent=True) or {}
+    name = str(data.get('name', '')).strip()
+    course = str(data.get('course', '')).strip()
+    if not 3 <= len(name) <= 120 or course not in STUDENT_COURSES:
+        return jsonify(error='Informe nome completo e selecione um curso válido.'), 400
+    student.name = name
+    student.course = course
+    db.session.commit()
+    return jsonify(student={'name': student.name, 'enrollment': student.enrollment,
+                            'course': student.course})
+
 @app.post('/api/student/register')
 def register():
     data=request.get_json(silent=True) or {}
     name=str(data.get('name','')).strip(); enrollment=str(data.get('enrollment','')).strip(); course=str(data.get('course','')).strip()
-    if not 3<=len(name)<=120 or not re.fullmatch(r'[\w.-]{3,48}',enrollment) or not 2<=len(course)<=120:
+    if not 3<=len(name)<=120 or not re.fullmatch(r'[\w.-]{3,48}',enrollment) or course not in STUDENT_COURSES:
         return jsonify(error='Preencha nome, matrícula (3–48 caracteres) e curso.'),400
     student=Student.query.filter_by(enrollment=enrollment).first()
     if student:
-        if student.name.casefold()!=name.casefold() or student.course.casefold()!=course.casefold():
-            return jsonify(error='Matrícula já cadastrada com outros dados. Procure o professor.'),409
+        # Alunos antigos podem ter cursos previamente aceitos, como ADS.
+        # Nunca sobrescrever o curso ou recriar registros durante o login.
+        if student.name.casefold()!=name.casefold():
+            return jsonify(error='Matrícula já cadastrada com outro nome. Procure o professor.'),409
     else:
         student=Student(name=name,enrollment=enrollment,course=course);db.session.add(student);db.session.commit()
     # Cada identificação inicia uma rodada limpa, sem excluir o histórico anterior.

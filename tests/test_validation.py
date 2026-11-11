@@ -153,7 +153,7 @@ class ValidationTests(unittest.TestCase):
             db.create_all()
         with app.test_client() as student_client:
             register=student_client.post("/api/student/register",json={
-                "name":"Estudante Isolado", "enrollment":"TEACHER42", "course":"ADS"})
+                "name":"Estudante Isolado", "enrollment":"TEACHER42", "course":"Análise e Desenvolvimento de Sistemas"})
             self.assertEqual(register.status_code,200)
             answer=student_client.post("/api/submissions",json={
                 "framework":"materialize", "exercise":1, "variant":"top",
@@ -180,7 +180,7 @@ class ValidationTests(unittest.TestCase):
             db.create_all()
         with app.test_client() as client:
             reply=client.post("/api/student/register", json={
-                "name":"Estudante Demonstração", "enrollment":"MAT000987", "course":"ADS"})
+                "name":"Estudante Demonstração", "enrollment":"MAT000987", "course":"Análise e Desenvolvimento de Sistemas"})
             self.assertEqual(reply.status_code, 200)
             self.assertEqual(client.get("/api/student/me").status_code, 200)
             self.assertEqual(client.post("/api/teacher/login",json={"password":"senha-de-teste"}).status_code,200)
@@ -201,7 +201,7 @@ class ValidationTests(unittest.TestCase):
             db.drop_all()
             db.create_all()
         with app.test_client() as client:
-            data={"name":"Aluno Reinício","enrollment":"FRESH001","course":"ADS"}
+            data={"name":"Aluno Reinício","enrollment":"FRESH001","course":"Análise e Desenvolvimento de Sistemas"}
             first=client.post("/api/student/register",json=data)
             self.assertEqual(first.status_code,200)
             self.assertEqual(first.get_json()["progress"]["points"],0)
@@ -241,7 +241,7 @@ class ValidationTests(unittest.TestCase):
             db.create_all()
         with app.test_client() as client:
             first = client.post("/api/student/register", json={
-                "name": "Primeiro Aluno", "enrollment": "SWITCH001", "course": "ADS"})
+                "name": "Primeiro Aluno", "enrollment": "SWITCH001", "course": "Análise e Desenvolvimento de Sistemas"})
             self.assertEqual(first.status_code, 200)
             with app.app_context():
                 first_id = Student.query.filter_by(enrollment="SWITCH001").first().id
@@ -252,7 +252,7 @@ class ValidationTests(unittest.TestCase):
             self.assertEqual(client.get("/api/student/me").status_code, 401)
             self.assertEqual(client.get("/api/ranking/today").status_code, 401)
             second = client.post("/api/student/register", json={
-                "name": "Segundo Aluno", "enrollment": "SWITCH002", "course": "Jogos Digitais"})
+                "name": "Segundo Aluno", "enrollment": "SWITCH002", "course": "Engenharia da Computação"})
             self.assertEqual(second.status_code, 200)
             self.assertEqual(second.get_json()["progress"]["points"], 0)
             self.assertEqual(client.get("/api/student/me").get_json()["student"]["enrollment"], "SWITCH002")
@@ -285,7 +285,7 @@ class ValidationTests(unittest.TestCase):
             db.create_all()
         with app.test_client() as client:
             registration=client.post("/api/student/register",json={
-                "name":"Aluno de Integração", "enrollment":"INT00001", "course":"ADS"
+                "name":"Aluno de Integração", "enrollment":"INT00001", "course":"Análise e Desenvolvimento de Sistemas"
             })
             self.assertEqual(registration.status_code,200,registration.get_json())
             count=0
