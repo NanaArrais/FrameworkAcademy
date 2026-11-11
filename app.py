@@ -459,7 +459,17 @@ RANKING_TIMEZONE = ZoneInfo('America/Fortaleza')
 @app.get('/api/ranking/today')
 @student_only
 def student_daily_ranking():
-    day = datetime.now(RANKING_TIMEZONE).date()
+    today = datetime.now(RANKING_TIMEZONE).date()
+    selected = request.args.get('date', '').strip()
+    if selected:
+        try:
+            day = date.fromisoformat(selected)
+            if day.isoformat() != selected or day > today:
+                raise ValueError('Data inválida')
+        except ValueError:
+            return jsonify(error='Selecione uma data válida até o dia atual (AAAA-MM-DD).'), 400
+    else:
+        day = today
     beginning = datetime.combine(day, time.min, tzinfo=RANKING_TIMEZONE).astimezone(timezone.utc)
     ending = datetime.combine(day + timedelta(days=1), time.min, tzinfo=RANKING_TIMEZONE).astimezone(timezone.utc)
 
